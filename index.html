@@ -72,12 +72,12 @@
     @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
 
     #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
-    .home-header { height: 68px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
-    .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
-    .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); margin-bottom: 2px; }
-    .home-datetime { font-size: 10px; font-weight: 800; color: var(--purple); background: var(--text-dark); padding: 2px 6px; border-radius: 6px; display: inline-block; }
-    .home-header-btns { display: flex; align-items: center; gap: 8px; }
-    .user-header-avatar { width: 38px; height: 38px; border-radius: 12px; background: var(--blue); border: var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .home-header { height: 84px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 14px; }
+    .home-title { font-size: 15px; font-weight: 900; color: var(--text-dark); line-height: 1.1; }
+    .home-subtitle { font-size: 9px; font-weight: 800; color: var(--text-gray); margin-bottom: 2px; }
+    .home-datetime { font-size: 9px; font-weight: 800; color: var(--purple); background: var(--text-dark); padding: 2px 5px; border-radius: 4px; display: inline-block; }
+    .home-header-btns { display: flex; align-items: center; gap: 6px; }
+    .user-header-avatar { width: 34px; height: 34px; border-radius: 10px; background: var(--blue); border: var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
@@ -216,11 +216,10 @@
           <div id="home-datetime" class="home-datetime">Today</div>
         </div>
         <div class="home-header-btns">
-          <!-- Top Right User Avatar -->
           <div id="user-header-avatar" class="user-header-avatar"></div>
-          <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Change Username</button>
-          <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
-          <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
+          <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:8px; font-size:10px; font-weight:800; padding:5px 8px; cursor:pointer; box-shadow:var(--shadow-sm);">Username</button>
+          <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:8px; font-size:10px; font-weight:800; padding:5px 8px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
+          <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:13px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
       </div>
 
@@ -256,7 +255,6 @@
     <!-- Chat Header -->
     <header>
       <div class="header-info">
-        <!-- Top Left Partner Avatar Icon -->
         <div id="chat-header-avatar" class="header-bb-icon"></div>
         <div class="user-details">
           <div id="header-name" class="name">Chat Room</div>
@@ -365,9 +363,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // CUTE BIRD SVG FOR CHUTIBATICHCHI & CUTE PANDA SVG FOR SAHANSA
-    const BIRD_SVG = `<svg width="38" height="38" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD2DD"/><path d="M10 8L16 12L10 14Z" fill="#FFE9A0" stroke="#18181B" stroke-width="2"/><circle cx="18" cy="19" r="11" fill="#FFE9A0" stroke="#18181B" stroke-width="2.5"/><circle cx="15" cy="17" r="2.5" fill="#18181B"/><circle cx="21" cy="17" r="2.5" fill="#18181B"/><circle cx="15.8" cy="16.2" r="0.8" fill="#FFFFFF"/><circle cx="21.8" cy="16.2" r="0.8" fill="#FFFFFF"/><ellipse cx="12" cy="21" rx="2" ry="1.2" fill="#FF8787"/><ellipse cx="24" cy="21" rx="2" ry="1.2" fill="#FF8787"/><polygon points="18,19 21,21 18,23" fill="#FF922B" stroke="#18181B" stroke-width="1.5"/></svg>`;
-    const PANDA_SVG = `<svg width="38" height="38" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#A2D2FF"/><circle cx="10" cy="10" r="5" fill="#18181B"/><circle cx="26" cy="10" r="5" fill="#18181B"/><circle cx="18" cy="20" r="12" fill="#FFFFFF" stroke="#18181B" stroke-width="2.5"/><ellipse cx="13.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><ellipse cx="22.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><circle cx="14" cy="18" r="1" fill="#FFFFFF"/><circle cx="22" cy="18" r="1" fill="#FFFFFF"/><ellipse cx="18" cy="23" rx="2.5" ry="1.5" fill="#18181B"/></svg>`;
+    // CUTE CHIBI BIRD SVG FOR CHUTIBATICHCHI & PANDA SVG FOR SAHANSA
+    const BIRD_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD2DD"/><circle cx="18" cy="19" r="11" fill="#FFE9A0" stroke="#18181B" stroke-width="2.5"/><circle cx="15" cy="17" r="2" fill="#18181B"/><circle cx="21" cy="17" r="2" fill="#18181B"/><circle cx="15.6" cy="16.4" r="0.7" fill="#FFFFFF"/><circle cx="21.6" cy="16.4" r="0.7" fill="#FFFFFF"/><ellipse cx="12.5" cy="21" rx="2" ry="1.2" fill="#FF8787"/><ellipse cx="23.5" cy="21" rx="2" ry="1.2" fill="#FF8787"/><polygon points="18,19 21,21 18,23" fill="#FF922B" stroke="#18181B" stroke-width="1.5"/><path d="M15 9C15 7.5 17 6 18 6C19 6 21 7.5 21 9" stroke="#18181B" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const PANDA_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#A2D2FF"/><circle cx="10" cy="10" r="5" fill="#18181B"/><circle cx="26" cy="10" r="5" fill="#18181B"/><circle cx="18" cy="20" r="12" fill="#FFFFFF" stroke="#18181B" stroke-width="2.5"/><ellipse cx="13.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><ellipse cx="22.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><circle cx="14" cy="18" r="1" fill="#FFFFFF"/><circle cx="22" cy="18" r="1" fill="#FFFFFF"/><ellipse cx="18" cy="23" rx="2.5" ry="1.5" fill="#18181B"/></svg>`;
 
     // Default Accounts Configuration
     const ACCOUNTS = {
@@ -375,7 +373,7 @@
       chutibatichchi: { username: "Chutibatichchi", key: "chutibatichchi", defaultPass: "2003", avatar: BIRD_SVG }
     };
 
-    let currentUser = null; // { key, username }
+    let currentUser = null; 
     let selectedMember = null;
     let activeSelectedMsg = null;
 
@@ -408,7 +406,7 @@
     const profileCurrentPass = document.getElementById("profile-current-pass");
     const profileNewPass = document.getElementById("profile-new-pass");
     const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
-    const malshiChangeUserBtn = document.getElementById("chuti-change-user-btn");
+    const chutibatichchiChangeUserBtn = document.getElementById("chuti-change-user-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
 
@@ -464,7 +462,6 @@
       authStatusBox.style.display = "block";
     }
 
-    // Toggle Auth Tabs
     tabLogin.addEventListener("click", () => {
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
@@ -485,7 +482,6 @@
       authStatusBox.style.display = "none";
     });
 
-    // Auto Login Session
     const savedSession = localStorage.getItem("bmchat_user_session");
     if (savedSession) {
       try {
@@ -499,7 +495,6 @@
       }
     }
 
-    // Authenticate Action
     authBtn.addEventListener("click", async () => {
       const inputUser = authUsername.value.trim().toLowerCase();
       const inputPass = authPassword.value.trim();
@@ -533,7 +528,6 @@
       }
     });
 
-    // PROFILE MODAL
     function openProfileModal() {
       if (!currentUser) return;
       profileNewName.value = currentUser.username || "";
@@ -543,7 +537,7 @@
     }
 
     editProfileOpenBtn.addEventListener("click", openProfileModal);
-    malshiChangeUserBtn.addEventListener("click", openProfileModal);
+    chutibatichchiChangeUserBtn.addEventListener("click", openProfileModal);
 
     profileCancelBtn.addEventListener("click", () => profileModal.classList.add("hidden"));
 
@@ -629,15 +623,14 @@
 
       updateLiveDateTime();
 
-      // Show user's avatar on top right of Home Screen
       if (currentUser && ACCOUNTS[currentUser.key]) {
         userHeaderAvatar.innerHTML = ACCOUNTS[currentUser.key].avatar;
       }
 
       if (currentUser && currentUser.key === "chutibatichchi") {
-        malshiChangeUserBtn.classList.remove("hidden");
+        chutibatichchiChangeUserBtn.classList.remove("hidden");
       } else {
-        malshiChangeUserBtn.classList.add("hidden");
+        chutibatichchiChangeUserBtn.classList.add("hidden");
       }
 
       const partnerKey = currentUser.key === "sahansa" ? "chutibatichchi" : "sahansa";
@@ -674,7 +667,6 @@
         selectedMember = partnerInfo;
         document.getElementById("header-name").innerText = partnerUsername;
         
-        // Render partner avatar in top-left of chat header
         chatHeaderAvatar.innerHTML = partnerInfo.avatar;
         callAvatarIcon.innerHTML = partnerInfo.avatar;
 
@@ -726,7 +718,6 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // HTML5 CANVAS CLIENT COMPRESSION
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser || !selectedMember) return;
@@ -1009,7 +1000,7 @@
         if (data && data.status === "calling" && data.callerUid !== currentUser.key) {
           callUserTitle.innerText = data.callerName;
           callStatusLabel.innerText = "Incoming Voice Call";
-          acceptCallBtn.classList.remove("hidden");
+          acceptCallBtn.classList.add("hidden");
           callScreen.classList.remove("hidden");
 
           acceptCallBtn.onclick = async () => {
@@ -1053,7 +1044,10 @@
         setTimeout(() => remove(dbRef(db, "active_call")), 1000);
       }
       if (peerConnection) { peerConnection.close(); peerConnection = null; }
-      if (localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
       callScreen.classList.add("hidden");
     }
   </script>
