@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Private Chat</title>
+  <style>
+    :root {
+      --bg-color: #f2f2f7;
+      --card-bg: #ffffff;
+      --primary: #007aff;
+      --sent-bg: #007aff;
+      --received-bg: #e5e5ea;
+      --text-dark: #000000;
+      --text-gray: #8e8e93;
+      --border-color: #c6c6c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-color); height: 100vh; display: flex; justify-content: center; align-items: center; }
+    #app { width: 100%; max-width: 480px; height: 100vh; display: flex; flex-direction: column; background: var(--card-bg); position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .screen { position: absolute; inset: 0; background: var(--card-bg); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+    .hidden { display: none !important; }
+    .app-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #007aff, #58a6ff); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin-bottom: 20px; box-shadow: 0 8px 16px rgba(0,122,255,0.3); }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+    p { font-size: 14px; color: var(--text-gray); margin-bottom: 24px; }
+    .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-google { background: #f1f3f4; color: #3c4043; border: 1px solid #dadce0; }
+    input[type="text"] { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 16px; margin-bottom: 16px; outline: none; background: #f9f9f9; }
+    header { height: 60px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 5; }
+    .header-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ddd; object-fit: cover; }
+    .user-details { text-align: left; }
+    .user-details .name { font-size: 15px; font-weight: 600; color: var(--text-dark); }
+    .user-details .status { font-size: 11px; color: #34c759; }
+    #chat-box { flex: 1; overflow-y: auto; padding: 70px 16px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; }
+    .msg { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; animation: fadeIn 0.15s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .sent { align-self: flex-end; background: var(--sent-bg); color: white; border-bottom-right-radius: 4px; }
+    .received { align-self: flex-start; background: var(--received-bg); color: var(--text-dark); border-bottom-left-radius: 4px; }
+    .msg img { max-width: 100%; border-radius: 12px; margin-top: 6px; display: block; }
+    .msg-author { font-size: 10px; opacity: 0.7; margin-bottom: 3px; font-weight: 600; }
+    footer { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border-color); padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+    .file-btn { color: var(--primary); font-size: 22px; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+    #file-input { display: none; }
+    #message-input { flex: 1; height: 36px; border-radius: 18px; border: 1px solid var(--border-color); padding: 0 14px; font-size: 15px; outline: none; background: #f2f2f7; }
+    .send-btn { background: var(--primary); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+      <div class="app-icon">💬</div>
+      <h1>Private Chat</h1>
+      <p>Sign in with Google to start messaging.</p>
+      <button id="google-login-btn" class="btn btn-google">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.4-1.57-5.12-3.74L.97 13.04C2.45 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.88 10.78c-.18-.53-.28-1.09-.28-1.78s.1-1.25.28-1.78L.97 4.96C.35 6.18 0 7.55 0 9s.35 2.82.97 4.04l2.91-2.26z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.45 2.02.97 4.96l2.91 2.26C4.6 5.05 6.62 3.58 9 3.58z"/></svg>
+        Sign In with Google
+      </button>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profile-screen" class="screen hidden">
+      <div class="app-icon">👤</div>
+      <h1>Create Profile</h1>
+      <p>Enter your display name to join the room.</p>
+      <input type="text" id="display-name-input" placeholder="Your Name..." />
+      <button id="save-profile-btn" class="btn btn-primary">Enter Chat</button>
+    </div>
+
+    <!-- Chat Header -->
+    <header>
+      <div class="header-info">
+        <img id="current-avatar" class="avatar" src="https://via.placeholder.com/36" alt="Avatar" />
+        <div class="user-details">
+          <div id="header-name" class="name">Chat Room</div>
+          <div class="status">● Online</div>
+        </div>
+      </div>
+      <button id="logout-btn" style="background:none; border:none; color:var(--primary); font-size:14px; cursor:pointer;">Exit</button>
+    </header>
+
+    <div id="chat-box"></div>
+
+    <footer>
+      <label for="file-input" class="file-btn">📷</label>
+      <input type="file" id="file-input" accept="image/*" />
+      <input type="text" id="message-input" placeholder="iMessage" />
+      <button id="send-btn" class="send-btn">↑</button>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref as dbRef, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // YOUR INTEGRATED FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyCumpuLgLQim1FAiibLIQKHGyzNcGyLTcs",
+      authDomain: "bbchat-app.firebaseapp.com",
+      databaseURL: "https://bbchat-app-default-rtdb.firebaseio.com",
+      projectId: "bbchat-app",
+      storageBucket: "bbchat-app.firebasestorage.app",
+      messagingSenderId: "798098467106",
+      appId: "1:798098467106:web:368f89dee243b547d4dd7b",
+      measurementId: "G-PNKYJQJT9V"
+    };
+
+    // YOUR IMGBB KEY
+    const IMGBB_API_KEY = "874affb0b9a32ab658bf8d4ba86d28bg";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentUser = null;
+    let customDisplayName = "";
+
+    const loginScreen = document.getElementById("login-screen");
+    const profileScreen = document.getElementById("profile-screen");
+    const displayNameInput = document.getElementById("display-name-input");
+    const chatBox = document.getElementById("chat-box");
+    const messageInput = document.getElementById("message-input");
+
+    // Google Sign-In
+    document.getElementById("google-login-btn").addEventListener("click", () => {
+      signInWithPopup(auth, provider).catch(err => alert(err.message));
+    });
+
+    // Auth state listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        loginScreen.classList.add("hidden");
+        const savedName = localStorage.getItem(`chat_name_${user.uid}`);
+        if (savedName) {
+          customDisplayName = savedName;
+          showChat();
+        } else {
+          displayNameInput.value = user.displayName || "";
+          profileScreen.classList.remove("hidden");
+        }
+      } else {
+        currentUser = null;
+        loginScreen.classList.remove("hidden");
+        profileScreen.classList.add("hidden");
+      }
+    });
+
+    // Profile save
+    document.getElementById("save-profile-btn").addEventListener("click", () => {
+      const name = displayNameInput.value.trim();
+      if (name) {
+        customDisplayName = name;
+        localStorage.setItem(`chat_name_${currentUser.uid}`, name);
+        profileScreen.classList.add("hidden");
+        showChat();
+      }
+    });
+
+    function showChat() {
+      document.getElementById("header-name").innerText = customDisplayName;
+      document.getElementById("current-avatar").src = currentUser.photoURL || "https://via.placeholder.com/36";
+    }
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
+
+    // Send text message
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (text !== "" && currentUser) {
+        push(dbRef(db, "messages"), { 
+          uid: currentUser.uid, 
+          sender: customDisplayName, 
+          text: text, 
+          image: null,
+          timestamp: Date.now()
+        });
+        messageInput.value = "";
+      }
+    }
+
+    document.getElementById("send-btn").addEventListener("click", sendMessage);
+    messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+
+    // Send image via ImgBB
+    document.getElementById("file-input").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file || !currentUser) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          push(dbRef(db, "messages"), {
+            uid: currentUser.uid,
+            sender: customDisplayName,
+            text: "",
+            image: data.data.url,
+            timestamp: Date.now()
+          });
+        } else {
+          alert("Image upload failed.");
+        }
+      } catch (error) {
+        alert("Error uploading image: " + error.message);
+      }
+
+      e.target.value = "";
+    });
+
+    // Listen for realtime messages
+    onChildAdded(dbRef(db, "messages"), (snapshot) => {
+      const data = snapshot.val();
+      const isMe = currentUser && data.uid === currentUser.uid;
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `msg ${isMe ? "sent" : "received"}`;
+      
+      let content = `<div class="msg-author">${data.sender}</div>`;
+      if (data.text) content += `<div>${data.text}</div>`;
+      if (data.image) content += `<img src="${data.image}" alt="photo" />`;
+      
+      msgDiv.innerHTML = content;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+</body>
+</html>
