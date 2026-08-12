@@ -86,12 +86,14 @@
     .member-details .member-name { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 2px; }
     .member-details .member-phone { font-size: 12px; font-weight: 700; color: var(--text-gray); }
     
-    .member-badges { display: flex; align-items: center; gap: 6px; }
+    .member-badges { display: flex; align-items: center; gap: 8px; }
     .unread-badge {
       background: var(--danger); color: white; border: var(--border); font-size: 12px; font-weight: 900;
-      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      min-width: 26px; height: 26px; border-radius: 13px; padding: 0 6px; display: flex; align-items: center; justify-content: center;
       box-shadow: var(--shadow-sm); animation: pulse 1s infinite alternate;
     }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+
     .chat-now-badge { background: var(--green); color: var(--text-dark); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 14px; border: var(--border); box-shadow: var(--shadow-sm); }
 
     header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
@@ -148,7 +150,7 @@
 </head>
 <body>
 
-  <!-- Invisible Recaptcha Element -->
+  <!-- Recaptcha Container -->
   <div id="recaptcha-container"></div>
 
   <div id="app">
@@ -431,6 +433,11 @@
     const startCallBtn = document.getElementById("start-call-btn");
     const remoteAudio = document.getElementById("remote-audio");
 
+    // Chat Pair ID Calculation
+    function getChatId(phone1, phone2) {
+      return [phone1, phone2].sort().join("_");
+    }
+
     // SRI LANKAN PHONE NUMBER AUTO-FORMATTER
     function formatSriLankanPhone(phone) {
       let cleaned = phone.replace(/[^0-9+]/g, "");
@@ -666,7 +673,7 @@
     resetSystemBtn.addEventListener("click", async () => {
       if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
         if (confirm("ADMIN OVERRIDE (0701581056): Purge all system data?")) {
-          await remove(dbRef(db, "messages"));
+          await remove(dbRef(db, "chats"));
           await remove(dbRef(db, "users"));
           await remove(dbRef(db, "active_call"));
           localStorage.clear();
@@ -725,9 +732,34 @@
       showHomeScreen();
     });
 
-    // UNREAD MESSAGE TRACKING & DASHBOARD
+    // REAL-TIME UNREAD MESSAGE BADGE LISTENER
+    function listenForUnreadCounts() {
+      if (!currentUser) return;
+      const unreadRef = dbRef(db, `users/${currentUser.phone}/unread`);
+      
+      onValue(unreadRef, (snapshot) => {
+        const unreadData = snapshot.exists() ? snapshot.val() : {};
+        
+        // Update all friend card badges live
+        const friendCards = document.querySelectorAll(".member-card");
+        friendCards.forEach((card) => {
+          const phone = card.dataset.phone;
+          const badgeContainer = card.querySelector(".badge-slot");
+          if (phone && badgeContainer) {
+            const count = unreadData[phone] || 0;
+            if (count > 0) {
+              badgeContainer.innerHTML = `<div class="unread-badge">${count}</div>`;
+            } else {
+              badgeContainer.innerHTML = ``;
+            }
+          }
+        });
+      });
+    }
+
     async function showHomeScreen() {
       homeScreen.classList.remove("hidden");
+      selectedMember = null;
       membersList.innerHTML = "";
 
       if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
@@ -747,6 +779,7 @@
 
           const card = document.createElement("div");
           card.className = "member-card";
+          card.dataset.phone = f.phone;
           card.innerHTML = `
             <div class="member-card-info">
               <div class="member-avatar">${f.name ? f.name.charAt(0).toUpperCase() : "F"}</div>
@@ -756,7 +789,9 @@
               </div>
             </div>
             <div class="member-badges">
-              ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+              <span class="badge-slot">
+                ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+              </span>
               <div class="chat-now-badge">Chat</div>
             </div>
           `;
@@ -766,7 +801,7 @@
             document.getElementById("header-name").innerText = f.name;
             homeScreen.classList.add("hidden");
             
-            // Reset unread count for this friend
+            // Clear unread count for this selected friend
             await remove(dbRef(db, `users/${currentUser.phone}/unread/${f.phone}`));
             listenForMessages();
           });
@@ -778,6 +813,8 @@
       if (membersList.children.length === 0) {
         membersList.innerHTML = `<div style="text-align:center; color:var(--text-gray); margin-top:40px; font-size:14px; font-weight:700;">No friends added yet.<br>Tap <b>+ Add Friend</b> to connect.</div>`;
       }
+
+      listenForUnreadCounts();
     }
 
     function setupOnlineStatus() {
@@ -793,22 +830,26 @@
       });
     }
 
+    // Helper to send message to isolated chat thread
+    async function pushMessageToFirebase(msgData) {
+      if (!currentUser || !selectedMember) return;
+      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      await push(dbRef(db, `chats/${chatId}/messages`), msgData);
+
+      // Increment unread count for recipient
+      const recipientUnreadRef = dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`);
+      const snap = await get(recipientUnreadRef);
+      const currentCount = snap.exists() ? snap.val() : 0;
+      await set(recipientUnreadRef, currentCount + 1);
+    }
+
     function sendMessage() {
       const text = messageInput.value.trim();
-      if (text !== "" && currentUser) {
-        push(dbRef(db, "messages"), { 
+      if (text !== "" && currentUser && selectedMember) {
+        pushMessageToFirebase({ 
           uid: currentUser.uid, sender: currentUser.name, text: text, image: null, audio: null,
           timestamp: Date.now(), edited: false, deletedForEveryone: false
         });
-
-        // Increment unread count for friend if they are offline/not in active chat
-        if (selectedMember) {
-          get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
-            const count = snap.exists() ? snap.val() : 0;
-            set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
-          });
-        }
-
         messageInput.value = "";
       }
     }
@@ -819,7 +860,7 @@
     // HTML5 CANVAS CLIENT COMPRESSION
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
-      if (!file || !currentUser) return;
+      if (!file || !currentUser || !selectedMember) return;
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -848,7 +889,7 @@
 
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
 
-          push(dbRef(db, "messages"), {
+          pushMessageToFirebase({
             uid: currentUser.uid,
             sender: currentUser.name,
             text: "",
@@ -858,13 +899,6 @@
             edited: false,
             deletedForEveryone: false
           });
-
-          if (selectedMember) {
-            get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
-              const count = snap.exists() ? snap.val() : 0;
-              set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
-            });
-          }
         };
         img.src = event.target.result;
       };
@@ -894,18 +928,11 @@
             reader.readAsDataURL(audioBlob);
             reader.onloadend = () => {
               const base64Audio = reader.result;
-              push(dbRef(db, "messages"), {
+              pushMessageToFirebase({
                 uid: currentUser.uid, sender: currentUser.name, text: "",
                 image: null, audio: base64Audio, timestamp: Date.now(),
                 edited: false, deletedForEveryone: false
               });
-
-              if (selectedMember) {
-                get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
-                  const count = snap.exists() ? snap.val() : 0;
-                  set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
-                });
-              }
             };
             stream.getTracks().forEach(track => track.stop());
           };
@@ -959,10 +986,11 @@
     }
 
     function openActionSheet(msgId, data) {
-      if (data.deletedForEveryone) return;
+      if (data.deletedForEveryone || !selectedMember) return;
       activeSelectedMsg = { id: msgId, ...data };
       actionSheetButtons.innerHTML = "";
 
+      const chatId = getChatId(currentUser.phone, selectedMember.phone);
       const isMe = currentUser && data.uid === currentUser.uid;
       const isWithinOneMin = (Date.now() - data.timestamp) <= 60000;
 
@@ -984,7 +1012,7 @@
         delEveryoneBtn.innerText = "Delete for Everyone";
         delEveryoneBtn.addEventListener("click", async () => {
           closeActionSheet();
-          await update(dbRef(db, `messages/${msgId}`), { deletedForEveryone: true, text: "", image: null, audio: null });
+          await update(dbRef(db, `chats/${chatId}/messages/${msgId}`), { deletedForEveryone: true, text: "", image: null, audio: null });
         });
         actionSheetButtons.appendChild(delEveryoneBtn);
       }
@@ -994,7 +1022,7 @@
       delMeBtn.innerText = "Delete for Me";
       delMeBtn.addEventListener("click", async () => {
         closeActionSheet();
-        await update(dbRef(db, `messages/${msgId}/deletedFor`), { [currentUser.uid]: true });
+        await update(dbRef(db, `chats/${chatId}/messages/${msgId}/deletedFor`), { [currentUser.uid]: true });
         const el = document.getElementById(`msg-${msgId}`);
         if (el) el.remove();
       });
@@ -1008,7 +1036,8 @@
     actionSheetOverlay.addEventListener("click", (e) => { if (e.target === actionSheetOverlay) closeActionSheet(); });
 
     editSaveBtn.addEventListener("click", async () => {
-      if (!activeSelectedMsg) return;
+      if (!activeSelectedMsg || !selectedMember) return;
+      const chatId = getChatId(currentUser.phone, selectedMember.phone);
       const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
       if (!isWithinOneMin) {
         alert("Time limit expired!");
@@ -1017,19 +1046,29 @@
       }
       const newText = editMessageInput.value.trim();
       if (newText && newText !== activeSelectedMsg.text) {
-        await update(dbRef(db, `messages/${activeSelectedMsg.id}`), { text: newText, edited: true });
+        await update(dbRef(db, `chats/${chatId}/messages/${activeSelectedMsg.id}`), { text: newText, edited: true });
       }
       editModalOverlay.classList.add("hidden");
     });
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
+    // Realtime Message Listener (per conversation thread)
     function listenForMessages() {
-      const messagesRef = dbRef(db, "messages");
+      if (!currentUser || !selectedMember) return;
+      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      const messagesRef = dbRef(db, `chats/${chatId}/messages`);
+      
       off(messagesRef);
       chatBox.innerHTML = "";
 
+      // Ensure unread for active chat is cleared continuously while open
+      remove(dbRef(db, `users/${currentUser.phone}/unread/${selectedMember.phone}`));
+
       onChildAdded(messagesRef, (snapshot) => {
+        // Clear unread count when receiving messages in active chat
+        remove(dbRef(db, `users/${currentUser.phone}/unread/${selectedMember.phone}`));
+
         const msgDiv = renderMessageHTML(snapshot.key, snapshot.val());
         if (msgDiv) { chatBox.appendChild(msgDiv); chatBox.scrollTop = chatBox.scrollHeight; }
       });
