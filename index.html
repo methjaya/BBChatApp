@@ -55,7 +55,6 @@
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
 
-    /* Retro Mascot Banner with Top Margin Spacing */
     .retro-mascot-banner {
       background: var(--yellow); border: var(--border); border-radius: 18px; padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between; width: 100%;
@@ -73,10 +72,12 @@
     @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
 
     #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
-    .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+    .home-header { height: 68px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
     .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
-    .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); }
-    .home-header-btns { display: flex; gap: 6px; }
+    .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); margin-bottom: 2px; }
+    .home-datetime { font-size: 10px; font-weight: 800; color: var(--purple); background: var(--text-dark); padding: 2px 6px; border-radius: 6px; display: inline-block; }
+    .home-header-btns { display: flex; align-items: center; gap: 8px; }
+    .user-header-avatar { width: 38px; height: 38px; border-radius: 12px; background: var(--blue); border: var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
@@ -101,7 +102,7 @@
 
     header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
     .header-info { display: flex; align-items: center; gap: 10px; }
-    .header-bb-icon { width: 38px; height: 38px; border-radius: 12px; background: var(--yellow); border: var(--border); color: var(--text-dark); font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
+    .header-bb-icon { width: 38px; height: 38px; border-radius: 12px; background: var(--yellow); border: var(--border); color: var(--text-dark); font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); overflow: hidden; }
     .user-details { text-align: left; }
     .user-details .name { font-size: 15px; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
     .user-details .status { font-size: 11px; color: var(--text-dark); font-weight: 700; display: flex; align-items: center; gap: 4px; }
@@ -140,7 +141,7 @@
     .edit-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
 
     .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
-    .call-avatar { width: 100px; height: 100px; border-radius: 28px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .call-avatar { width: 100px; height: 100px; border-radius: 28px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
     .call-status { font-size: 15px; font-weight: 700; color: var(--text-gray); margin-top: 8px; }
     .call-actions { display: flex; gap: 24px; width: 100%; justify-content: center; }
     .call-btn { width: 64px; height: 64px; border-radius: 20px; border: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); }
@@ -212,8 +213,11 @@
         <div>
           <div class="home-title">B&M Chat app</div>
           <div class="home-subtitle">Bbu & Me Chat App</div>
+          <div id="home-datetime" class="home-datetime">Today</div>
         </div>
         <div class="home-header-btns">
+          <!-- Top Right User Avatar -->
+          <div id="user-header-avatar" class="user-header-avatar"></div>
           <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Change Username</button>
           <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
@@ -252,7 +256,8 @@
     <!-- Chat Header -->
     <header>
       <div class="header-info">
-        <div class="header-bb-icon">B&M</div>
+        <!-- Top Left Partner Avatar Icon -->
+        <div id="chat-header-avatar" class="header-bb-icon"></div>
         <div class="user-details">
           <div id="header-name" class="name">Chat Room</div>
           <div class="status">
@@ -326,7 +331,7 @@
 
   <div id="call-screen" class="call-screen hidden">
     <div>
-      <div class="call-avatar" id="call-avatar-icon">B&M</div>
+      <div class="call-avatar" id="call-avatar-icon"></div>
       <h2 id="call-user-title">Voice Call</h2>
       <div id="call-status-label" class="call-status">Connecting...</div>
     </div>
@@ -360,9 +365,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // SVG AVATARS (Cute Bird for Chutibatichchi, Cute Panda for Sahansa)
-    const BIRD_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD2DD"/><path d="M12 18C12 14.6863 14.6863 12 18 12C21.3137 12 24 14.6863 24 18V22C24 24.2091 22.2091 26 20 26H16C13.7909 26 12 24.2091 12 22V18Z" fill="#FFE9A0" stroke="#18181B" stroke-width="2"/><circle cx="15.5" cy="17.5" r="2" fill="#18181B"/><circle cx="20.5" cy="17.5" r="2" fill="#18181B"/><polygon points="18,20 22,21 18,23" fill="#FF922B" stroke="#18181B" stroke-width="1.5"/></svg>`;
-    const PANDA_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#A2D2FF"/><circle cx="10" cy="10" r="5" fill="#18181B"/><circle cx="26" cy="10" r="5" fill="#18181B"/><circle cx="18" cy="20" r="12" fill="#FFFFFF" stroke="#18181B" stroke-width="2"/><ellipse cx="13.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><ellipse cx="22.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><circle cx="14" cy="18" r="1" fill="#FFFFFF"/><circle cx="22" cy="18" r="1" fill="#FFFFFF"/><ellipse cx="18" cy="23" rx="2.5" ry="1.5" fill="#18181B"/></svg>`;
+    // CUTE BIRD SVG FOR CHUTIBATICHCHI & CUTE PANDA SVG FOR SAHANSA
+    const BIRD_SVG = `<svg width="38" height="38" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD2DD"/><path d="M10 8L16 12L10 14Z" fill="#FFE9A0" stroke="#18181B" stroke-width="2"/><circle cx="18" cy="19" r="11" fill="#FFE9A0" stroke="#18181B" stroke-width="2.5"/><circle cx="15" cy="17" r="2.5" fill="#18181B"/><circle cx="21" cy="17" r="2.5" fill="#18181B"/><circle cx="15.8" cy="16.2" r="0.8" fill="#FFFFFF"/><circle cx="21.8" cy="16.2" r="0.8" fill="#FFFFFF"/><ellipse cx="12" cy="21" rx="2" ry="1.2" fill="#FF8787"/><ellipse cx="24" cy="21" rx="2" ry="1.2" fill="#FF8787"/><polygon points="18,19 21,21 18,23" fill="#FF922B" stroke="#18181B" stroke-width="1.5"/></svg>`;
+    const PANDA_SVG = `<svg width="38" height="38" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#A2D2FF"/><circle cx="10" cy="10" r="5" fill="#18181B"/><circle cx="26" cy="10" r="5" fill="#18181B"/><circle cx="18" cy="20" r="12" fill="#FFFFFF" stroke="#18181B" stroke-width="2.5"/><ellipse cx="13.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><ellipse cx="22.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><circle cx="14" cy="18" r="1" fill="#FFFFFF"/><circle cx="22" cy="18" r="1" fill="#FFFFFF"/><ellipse cx="18" cy="23" rx="2.5" ry="1.5" fill="#18181B"/></svg>`;
 
     // Default Accounts Configuration
     const ACCOUNTS = {
@@ -407,6 +412,11 @@
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
 
+    const userHeaderAvatar = document.getElementById("user-header-avatar");
+    const chatHeaderAvatar = document.getElementById("chat-header-avatar");
+    const callAvatarIcon = document.getElementById("call-avatar-icon");
+    const homeDateTime = document.getElementById("home-datetime");
+
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
     const fileInput = document.getElementById("file-input");
@@ -440,6 +450,12 @@
     function formatTime(timestamp) {
       if (!timestamp) return "";
       return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function updateLiveDateTime() {
+      const now = new Date();
+      const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      homeDateTime.innerText = now.toLocaleDateString('en-US', options);
     }
 
     function displayAuthStatus(msg, isError = true) {
@@ -611,6 +627,13 @@
       selectedMember = null;
       membersList.innerHTML = "";
 
+      updateLiveDateTime();
+
+      // Show user's avatar on top right of Home Screen
+      if (currentUser && ACCOUNTS[currentUser.key]) {
+        userHeaderAvatar.innerHTML = ACCOUNTS[currentUser.key].avatar;
+      }
+
       if (currentUser && currentUser.key === "chutibatichchi") {
         malshiChangeUserBtn.classList.remove("hidden");
       } else {
@@ -650,6 +673,11 @@
       card.addEventListener("click", async () => {
         selectedMember = partnerInfo;
         document.getElementById("header-name").innerText = partnerUsername;
+        
+        // Render partner avatar in top-left of chat header
+        chatHeaderAvatar.innerHTML = partnerInfo.avatar;
+        callAvatarIcon.innerHTML = partnerInfo.avatar;
+
         homeScreen.classList.add("hidden");
         
         await remove(dbRef(db, `users/${currentUser.key}/unread/${partnerKey}`));
@@ -698,6 +726,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
+    // HTML5 CANVAS CLIENT COMPRESSION
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser || !selectedMember) return;
