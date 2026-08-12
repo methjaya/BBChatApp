@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>BBChatApp</title>
+  <title>B&M Chat app</title>
   
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>BBC</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>B%26M</text></svg>">
 
   <style>
     :root {
@@ -33,10 +33,11 @@
 
     .bb-logo-badge {
       padding: 14px 28px; background: var(--yellow); border: var(--border); border-radius: 20px;
-      display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px; box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; box-shadow: var(--shadow);
     }
 
-    h1 { font-size: 26px; font-weight: 900; margin-bottom: 6px; color: var(--text-dark); letter-spacing: -0.5px; }
+    h1 { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--text-dark); letter-spacing: -0.5px; }
+    .slogan { font-size: 13px; font-weight: 800; color: #52525B; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
     p { font-size: 14px; color: var(--text-dark); font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
 
     .auth-toggle { display: flex; background: #E5E0D8; border: var(--border); border-radius: 16px; padding: 4px; width: 100%; margin-bottom: 20px; }
@@ -63,7 +64,8 @@
     #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
     .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
     .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
-    .home-header-btns { display: flex; gap: 8px; }
+    .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); }
+    .home-header-btns { display: flex; gap: 6px; }
     
     .home-actions-bar { padding: 16px 16px 4px 16px; }
     .add-friend-btn {
@@ -76,13 +78,20 @@
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
     .member-card {
-      background: var(--card-bg); border-radius: 20px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border: var(--border); box-shadow: var(--shadow); transition: transform 0.1s ease;
+      background: var(--card-bg); border-radius: 20px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border: var(--border); box-shadow: var(--shadow); transition: transform 0.1s ease; position: relative;
     }
     .member-card:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .member-card-info { display: flex; align-items: center; gap: 14px; }
     .member-avatar { width: 46px; height: 46px; border-radius: 14px; background: var(--blue); border: var(--border); color: var(--text-dark); font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
     .member-details .member-name { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 2px; }
     .member-details .member-phone { font-size: 12px; font-weight: 700; color: var(--text-gray); }
+    
+    .member-badges { display: flex; align-items: center; gap: 6px; }
+    .unread-badge {
+      background: var(--danger); color: white; border: var(--border); font-size: 12px; font-weight: 900;
+      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm); animation: pulse 1s infinite alternate;
+    }
     .chat-now-badge { background: var(--green); color: var(--text-dark); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 14px; border: var(--border); box-shadow: var(--shadow-sm); }
 
     header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
@@ -145,9 +154,9 @@
   <div id="app">
     <!-- Auth Screen -->
     <div id="auth-screen" class="screen">
-      <div class="bb-logo-badge">BBChatApp</div>
-      <h1>BBChatApp</h1>
-      <p id="auth-desc">Sign in with Mobile Phone & PIN</p>
+      <div class="bb-logo-badge">B&M</div>
+      <h1>B&M Chat app</h1>
+      <div class="slogan">Bbu & Me Chat App</div>
 
       <div id="auth-status-box" class="status-badge"></div>
 
@@ -174,9 +183,12 @@
     <!-- Home Screen -->
     <div id="home-screen" class="hidden">
       <div class="home-header">
-        <div class="home-title">BBChatApp</div>
+        <div>
+          <div class="home-title">B&M Chat app</div>
+          <div class="home-subtitle">Bbu & Me Chat App</div>
+        </div>
         <div class="home-header-btns">
-          <!-- RESTRICTED BUTTON: Visible ONLY for phone 0701581056 -->
+          <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
           <button id="reset-system-btn" class="hidden" style="background:var(--danger); color:white; border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Reset System</button>
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
@@ -194,7 +206,7 @@
     <!-- Chat Header -->
     <header>
       <div class="header-info">
-        <div class="header-bb-icon">BBC</div>
+        <div class="header-bb-icon">B&M</div>
         <div class="user-details">
           <div id="header-name" class="name">Chat Room</div>
           <div class="status">
@@ -228,6 +240,19 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
     </footer>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="profile-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
+    <div class="edit-modal-box">
+      <h3>Edit Profile Details</h3>
+      <input type="text" id="profile-new-name" placeholder="New Display Name" />
+      <input type="password" id="profile-new-pin" maxlength="6" pattern="\d*" placeholder="New 4-Digit PIN" />
+      <div class="edit-modal-actions">
+        <button id="profile-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
+        <button id="profile-save-btn" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
   </div>
 
   <!-- Add Friend Modal -->
@@ -284,7 +309,7 @@
 
   <div id="call-screen" class="call-screen hidden">
     <div>
-      <div class="call-avatar" id="call-avatar-icon">BBC</div>
+      <div class="call-avatar" id="call-avatar-icon">B&M</div>
       <h2 id="call-user-title">Voice Call</h2>
       <div id="call-status-label" class="call-status">Connecting...</div>
     </div>
@@ -357,6 +382,13 @@
     const tabRegister = document.getElementById("tab-register");
     const forgotPinBtn = document.getElementById("forgot-pin-btn");
 
+    const profileModal = document.getElementById("profile-modal");
+    const profileNewName = document.getElementById("profile-new-name");
+    const profileNewPin = document.getElementById("profile-new-pin");
+    const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
+    const profileCancelBtn = document.getElementById("profile-cancel-btn");
+    const profileSaveBtn = document.getElementById("profile-save-btn");
+
     const forgotPinModal = document.getElementById("forgot-pin-modal");
     const resetPhone = document.getElementById("reset-phone");
     const resetSendOtpBtn = document.getElementById("reset-send-otp-btn");
@@ -403,7 +435,7 @@
     function formatSriLankanPhone(phone) {
       let cleaned = phone.replace(/[^0-9+]/g, "");
       if (cleaned.length === 10 && cleaned.startsWith("07")) {
-        return "+94" + cleaned.substring(1); // Converts 0701581056 -> +94701581056
+        return "+94" + cleaned.substring(1);
       }
       if (cleaned.length === 9 && cleaned.startsWith("7")) {
         return "+94" + cleaned;
@@ -433,7 +465,6 @@
       }
     });
 
-    // Initialize Recaptcha Verifier
     function setupRecaptcha() {
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -442,7 +473,6 @@
       }
     }
 
-    // Send Real Firebase SMS OTP
     async function sendRealSMSOTP(rawPhoneNumber, buttonEl) {
       const formattedNumber = formatSriLankanPhone(rawPhoneNumber);
       setupRecaptcha();
@@ -472,7 +502,6 @@
       sendRealSMSOTP(resetPhone.value.trim(), resetSendOtpBtn);
     });
 
-    // Toggle Auth Tabs
     tabLogin.addEventListener("click", () => {
       isRegisterMode = false;
       tabLogin.classList.add("active");
@@ -566,6 +595,41 @@
       }
     });
 
+    // EDIT PROFILE LOGIC
+    editProfileOpenBtn.addEventListener("click", () => {
+      if (!currentUser) return;
+      profileNewName.value = currentUser.name || "";
+      profileNewPin.value = "";
+      profileModal.classList.remove("hidden");
+    });
+
+    profileCancelBtn.addEventListener("click", () => profileModal.classList.add("hidden"));
+
+    profileSaveBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+      const newName = profileNewName.value.trim();
+      const newPin = profileNewPin.value.trim();
+
+      const userRef = dbRef(db, `users/${currentUser.phone}`);
+      const updates = {};
+
+      if (newName) {
+        updates.name = newName;
+        currentUser.name = newName;
+      }
+      if (newPin && newPin.length >= 4) {
+        updates.pin = newPin;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await update(userRef, updates);
+        localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
+        alert("Profile updated successfully!");
+        showHomeScreen();
+      }
+      profileModal.classList.add("hidden");
+    });
+
     forgotPinBtn.addEventListener("click", () => {
       resetPhone.value = "";
       resetOtpCode.value = "";
@@ -598,7 +662,7 @@
       }
     });
 
-    // RESTRICTED Reset System Action (STRICTLY EXCLUSIVE TO 0701581056)
+    // RESTRICTED Reset System Action
     resetSystemBtn.addEventListener("click", async () => {
       if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
         if (confirm("ADMIN OVERRIDE (0701581056): Purge all system data?")) {
@@ -661,11 +725,11 @@
       showHomeScreen();
     });
 
+    // UNREAD MESSAGE TRACKING & DASHBOARD
     async function showHomeScreen() {
       homeScreen.classList.remove("hidden");
       membersList.innerHTML = "";
 
-      // Show Reset System button STRICTLY IF current user is 0701581056
       if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
         resetSystemBtn.classList.remove("hidden");
       } else {
@@ -673,9 +737,14 @@
       }
 
       const friendsSnap = await get(dbRef(db, `users/${currentUser.phone}/friends`));
+      const unreadSnap = await get(dbRef(db, `users/${currentUser.phone}/unread`));
+      const unreadData = unreadSnap.exists() ? unreadSnap.val() : {};
+
       if (friendsSnap.exists()) {
         friendsSnap.forEach((childSnap) => {
           const f = childSnap.val();
+          const unreadCount = unreadData[f.phone] || 0;
+
           const card = document.createElement("div");
           card.className = "member-card";
           card.innerHTML = `
@@ -686,13 +755,19 @@
                 <div class="member-phone">+${f.phone}</div>
               </div>
             </div>
-            <div class="chat-now-badge">Chat</div>
+            <div class="member-badges">
+              ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+              <div class="chat-now-badge">Chat</div>
+            </div>
           `;
 
-          card.addEventListener("click", () => {
+          card.addEventListener("click", async () => {
             selectedMember = f;
             document.getElementById("header-name").innerText = f.name;
             homeScreen.classList.add("hidden");
+            
+            // Reset unread count for this friend
+            await remove(dbRef(db, `users/${currentUser.phone}/unread/${f.phone}`));
             listenForMessages();
           });
 
@@ -725,6 +800,15 @@
           uid: currentUser.uid, sender: currentUser.name, text: text, image: null, audio: null,
           timestamp: Date.now(), edited: false, deletedForEveryone: false
         });
+
+        // Increment unread count for friend if they are offline/not in active chat
+        if (selectedMember) {
+          get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
+            const count = snap.exists() ? snap.val() : 0;
+            set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
+          });
+        }
+
         messageInput.value = "";
       }
     }
@@ -732,7 +816,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // HTML5 CANVAS CLIENT COMPRESSION (Prevents upload failures)
+    // HTML5 CANVAS CLIENT COMPRESSION
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
@@ -774,6 +858,13 @@
             edited: false,
             deletedForEveryone: false
           });
+
+          if (selectedMember) {
+            get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
+              const count = snap.exists() ? snap.val() : 0;
+              set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
+            });
+          }
         };
         img.src = event.target.result;
       };
@@ -808,6 +899,13 @@
                 image: null, audio: base64Audio, timestamp: Date.now(),
                 edited: false, deletedForEveryone: false
               });
+
+              if (selectedMember) {
+                get(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`)).then((snap) => {
+                  const count = snap.exists() ? snap.val() : 0;
+                  set(dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`), count + 1);
+                });
+              }
             };
             stream.getTracks().forEach(track => track.stop());
           };
@@ -926,7 +1024,6 @@
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
-    // Detaches previous listeners (Prevents duplicate messages)
     function listenForMessages() {
       const messagesRef = dbRef(db, "messages");
       off(messagesRef);
