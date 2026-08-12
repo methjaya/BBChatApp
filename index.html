@@ -76,14 +76,20 @@
     /* Chat Area */
     #chat-box { flex: 1; overflow-y: auto; padding: 72px 14px 72px 14px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; -webkit-overflow-scrolling: touch; }
     
-    .msg { max-width: 78%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; }
+    .msg { max-width: 78%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     .sent { align-self: flex-end; background: var(--sent-bg); color: white; border-bottom-right-radius: 4px; }
     .received { align-self: flex-start; background: var(--received-bg); color: var(--text-dark); border-bottom-left-radius: 4px; }
+    
+    .msg-deleted { font-style: italic; opacity: 0.75; }
+    .sent.msg-deleted { background: #0051a8; }
+    .received.msg-deleted { background: #e5e5ea; color: #8e8e93; }
+
     .msg img { max-width: 100%; max-height: 240px; border-radius: 12px; margin-top: 4px; display: block; object-fit: cover; }
     .msg-author { font-size: 11px; opacity: 0.7; margin-bottom: 2px; font-weight: 600; }
-    .msg-time { font-size: 10px; opacity: 0.65; margin-top: 3px; text-align: right; }
+    .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 3px; font-size: 10px; opacity: 0.65; }
+    .edited-tag { font-style: italic; }
 
     /* Input Footer */
     footer { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border-color); padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; z-index: 10; }
@@ -91,10 +97,22 @@
     #file-input { display: none; }
     #message-input { flex: 1; height: 38px; border-radius: 19px; border: 1px solid var(--border-color); padding: 0 14px; font-size: 15px; outline: none; background: #f2f2f7; color: var(--text-dark); margin-bottom: 0; }
     .send-btn { background: var(--primary); color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .send-btn:disabled { opacity: 0.4; }
+
+    /* Action Sheet / Options Modal */
+    .action-sheet-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; animation: fadeIn 0.2s ease-out; }
+    .action-sheet { background: rgba(255, 255, 255, 0.95); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 8px; }
+    .action-btn { padding: 16px; border: none; background: transparent; font-size: 16px; font-weight: 500; color: var(--primary); border-bottom: 0.5px solid var(--border-color); cursor: pointer; text-align: center; }
+    .action-btn:last-child { border-bottom: none; }
+    .action-btn.danger { color: var(--danger); font-weight: 600; }
+    .action-cancel { background: white; border-radius: 16px; font-weight: 600; color: var(--primary); border: none; padding: 16px; font-size: 16px; cursor: pointer; text-align: center; }
+
+    /* Edit Input Box Modal */
+    .edit-modal-box { background: white; border-radius: 18px; padding: 20px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .edit-modal-box h3 { font-size: 18px; font-weight: 600; text-align: center; }
+    .edit-modal-actions { display: flex; gap: 10px; }
 
     /* Fullscreen Image Preview Modal */
-    #image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 110; display: flex; align-items: center; justify-content: center; padding: 20px; }
     #image-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
   </style>
 </head>
@@ -150,6 +168,24 @@
     </footer>
   </div>
 
+  <!-- Action Sheet Overlay for Message Options -->
+  <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
+    <div class="action-sheet" id="action-sheet-buttons"></div>
+    <button class="action-cancel" id="action-sheet-cancel">Cancel</button>
+  </div>
+
+  <!-- Edit Message Modal -->
+  <div id="edit-modal-overlay" class="action-sheet-overlay hidden" style="justify-content: center;">
+    <div class="edit-modal-box">
+      <h3>Edit Message</h3>
+      <input type="text" id="edit-message-input" placeholder="Edit message..." />
+      <div class="edit-modal-actions">
+        <button id="edit-cancel-btn" class="btn" style="background: #e5e5ea; color: #000;">Cancel</button>
+        <button id="edit-save-btn" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Fullscreen Image Viewer Modal -->
   <div id="image-modal" class="hidden">
     <img id="modal-img" src="" alt="Full view" />
@@ -157,7 +193,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref as dbRef, push, onChildAdded, onChildRemoved, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref as dbRef, push, update, onChildAdded, onChildChanged, onChildRemoved, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCumpuLgLQim1FAiibLIQKHGyzNcGyLTcs",
@@ -177,6 +213,7 @@
 
     let currentUser = null;
     let isRegisterMode = false;
+    let activeSelectedMsg = null;
 
     // DOM Elements
     const authScreen = document.getElementById("auth-screen");
@@ -194,6 +231,15 @@
     const modalImg = document.getElementById("modal-img");
     const statusDot = document.getElementById("status-dot");
     const statusText = document.getElementById("status-text");
+
+    const actionSheetOverlay = document.getElementById("action-sheet-overlay");
+    const actionSheetButtons = document.getElementById("action-sheet-buttons");
+    const actionSheetCancel = document.getElementById("action-sheet-cancel");
+
+    const editModalOverlay = document.getElementById("edit-modal-overlay");
+    const editMessageInput = document.getElementById("edit-message-input");
+    const editCancelBtn = document.getElementById("edit-cancel-btn");
+    const editSaveBtn = document.getElementById("edit-save-btn");
 
     // Toggle Tabs
     tabLogin.addEventListener("click", () => {
@@ -214,9 +260,7 @@
       authBtn.innerText = "Create Account";
     });
 
-    function cleanPhone(phone) {
-      return phone.replace(/[^0-9]/g, "");
-    }
+    function cleanPhone(phone) { return phone.replace(/[^0-9]/g, ""); }
 
     function formatTime(timestamp) {
       if (!timestamp) return "";
@@ -224,7 +268,7 @@
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Auto Login
+    // Auto Login Session
     const savedSession = localStorage.getItem("bbchat_user_session");
     if (savedSession) {
       try {
@@ -244,14 +288,8 @@
       const phoneKey = cleanPhone(rawPhone);
       const pin = authPin.value.trim();
 
-      if (!phoneKey || phoneKey.length < 7) {
-        alert("Enter a valid mobile phone number.");
-        return;
-      }
-      if (!pin || pin.length < 4) {
-        alert("Enter a valid PIN (minimum 4 digits).");
-        return;
-      }
+      if (!phoneKey || phoneKey.length < 7) { alert("Enter a valid mobile phone number."); return; }
+      if (!pin || pin.length < 4) { alert("Enter a valid PIN (minimum 4 digits)."); return; }
 
       const userRef = dbRef(db, `users/${phoneKey}`);
       const dbSnap = await get(userRef);
@@ -321,7 +359,9 @@
           sender: currentUser.name, 
           text: text, 
           image: null,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          edited: false,
+          deletedForEveryone: false
         });
         messageInput.value = "";
       }
@@ -330,7 +370,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // FIXED IMGBB IMAGE UPLOAD
+    // Send Image via ImgBB
     fileInput.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
@@ -343,7 +383,6 @@
           method: "POST",
           body: formData
         });
-        
         const result = await res.json();
 
         if (result.success && result.data && result.data.url) {
@@ -352,10 +391,12 @@
             sender: currentUser.name,
             text: "",
             image: result.data.url,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            edited: false,
+            deletedForEveryone: false
           });
         } else {
-          alert("Image upload failed. Try a smaller image.");
+          alert("Image upload failed.");
         }
       } catch (err) {
         alert("Upload error: " + err.message);
@@ -363,52 +404,188 @@
       fileInput.value = "";
     });
 
-    // Modal Image Preview
     imageModal.addEventListener("click", () => imageModal.classList.add("hidden"));
+
+    // Render / Create Message Element
+    function renderMessageHTML(msgId, data) {
+      const isMe = currentUser && data.uid === currentUser.uid;
+      
+      // Check if deleted for me
+      if (data.deletedFor && data.deletedFor[currentUser.uid]) {
+        return null;
+      }
+
+      const msgDiv = document.createElement("div");
+      
+      if (data.deletedForEveryone) {
+        msgDiv.className = `msg ${isMe ? "sent" : "received"} msg-deleted`;
+        msgDiv.id = `msg-${msgId}`;
+        msgDiv.innerHTML = `
+          <div class="msg-author">${data.sender}</div>
+          <div>This message was deleted</div>
+          <div class="msg-footer"><span>${formatTime(data.timestamp)}</span></div>
+        `;
+        return msgDiv;
+      }
+
+      msgDiv.className = `msg ${isMe ? "sent" : "received"}`;
+      msgDiv.id = `msg-${msgId}`;
+      
+      let content = `<div class="msg-author">${data.sender}</div>`;
+      if (data.text) content += `<div>${data.text}</div>`;
+      if (data.image) content += `<img src="${data.image}" alt="photo" class="chat-img" />`;
+      
+      content += `
+        <div class="msg-footer">
+          ${data.edited ? '<span class="edited-tag">edited</span> • ' : ''}
+          <span>${formatTime(data.timestamp)}</span>
+        </div>
+      `;
+      
+      msgDiv.innerHTML = content;
+
+      // Image Click Handler
+      const imgEl = msgDiv.querySelector(".chat-img");
+      if (imgEl) {
+        imgEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          modalImg.src = data.image;
+          imageModal.classList.remove("hidden");
+        });
+      }
+
+      // Tap Handler for Message Options Sheet
+      msgDiv.addEventListener("click", () => openActionSheet(msgId, data));
+
+      return msgDiv;
+    }
+
+    // Action Sheet Option Handler
+    function openActionSheet(msgId, data) {
+      if (data.deletedForEveryone) return;
+
+      activeSelectedMsg = { id: msgId, ...data };
+      actionSheetButtons.innerHTML = "";
+
+      const isMe = currentUser && data.uid === currentUser.uid;
+      const isWithinOneMin = (Date.now() - data.timestamp) <= 60000; // 60 seconds validation
+
+      // Option 1: Edit Message (Only if Sender AND Within 1 Minute AND Text Message)
+      if (isMe && isWithinOneMin && data.text && !data.image) {
+        const editBtn = document.createElement("button");
+        editBtn.className = "action-btn";
+        editBtn.innerText = "Edit Message";
+        editBtn.addEventListener("click", () => {
+          closeActionSheet();
+          editMessageInput.value = data.text;
+          editModalOverlay.classList.remove("hidden");
+        });
+        actionSheetButtons.appendChild(editBtn);
+      }
+
+      // Option 2: Delete for Everyone (Only if Sender AND Within 1 Minute)
+      if (isMe && isWithinOneMin) {
+        const delEveryoneBtn = document.createElement("button");
+        delEveryoneBtn.className = "action-btn danger";
+        delEveryoneBtn.innerText = "Delete for Everyone";
+        delEveryoneBtn.addEventListener("click", async () => {
+          closeActionSheet();
+          await update(dbRef(db, `messages/${msgId}`), {
+            deletedForEveryone: true,
+            text: "",
+            image: null
+          });
+        });
+        actionSheetButtons.appendChild(delEveryoneBtn);
+      }
+
+      // Option 3: Delete for Me (Always Available for Any Message)
+      const delMeBtn = document.createElement("button");
+      delMeBtn.className = "action-btn danger";
+      delMeBtn.innerText = "Delete for Me";
+      delMeBtn.addEventListener("click", async () => {
+        closeActionSheet();
+        await update(dbRef(db, `messages/${msgId}/deletedFor`), {
+          [currentUser.uid]: true
+        });
+        // Remove locally immediately
+        const el = document.getElementById(`msg-${msgId}`);
+        if (el) el.remove();
+      });
+      actionSheetButtons.appendChild(delMeBtn);
+
+      actionSheetOverlay.classList.remove("hidden");
+    }
+
+    function closeActionSheet() {
+      actionSheetOverlay.classList.add("hidden");
+    }
+
+    actionSheetCancel.addEventListener("click", closeActionSheet);
+    actionSheetOverlay.addEventListener("click", (e) => {
+      if (e.target === actionSheetOverlay) closeActionSheet();
+    });
+
+    // Save Edit Action
+    editSaveBtn.addEventListener("click", async () => {
+      if (!activeSelectedMsg) return;
+      
+      const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
+      if (!isWithinOneMin) {
+        alert("Time limit expired! You can only edit messages within 1 minute.");
+        editModalOverlay.classList.add("hidden");
+        return;
+      }
+
+      const newText = editMessageInput.value.trim();
+      if (newText && newText !== activeSelectedMsg.text) {
+        await update(dbRef(db, `messages/${activeSelectedMsg.id}`), {
+          text: newText,
+          edited: true
+        });
+      }
+      editModalOverlay.classList.add("hidden");
+    });
+
+    editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
     // Realtime Message Sync
     function listenForMessages() {
       chatBox.innerHTML = "";
       
+      // On Added
       onChildAdded(dbRef(db, "messages"), (snapshot) => {
         const msgId = snapshot.key;
         const data = snapshot.val();
-        const isMe = currentUser && data.uid === currentUser.uid;
-
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `msg ${isMe ? "sent" : "received"}`;
-        msgDiv.id = `msg-${msgId}`;
+        const msgDiv = renderMessageHTML(msgId, data);
         
-        let content = `<div class="msg-author">${data.sender}</div>`;
-        if (data.text) content += `<div>${data.text}</div>`;
-        if (data.image) content += `<img src="${data.image}" alt="photo" class="chat-img" />`;
-        content += `<div class="msg-time">${formatTime(data.timestamp)}</div>`;
-        
-        msgDiv.innerHTML = content;
-
-        // Image Click Handler
-        const imgEl = msgDiv.querySelector(".chat-img");
-        if (imgEl) {
-          imgEl.addEventListener("click", (e) => {
-            e.stopPropagation();
-            modalImg.src = data.image;
-            imageModal.classList.remove("hidden");
-          });
+        if (msgDiv) {
+          chatBox.appendChild(msgDiv);
+          chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        // Tap to Delete own messages
-        if (isMe) {
-          msgDiv.addEventListener("click", async () => {
-            if (confirm("Delete this message?")) {
-              await remove(dbRef(db, `messages/${msgId}`));
-            }
-          });
-        }
-
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
       });
 
+      // On Changed (Edits, Delete for Everyone, Delete for Me)
+      onChildChanged(dbRef(db, "messages"), (snapshot) => {
+        const msgId = snapshot.key;
+        const data = snapshot.val();
+        const existingDiv = document.getElementById(`msg-${msgId}`);
+        
+        const updatedDiv = renderMessageHTML(msgId, data);
+        
+        if (existingDiv) {
+          if (updatedDiv) {
+            existingDiv.replaceWith(updatedDiv);
+          } else {
+            existingDiv.remove(); // Deleted for me
+          }
+        } else if (updatedDiv) {
+          chatBox.appendChild(updatedDiv);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      });
+
+      // On Removed
       onChildRemoved(dbRef(db, "messages"), (snapshot) => {
         const msgDiv = document.getElementById(`msg-${snapshot.key}`);
         if (msgDiv) msgDiv.remove();
