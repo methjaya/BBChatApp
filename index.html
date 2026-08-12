@@ -41,20 +41,24 @@
       font-size: 38px;
       font-weight: 900;
       letter-spacing: -2px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       box-shadow: 0 12px 24px rgba(0, 122, 255, 0.28);
     }
 
-    h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); letter-spacing: -0.5px; }
-    p { font-size: 15px; color: var(--text-gray); margin-bottom: 32px; line-height: 1.4; }
+    h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark); letter-spacing: -0.5px; }
+    p { font-size: 14px; color: var(--text-gray); margin-bottom: 24px; line-height: 1.4; }
 
-    .btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: opacity 0.2s; }
+    .auth-toggle { display: flex; background: #e5e5ea; border-radius: 10px; padding: 3px; width: 100%; margin-bottom: 20px; }
+    .auth-tab { flex: 1; padding: 8px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-gray); border-radius: 8px; cursor: pointer; }
+    .auth-tab.active { background: white; color: var(--text-dark); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+
+    .input-group { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    input { width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border-color); font-size: 16px; outline: none; background: #f9f9f9; color: var(--text-dark); }
+    input:focus { border-color: var(--primary); background: #ffffff; }
+
+    .btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
     .btn:active { opacity: 0.75; }
     .btn-primary { background: var(--primary); color: white; }
-    .btn-google { background: #f2f2f7; color: #1c1c1e; border: 1px solid var(--border-color); }
-
-    input[type="text"] { width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border-color); font-size: 16px; margin-bottom: 20px; outline: none; background: #f9f9f9; color: var(--text-dark); }
-    input[type="text"]:focus { border-color: var(--primary); background: #ffffff; }
 
     /* Header */
     header { height: 64px; background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 5; }
@@ -65,7 +69,7 @@
     .user-details .status { font-size: 12px; color: #34c759; font-weight: 500; }
 
     /* Chat Area */
-    #chat-box { flex: 1; overflow-y: auto; padding: 76px 16px 76px 16px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; }
+    #chat-box { flex: 1; overflow-y: auto; padding: 76px 16px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; }
     .msg { max-width: 78%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; animation: fadeIn 0.15s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -85,24 +89,24 @@
 <body>
 
   <div id="app">
-    <!-- Landing / Login Screen -->
-    <div id="login-screen" class="screen">
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen">
       <div class="bb-logo-badge">BB</div>
-      <h1>Welcome to BB Chat</h1>
-      <p>Private end-to-end messaging platform.</p>
-      <button id="google-login-btn" class="btn btn-google">
-        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.4-1.57-5.12-3.74L.97 13.04C2.45 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.88 10.78c-.18-.53-.28-1.09-.28-1.78s.1-1.25.28-1.78L.97 4.96C.35 6.18 0 7.55 0 9s.35 2.82.97 4.04l2.91-2.26z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.45 2.02.97 4.96l2.91 2.26C4.6 5.05 6.62 3.58 9 3.58z"/></svg>
-        Continue with Google
-      </button>
-    </div>
+      <h1>BB Chat</h1>
+      <p id="auth-desc">Sign in with your Mobile Number & PIN.</p>
 
-    <!-- Profile Screen -->
-    <div id="profile-screen" class="screen hidden">
-      <div class="bb-logo-badge">BB</div>
-      <h1>Create Profile</h1>
-      <p>Set your display name to start chatting.</p>
-      <input type="text" id="display-name-input" placeholder="Your Name" />
-      <button id="save-profile-btn" class="btn btn-primary">Enter Room</button>
+      <div class="auth-toggle">
+        <button id="tab-login" class="auth-tab active">Log In</button>
+        <button id="tab-register" class="auth-tab">Create Account</button>
+      </div>
+
+      <div class="input-group">
+        <input type="tel" id="auth-phone" placeholder="Mobile Phone Number" />
+        <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" />
+        <input type="password" id="auth-pin" maxlength="6" pattern="\d*" placeholder="4-Digit PIN" />
+      </div>
+
+      <button id="auth-btn" class="btn btn-primary">Log In</button>
     </div>
 
     <!-- Chat Header -->
@@ -120,13 +124,11 @@
     <div id="chat-box"></div>
 
     <footer>
-      <!-- Camera SVG Icon -->
       <label for="file-input" class="file-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
       </label>
       <input type="file" id="file-input" accept="image/*" />
       <input type="text" id="message-input" placeholder="Message" />
-      <!-- Send Arrow SVG Icon -->
       <button id="send-btn" class="send-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
@@ -135,8 +137,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref as dbRef, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref as dbRef, push, onChildAdded, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCumpuLgLQim1FAiibLIQKHGyzNcGyLTcs",
@@ -152,70 +153,143 @@
     const IMGBB_API_KEY = "874affb0b9a32ab658bf8d4ba86d28bg";
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
-    const provider = new GoogleAuthProvider();
 
     let currentUser = null;
-    let customDisplayName = "";
+    let isRegisterMode = false;
 
-    const loginScreen = document.getElementById("login-screen");
-    const profileScreen = document.getElementById("profile-screen");
-    const displayNameInput = document.getElementById("display-name-input");
+    // DOM Elements
+    const authScreen = document.getElementById("auth-screen");
+    const authPhone = document.getElementById("auth-phone");
+    const authName = document.getElementById("auth-name");
+    const authPin = document.getElementById("auth-pin");
+    const authBtn = document.getElementById("auth-btn");
+    const authDesc = document.getElementById("auth-desc");
+    const tabLogin = document.getElementById("tab-login");
+    const tabRegister = document.getElementById("tab-register");
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
 
-    // Use Redirect to prevent WebKit popup errors on Mobile browsers
-    document.getElementById("google-login-btn").addEventListener("click", () => {
-      signInWithRedirect(auth, provider);
+    // Toggle Tab Logic
+    tabLogin.addEventListener("click", () => {
+      isRegisterMode = false;
+      tabLogin.classList.add("active");
+      tabRegister.classList.remove("active");
+      authName.classList.add("hidden");
+      authDesc.innerText = "Sign in with your Mobile Number & PIN.";
+      authBtn.innerText = "Log In";
     });
 
-    // Check redirect results on load
-    getRedirectResult(auth).catch((err) => {
-      if (err.code) alert("Authentication error: " + err.message);
+    tabRegister.addEventListener("click", () => {
+      isRegisterMode = true;
+      tabRegister.classList.add("active");
+      tabLogin.classList.remove("active");
+      authName.classList.remove("hidden");
+      authDesc.innerText = "Set up your Phone, Display Name & PIN.";
+      authBtn.innerText = "Create Account";
     });
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUser = user;
-        loginScreen.classList.add("hidden");
-        const savedName = localStorage.getItem(`chat_name_${user.uid}`);
-        if (savedName) {
-          customDisplayName = savedName;
-          showChat();
-        } else {
-          displayNameInput.value = user.displayName || "";
-          profileScreen.classList.remove("hidden");
-        }
-      } else {
-        currentUser = null;
-        loginScreen.classList.remove("hidden");
-        profileScreen.classList.add("hidden");
-      }
-    });
-
-    document.getElementById("save-profile-btn").addEventListener("click", () => {
-      const name = displayNameInput.value.trim();
-      if (name) {
-        customDisplayName = name;
-        localStorage.setItem(`chat_name_${currentUser.uid}`, name);
-        profileScreen.classList.add("hidden");
-        showChat();
-      }
-    });
-
-    function showChat() {
-      document.getElementById("header-name").innerText = customDisplayName;
+    // Helper: Clean phone number to form a database key
+    function cleanPhone(phone) {
+      return phone.replace(/[^0-9]/g, "");
     }
 
-    document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
+    // Check Auto Login (Saved Session)
+    const savedSession = localStorage.getItem("bbchat_user_session");
+    if (savedSession) {
+      try {
+        currentUser = JSON.parse(savedSession);
+        authScreen.classList.add("hidden");
+        document.getElementById("header-name").innerText = currentUser.name;
+        listenForMessages();
+      } catch (e) {
+        localStorage.removeItem("bbchat_user_session");
+      }
+    }
 
+    // Submit Auth (Register or Login)
+    authBtn.addEventListener("click", async () => {
+      const rawPhone = authPhone.value.trim();
+      const phoneKey = cleanPhone(rawPhone);
+      const pin = authPin.value.trim();
+
+      if (!phoneKey || phoneKey.length < 7) {
+        alert("Please enter a valid mobile phone number.");
+        return;
+      }
+      if (!pin || pin.length < 4) {
+        alert("Please enter a valid PIN (at least 4 digits).");
+        return;
+      }
+
+      const dbSnap = await get(child(dbRef(db), `users/${phoneKey}`));
+
+      if (isRegisterMode) {
+        // REGISTER
+        const name = authName.value.trim();
+        if (!name) {
+          alert("Please enter your display name.");
+          return;
+        }
+
+        if (dbSnap.exists()) {
+          alert("An account with this phone number already exists. Please tap 'Log In'.");
+          return;
+        }
+
+        // Save user to Realtime Database
+        const userData = { phone: phoneKey, name: name, pin: pin };
+        push(dbRef(db, `users/${phoneKey}`), userData); // Initialize path
+        
+        // Save session locally
+        currentUser = { uid: phoneKey, phone: phoneKey, name: name };
+        localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
+        
+        authScreen.classList.add("hidden");
+        document.getElementById("header-name").innerText = currentUser.name;
+        listenForMessages();
+
+      } else {
+        // LOG IN
+        if (!dbSnap.exists()) {
+          alert("Account not found. Please switch to 'Create Account'.");
+          return;
+        }
+
+        // Validate PIN
+        let validUser = null;
+        dbSnap.forEach((child) => {
+          const val = child.val();
+          if (val && val.pin === pin) {
+            validUser = val;
+          }
+        });
+
+        if (validUser) {
+          currentUser = { uid: phoneKey, phone: phoneKey, name: validUser.name };
+          localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
+          authScreen.classList.add("hidden");
+          document.getElementById("header-name").innerText = currentUser.name;
+          listenForMessages();
+        } else {
+          alert("Incorrect PIN. Please try again.");
+        }
+      }
+    });
+
+    // Logout Action
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      localStorage.removeItem("bbchat_user_session");
+      location.reload();
+    });
+
+    // Send Text Message
     function sendMessage() {
       const text = messageInput.value.trim();
       if (text !== "" && currentUser) {
         push(dbRef(db, "messages"), { 
           uid: currentUser.uid, 
-          sender: customDisplayName, 
+          sender: currentUser.name, 
           text: text, 
           image: null,
           timestamp: Date.now()
@@ -227,6 +301,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
+    // Send Image via ImgBB
     document.getElementById("file-input").addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
@@ -245,7 +320,7 @@
         if (data.success) {
           push(dbRef(db, "messages"), {
             uid: currentUser.uid,
-            sender: customDisplayName,
+            sender: currentUser.name,
             text: "",
             image: data.data.url,
             timestamp: Date.now()
@@ -260,20 +335,24 @@
       e.target.value = "";
     });
 
-    onChildAdded(dbRef(db, "messages"), (snapshot) => {
-      const data = snapshot.val();
-      const isMe = currentUser && data.uid === currentUser.uid;
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `msg ${isMe ? "sent" : "received"}`;
-      
-      let content = `<div class="msg-author">${data.sender}</div>`;
-      if (data.text) content += `<div>${data.text}</div>`;
-      if (data.image) content += `<img src="${data.image}" alt="shared photo" />`;
-      
-      msgDiv.innerHTML = content;
-      chatBox.appendChild(msgDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    // Realtime Messages Listener
+    function listenForMessages() {
+      chatBox.innerHTML = "";
+      onChildAdded(dbRef(db, "messages"), (snapshot) => {
+        const data = snapshot.val();
+        const isMe = currentUser && data.uid === currentUser.uid;
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `msg ${isMe ? "sent" : "received"}`;
+        
+        let content = `<div class="msg-author">${data.sender}</div>`;
+        if (data.text) content += `<div>${data.text}</div>`;
+        if (data.image) content += `<img src="${data.image}" alt="shared photo" />`;
+        
+        msgDiv.innerHTML = content;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
   </script>
 </body>
 </html>
