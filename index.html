@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>BB Chat</title>
+  <title>BBChatApp</title>
   
-  <!-- SVG Favicon with BB Logo -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='28' fill='%23007AFF'/><text x='50' y='67' font-family='-apple-system, BlinkMacSystemFont, sans-serif' font-size='52' font-weight='900' fill='white' text-anchor='middle' letter-spacing='-2'>BB</text></svg>">
+  <!-- SVG Favicon with BBChatApp Logo -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='28' fill='%23007AFF'/><text x='50' y='60' font-family='-apple-system, BlinkMacSystemFont, sans-serif' font-size='32' font-weight='900' fill='white' text-anchor='middle'>BBC</text></svg>">
 
   <style>
     :root {
@@ -32,12 +32,13 @@
     .screen { position: absolute; inset: 0; background: var(--card-bg); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
     .hidden { display: none !important; }
 
-    /* BB Logo Badge */
+    /* BBChatApp Logo Badge */
     .bb-logo-badge {
-      width: 80px; height: 80px; background: linear-gradient(135deg, #007aff, #0051a8);
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #007aff, #0051a8);
       border-radius: 22px; display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 36px; font-weight: 900; letter-spacing: -2px; margin-bottom: 20px;
-      box-shadow: 0 10px 20px rgba(0, 122, 255, 0.25);
+      color: white; font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px;
+      box-shadow: 0 12px 24px rgba(0, 122, 255, 0.3), inset 0 1px 1px rgba(255,255,255,0.4);
     }
 
     h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark); letter-spacing: -0.5px; }
@@ -55,17 +56,59 @@
     .btn:active { opacity: 0.75; }
     .btn-primary { background: var(--primary); color: white; }
 
+    /* Home Dashboard Screen */
+    #home-screen { position: absolute; inset: 0; background: #f2f2f7; z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
+    .home-header { height: 64px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .home-title { font-size: 20px; font-weight: 800; color: var(--text-dark); }
+    .members-list { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; }
+
+    /* 3D Elegant Drop-Shadowed Cards */
+    .member-card {
+      background: linear-gradient(145deg, #ffffff, #f7f9fc);
+      border-radius: 20px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        0 12px 24px -6px rgba(0, 122, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transform: translateZ(0);
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .member-card:active {
+      transform: scale(0.97) translateY(2px);
+      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.1);
+    }
+    .member-card-info { display: flex; align-items: center; gap: 14px; }
+    .member-avatar {
+      width: 48px; height: 48px; border-radius: 16px;
+      background: linear-gradient(135deg, #007aff, #0051a8);
+      color: white; font-weight: 800; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 12px rgba(0, 122, 255, 0.3);
+    }
+    .member-details .member-name { font-size: 17px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+    .member-details .member-phone { font-size: 12px; color: var(--text-gray); }
+    .chat-now-badge {
+      background: #e5f1ff; color: var(--primary); font-size: 13px; font-weight: 700;
+      padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(0, 122, 255, 0.15);
+    }
+
     /* Chat Header */
     header { height: 60px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .header-bb-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--primary); color: white; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; letter-spacing: -1px; }
+    .header-info { display: flex; align-items: center; gap: 10px; }
+    .header-bb-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--primary); color: white; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; }
     .user-details { text-align: left; }
-    .user-details .name { font-size: 16px; font-weight: 600; color: var(--text-dark); line-height: 1.2; }
+    .user-details .name { font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
     .user-details .status { font-size: 12px; color: var(--text-gray); font-weight: 500; display: flex; align-items: center; gap: 4px; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #8e8e93; display: inline-block; }
     .status-dot.online { background: var(--success); }
 
-    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
     .icon-btn { background: none; border: none; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
 
     /* Chat Area */
@@ -82,7 +125,7 @@
     .received.msg-deleted { background: #e5e5ea; color: #8e8e93; }
 
     .msg img { max-width: 100%; max-height: 240px; border-radius: 12px; margin-top: 4px; display: block; object-fit: cover; }
-    .msg audio { max-width: 220px; height: 36px; margin-top: 4px; border-radius: 18px; outline: none; }
+    .msg audio { max-width: 220px; height: 40px; margin-top: 4px; border-radius: 20px; outline: none; }
     .msg-author { font-size: 11px; opacity: 0.7; margin-bottom: 2px; font-weight: 600; }
     .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 3px; font-size: 10px; opacity: 0.65; }
     .edited-tag { font-style: italic; }
@@ -113,7 +156,7 @@
 
     /* Call Modal UI */
     .call-screen { position: fixed; inset: 0; background: #1c1c1e; color: white; z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
-    .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 900; margin-bottom: 16px; box-shadow: 0 0 30px rgba(0,122,255,0.4); }
+    .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: 0 0 30px rgba(0,122,255,0.4); }
     .call-status { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
     .call-actions { display: flex; gap: 24px; width: 100%; justify-content: center; }
     .call-btn { width: 64px; height: 64px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -130,8 +173,8 @@
   <div id="app">
     <!-- Auth Screen -->
     <div id="auth-screen" class="screen">
-      <div class="bb-logo-badge">BB</div>
-      <h1>BB Chat</h1>
+      <div class="bb-logo-badge">BBChatApp</div>
+      <h1>BBChatApp</h1>
       <p id="auth-desc">Sign in with your Mobile Phone & PIN.</p>
 
       <div class="auth-toggle">
@@ -148,10 +191,19 @@
       <button id="auth-btn" class="btn btn-primary">Log In</button>
     </div>
 
+    <!-- Home Screen (3D Member Dashboard) -->
+    <div id="home-screen" class="hidden">
+      <div class="home-header">
+        <div class="home-title">BBChatApp Members</div>
+        <button id="home-logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 600; cursor:pointer;">Exit</button>
+      </div>
+      <div id="members-list" class="members-list"></div>
+    </div>
+
     <!-- Chat Header -->
     <header>
       <div class="header-info">
-        <div class="header-bb-icon">BB</div>
+        <div class="header-bb-icon">BBC</div>
         <div class="user-details">
           <div id="header-name" class="name">Chat Room</div>
           <div class="status">
@@ -161,11 +213,14 @@
         </div>
       </div>
       <div class="header-actions">
+        <!-- Return to Members Button -->
+        <button id="back-to-home-btn" class="icon-btn" title="Members List" style="font-size:13px; font-weight:600;">
+          Members
+        </button>
         <!-- Voice Call Icon -->
         <button id="start-call-btn" class="icon-btn" title="Voice Call">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </button>
-        <button id="logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 500; cursor:pointer;">Exit</button>
       </div>
     </header>
 
@@ -216,7 +271,7 @@
   <!-- Voice Call UI Screen -->
   <div id="call-screen" class="call-screen hidden">
     <div>
-      <div class="call-avatar" id="call-avatar-icon">BB</div>
+      <div class="call-avatar" id="call-avatar-icon">BBC</div>
       <h2 id="call-user-title">Voice Call</h2>
       <div id="call-status-label" class="call-status">Connecting...</div>
     </div>
@@ -230,7 +285,6 @@
     </div>
   </div>
 
-  <!-- Audio Element for WebRTC Remote Stream -->
   <audio id="remote-audio" autoplay></audio>
 
   <script type="module">
@@ -254,17 +308,16 @@
     const db = getDatabase(app);
 
     let currentUser = null;
+    let selectedMember = null;
     let isRegisterMode = false;
     let activeSelectedMsg = null;
 
-    // WebRTC & Audio Recording Variables
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
 
     let peerConnection = null;
     let localStream = null;
-    let currentCallRef = null;
 
     const rtcServers = {
       iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }]
@@ -272,6 +325,9 @@
 
     // DOM Elements
     const authScreen = document.getElementById("auth-screen");
+    const homeScreen = document.getElementById("home-screen");
+    const membersList = document.getElementById("members-list");
+
     const authPhone = document.getElementById("auth-phone");
     const authName = document.getElementById("auth-name");
     const authPin = document.getElementById("auth-pin");
@@ -279,6 +335,7 @@
     const authDesc = document.getElementById("auth-desc");
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
+
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
     const fileInput = document.getElementById("file-input");
@@ -338,8 +395,7 @@
       try {
         currentUser = JSON.parse(savedSession);
         authScreen.classList.add("hidden");
-        document.getElementById("header-name").innerText = currentUser.name;
-        listenForMessages();
+        showHomeScreen();
         setupOnlineStatus();
         listenForIncomingCalls();
       } catch (e) {
@@ -365,31 +421,24 @@
         if (dbSnap.exists()) { alert("Account exists. Tap 'Log In'."); return; }
 
         const userData = { phone: phoneKey, name: name, pin: pin };
-        await push(userRef, userData);
+        await set(userRef, userData);
         
         currentUser = { uid: phoneKey, phone: phoneKey, name: name };
         localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
         
         authScreen.classList.add("hidden");
-        document.getElementById("header-name").innerText = currentUser.name;
-        listenForMessages();
+        showHomeScreen();
         setupOnlineStatus();
         listenForIncomingCalls();
       } else {
         if (!dbSnap.exists()) { alert("Account not found. Switch to 'Create Account'."); return; }
 
-        let validUser = null;
-        dbSnap.forEach((child) => {
-          const val = child.val();
-          if (val && val.pin === pin) validUser = val;
-        });
-
-        if (validUser) {
-          currentUser = { uid: phoneKey, phone: phoneKey, name: validUser.name };
+        const val = dbSnap.val();
+        if (val && val.pin === pin) {
+          currentUser = { uid: phoneKey, phone: phoneKey, name: val.name };
           localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
           authScreen.classList.add("hidden");
-          document.getElementById("header-name").innerText = currentUser.name;
-          listenForMessages();
+          showHomeScreen();
           setupOnlineStatus();
           listenForIncomingCalls();
         } else {
@@ -398,10 +447,54 @@
       }
     });
 
-    document.getElementById("logout-btn").addEventListener("click", () => {
+    document.getElementById("home-logout-btn").addEventListener("click", () => {
       localStorage.removeItem("bbchat_user_session");
       location.reload();
     });
+
+    document.getElementById("back-to-home-btn").addEventListener("click", () => {
+      showHomeScreen();
+    });
+
+    // 3D Members Dashboard Generator
+    async function showHomeScreen() {
+      homeScreen.classList.remove("hidden");
+      membersList.innerHTML = "";
+
+      const usersSnap = await get(dbRef(db, "users"));
+      if (usersSnap.exists()) {
+        usersSnap.forEach((childSnap) => {
+          const u = childSnap.val();
+          if (u.phone === currentUser.phone) return; // Skip self
+
+          const card = document.createElement("div");
+          card.className = "member-card";
+          card.innerHTML = `
+            <div class="member-card-info">
+              <div class="member-avatar">${u.name ? u.name.charAt(0).toUpperCase() : "M"}</div>
+              <div class="member-details">
+                <div class="member-name">${u.name || "Member"}</div>
+                <div class="member-phone">+${u.phone}</div>
+              </div>
+            </div>
+            <div class="chat-now-badge">Chat</div>
+          `;
+
+          card.addEventListener("click", () => {
+            selectedMember = u;
+            document.getElementById("header-name").innerText = u.name;
+            homeScreen.classList.add("hidden");
+            listenForMessages();
+          });
+
+          membersList.appendChild(card);
+        });
+      }
+
+      if (membersList.children.length === 0) {
+        membersList.innerHTML = `<div style="text-align:center; color:#8e8e93; margin-top:40px;">No other members registered yet.<br>Share your link with her!</div>`;
+      }
+    }
 
     // Real-time Connection Monitor
     function setupOnlineStatus() {
@@ -473,12 +566,21 @@
       fileInput.value = "";
     });
 
-    // Voice Note Recording Logic
+    // FIXED Voice Note Logic (iOS Safari Compatible)
     micBtn.addEventListener("click", async () => {
       if (!isRecording) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
+          
+          // Select supported MIME type for iOS / Safari
+          let options = {};
+          if (MediaRecorder.isTypeSupported('audio/mp4')) {
+            options = { mimeType: 'audio/mp4' };
+          } else if (MediaRecorder.isTypeSupported('audio/aac')) {
+            options = { mimeType: 'audio/aac' };
+          }
+
+          mediaRecorder = new MediaRecorder(stream, options);
           audioChunks = [];
 
           mediaRecorder.ondataavailable = (event) => {
@@ -486,7 +588,9 @@
           };
 
           mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const mimeType = mediaRecorder.mimeType || 'audio/mp4';
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
+            
             const reader = new FileReader();
             reader.readAsDataURL(audioBlob);
             reader.onloadend = () => {
@@ -547,7 +651,7 @@
       let content = `<div class="msg-author">${data.sender}</div>`;
       if (data.text) content += `<div>${data.text}</div>`;
       if (data.image) content += `<img src="${data.image}" alt="photo" class="chat-img" />`;
-      if (data.audio) content += `<audio controls src="${data.audio}"></audio>`;
+      if (data.audio) content += `<audio controls playsinline src="${data.audio}"></audio>`;
       
       content += `
         <div class="msg-footer">
@@ -688,7 +792,7 @@
       });
     }
 
-    // --- WebRTC Realtime Voice Calling Logic ---
+    // WebRTC Realtime Voice Calling Logic
     startCallBtn.addEventListener("click", async () => {
       if (!currentUser) return;
       
@@ -703,7 +807,6 @@
         };
 
         const callRoomRef = dbRef(db, "active_call");
-        currentCallRef = callRoomRef;
 
         const offerCandidatesRef = child(callRoomRef, "callerCandidates");
         peerConnection.onicecandidate = (event) => {
