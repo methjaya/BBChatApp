@@ -5,176 +5,177 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>BBChatApp</title>
   
-  <!-- SVG Favicon with BBChatApp Logo -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='28' fill='%23007AFF'/><text x='50' y='60' font-family='-apple-system, BlinkMacSystemFont, sans-serif' font-size='32' font-weight='900' fill='white' text-anchor='middle'>BBC</text></svg>">
+  <!-- SVG Favicon with Retro BBChatApp Logo -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>BBC</text></svg>">
 
   <style>
     :root {
-      --bg-color: #f2f2f7;
-      --card-bg: #ffffff;
-      --primary: #007aff;
-      --sent-bg: #007aff;
-      --received-bg: #e5e5ea;
-      --text-dark: #000000;
-      --text-gray: #8e8e93;
-      --border-color: #d1d1d6;
-      --danger: #ff3b30;
-      --success: #34c759;
+      --bg-color: #F6F3EC;
+      --card-bg: #FFFFFF;
+      --border: 2.5px solid #18181B;
+      --shadow: 4px 4px 0px #18181B;
+      --shadow-sm: 2.5px 2.5px 0px #18181B;
+      --purple: #E2D4FF;
+      --pink: #FFD2DD;
+      --green: #C1F0C6;
+      --yellow: #FFE9A0;
+      --blue: #A2D2FF;
+      --text-dark: #18181B;
+      --text-gray: #6B7280;
+      --danger: #FF6B6B;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
     
-    html, body { height: 100%; width: 100%; overflow: hidden; background-color: #1c1c1e; display: flex; justify-content: center; align-items: center; }
+    html, body { height: 100%; width: 100%; overflow: hidden; background-color: #18181B; display: flex; justify-content: center; align-items: center; }
     
-    #app { width: 100%; max-width: 480px; height: 100dvh; display: flex; flex-direction: column; background: var(--card-bg); position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.3); }
+    #app { width: 100%; max-width: 480px; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-color); position: relative; overflow: hidden; border: var(--border); box-shadow: var(--shadow); }
     
     /* Screens */
-    .screen { position: absolute; inset: 0; background: var(--card-bg); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+    .screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
     .hidden { display: none !important; }
 
-    /* BBChatApp Logo Badge */
+    /* Retro Badge Logo */
     .bb-logo-badge {
-      padding: 16px 24px;
-      background: linear-gradient(135deg, #007aff, #0051a8);
-      border-radius: 22px; display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px;
-      box-shadow: 0 12px 24px rgba(0, 122, 255, 0.3), inset 0 1px 1px rgba(255,255,255,0.4);
+      padding: 14px 28px;
+      background: var(--yellow);
+      border: var(--border);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-dark); font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px;
+      box-shadow: var(--shadow);
     }
 
-    h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark); letter-spacing: -0.5px; }
-    p { font-size: 14px; color: var(--text-gray); margin-bottom: 24px; line-height: 1.4; }
+    h1 { font-size: 26px; font-weight: 900; margin-bottom: 6px; color: var(--text-dark); letter-spacing: -0.5px; }
+    p { font-size: 14px; color: var(--text-dark); font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
 
-    .auth-toggle { display: flex; background: #e5e5ea; border-radius: 10px; padding: 3px; width: 100%; margin-bottom: 20px; }
-    .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-gray); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-    .auth-tab.active { background: white; color: var(--text-dark); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .auth-toggle { display: flex; background: #E5E0D8; border: var(--border); border-radius: 16px; padding: 4px; width: 100%; margin-bottom: 20px; }
+    .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-size: 14px; font-weight: 800; color: var(--text-dark); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .auth-tab.active { background: var(--purple); border: var(--border); box-shadow: var(--shadow-sm); }
 
     .input-group { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-    input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 16px; outline: none; background: #f9f9f9; color: var(--text-dark); appearance: none; }
-    input:focus { border-color: var(--primary); background: #ffffff; }
+    input { width: 100%; padding: 14px 16px; border-radius: 16px; border: var(--border); font-size: 15px; font-weight: 700; outline: none; background: var(--card-bg); color: var(--text-dark); box-shadow: var(--shadow-sm); }
+    input:focus { background: #FFFFFF; transform: translate(-1px, -1px); box-shadow: var(--shadow); }
 
-    .btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
-    .btn:active { opacity: 0.75; }
-    .btn-primary { background: var(--primary); color: white; }
+    .btn { width: 100%; padding: 16px; border-radius: 16px; border: var(--border); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: transform 0.1s; }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
+    .btn-primary { background: var(--purple); color: var(--text-dark); }
 
     /* Home Dashboard Screen */
-    #home-screen { position: absolute; inset: 0; background: #f2f2f7; z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
-    .home-header { height: 64px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-    .home-title { font-size: 20px; font-weight: 800; color: var(--text-dark); }
+    #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
+    .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .home-title { font-size: 20px; font-weight: 900; color: var(--text-dark); }
     
-    .home-actions-bar { padding: 12px 16px 0 16px; display: flex; gap: 10px; }
+    .home-actions-bar { padding: 16px 16px 4px 16px; }
     .add-friend-btn {
-      background: var(--primary); color: white; border: none; border-radius: 14px;
-      padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer;
+      background: var(--pink); color: var(--text-dark); border: var(--border); border-radius: 18px;
+      padding: 14px 16px; font-size: 14px; font-weight: 800; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+      box-shadow: var(--shadow); transition: transform 0.1s;
     }
+    .add-friend-btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
-    /* 3D Elegant Drop-Shadowed Cards */
+    /* Retro 3D Drop-Shadowed Cards */
     .member-card {
-      background: linear-gradient(145deg, #ffffff, #f7f9fc);
+      background: var(--card-bg);
       border-radius: 20px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        0 12px 24px -6px rgba(0, 122, 255, 0.15),
-        0 4px 12px rgba(0, 0, 0, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      transform: translateZ(0);
-      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.1s ease;
     }
     .member-card:active {
-      transform: scale(0.97) translateY(2px);
-      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.1);
+      transform: translate(2px, 2px);
+      box-shadow: 1.5px 1.5px 0px #18181B;
     }
     .member-card-info { display: flex; align-items: center; gap: 14px; }
     .member-avatar {
-      width: 48px; height: 48px; border-radius: 16px;
-      background: linear-gradient(135deg, #007aff, #0051a8);
-      color: white; font-weight: 800; font-size: 18px;
+      width: 46px; height: 46px; border-radius: 14px;
+      background: var(--blue); border: var(--border);
+      color: var(--text-dark); font-weight: 900; font-size: 18px;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 12px rgba(0, 122, 255, 0.3);
+      box-shadow: var(--shadow-sm);
     }
-    .member-details .member-name { font-size: 17px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
-    .member-details .member-phone { font-size: 12px; color: var(--text-gray); }
+    .member-details .member-name { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 2px; }
+    .member-details .member-phone { font-size: 12px; font-weight: 700; color: var(--text-gray); }
     .chat-now-badge {
-      background: #e5f1ff; color: var(--primary); font-size: 13px; font-weight: 700;
-      padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(0, 122, 255, 0.15);
+      background: var(--green); color: var(--text-dark); font-size: 12px; font-weight: 800;
+      padding: 6px 14px; border-radius: 14px; border: var(--border); box-shadow: var(--shadow-sm);
     }
 
     /* Chat Header */
-    header { height: 60px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+    header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
     .header-info { display: flex; align-items: center; gap: 10px; }
-    .header-bb-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--primary); color: white; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+    .header-bb-icon { width: 38px; height: 38px; border-radius: 12px; background: var(--yellow); border: var(--border); color: var(--text-dark); font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
     .user-details { text-align: left; }
-    .user-details .name { font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
-    .user-details .status { font-size: 12px; color: var(--text-gray); font-weight: 500; display: flex; align-items: center; gap: 4px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #8e8e93; display: inline-block; }
-    .status-dot.online { background: var(--success); }
+    .user-details .name { font-size: 15px; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+    .user-details .status { font-size: 11px; color: var(--text-dark); font-weight: 700; display: flex; align-items: center; gap: 4px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #8E8E93; border: 1.5px solid #18181B; display: inline-block; }
+    .status-dot.online { background: #51CF66; }
 
     .header-actions { display: flex; align-items: center; gap: 8px; }
-    .icon-btn { background: none; border: none; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
+    .icon-btn { background: var(--bg-color); border: var(--border); border-radius: 12px; color: var(--text-dark); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px 10px; font-weight: 800; box-shadow: var(--shadow-sm); }
+    .icon-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #18181B; }
 
     /* Chat Area */
-    #chat-box { flex: 1; overflow-y: auto; padding: 72px 14px 72px 14px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; -webkit-overflow-scrolling: touch; }
+    #chat-box { flex: 1; overflow-y: auto; padding: 80px 14px 76px 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-color); -webkit-overflow-scrolling: touch; }
     
-    .msg { max-width: 82%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; }
+    .msg { max-width: 82%; padding: 10px 14px; border-radius: 18px; font-size: 14px; font-weight: 600; line-height: 1.4; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; border: var(--border); box-shadow: var(--shadow-sm); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    .sent { align-self: flex-end; background: var(--sent-bg); color: white; border-bottom-right-radius: 4px; }
-    .received { align-self: flex-start; background: var(--received-bg); color: var(--text-dark); border-bottom-left-radius: 4px; }
+    .sent { align-self: flex-end; background: var(--purple); color: var(--text-dark); border-bottom-right-radius: 4px; }
+    .received { align-self: flex-start; background: var(--card-bg); color: var(--text-dark); border-bottom-left-radius: 4px; }
     
-    .msg-deleted { font-style: italic; opacity: 0.75; }
-    .sent.msg-deleted { background: #0051a8; }
-    .received.msg-deleted { background: #e5e5ea; color: #8e8e93; }
+    .msg-deleted { font-style: italic; opacity: 0.8; background: #E5E0D8 !important; }
 
-    .msg img { max-width: 100%; max-height: 240px; border-radius: 12px; margin-top: 4px; display: block; object-fit: cover; }
-    .msg audio { max-width: 220px; height: 40px; margin-top: 4px; border-radius: 20px; outline: none; }
-    .msg-author { font-size: 11px; opacity: 0.7; margin-bottom: 2px; font-weight: 600; }
-    .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 3px; font-size: 10px; opacity: 0.65; }
+    .msg img { max-width: 100%; max-height: 220px; border-radius: 12px; margin-top: 6px; display: block; object-fit: cover; border: var(--border); }
+    .msg audio { max-width: 220px; height: 38px; margin-top: 6px; border-radius: 18px; outline: none; }
+    .msg-author { font-size: 11px; opacity: 0.8; margin-bottom: 2px; font-weight: 800; text-transform: uppercase; }
+    .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 4px; font-size: 10px; font-weight: 700; opacity: 0.75; }
     .edited-tag { font-style: italic; }
 
     /* Input Footer */
-    footer { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border-color); padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; z-index: 10; }
-    .file-btn { color: var(--primary); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+    footer { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: var(--border); padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; z-index: 10; }
+    .file-btn { color: var(--text-dark); cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; background: var(--yellow); border: var(--border); border-radius: 12px; box-shadow: var(--shadow-sm); }
     #file-input { display: none; }
-    #message-input { flex: 1; height: 38px; border-radius: 19px; border: 1px solid var(--border-color); padding: 0 14px; font-size: 15px; outline: none; background: #f2f2f7; color: var(--text-dark); margin-bottom: 0; }
-    .send-btn { background: var(--primary); color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    #message-input { flex: 1; height: 40px; border-radius: 14px; border: var(--border); padding: 0 14px; font-size: 14px; font-weight: 700; outline: none; background: var(--bg-color); color: var(--text-dark); margin-bottom: 0; box-shadow: none; }
+    .send-btn { background: var(--green); color: var(--text-dark); border: var(--border); width: 40px; height: 40px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
     
-    .mic-btn { background: none; border: none; color: var(--primary); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
-    .mic-btn.recording { color: var(--danger); animation: pulse 1s infinite alternate; }
-    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.18); } }
+    .mic-btn { background: var(--pink); border: var(--border); border-radius: 12px; color: var(--text-dark); cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
+    .mic-btn.recording { background: var(--danger); color: white; animation: pulse 0.8s infinite alternate; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-    /* Action Sheet / Options Modal */
-    .action-sheet-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; animation: fadeIn 0.2s ease-out; }
-    .action-sheet { background: rgba(255, 255, 255, 0.95); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 8px; }
-    .action-btn { padding: 16px; border: none; background: transparent; font-size: 16px; font-weight: 500; color: var(--primary); border-bottom: 0.5px solid var(--border-color); cursor: pointer; text-align: center; }
+    /* Retro Action Sheet / Overlay */
+    .action-sheet-overlay { position: fixed; inset: 0; background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(2px); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; animation: fadeIn 0.2s ease-out; }
+    .action-sheet { background: var(--card-bg); border: var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 8px; box-shadow: var(--shadow); }
+    .action-btn { padding: 16px; border: none; background: transparent; font-size: 15px; font-weight: 800; color: var(--text-dark); border-bottom: var(--border); cursor: pointer; text-align: center; }
     .action-btn:last-child { border-bottom: none; }
-    .action-btn.danger { color: var(--danger); font-weight: 600; }
-    .action-cancel { background: white; border-radius: 16px; font-weight: 600; color: var(--primary); border: none; padding: 16px; font-size: 16px; cursor: pointer; text-align: center; }
+    .action-btn.danger { color: var(--danger); }
+    .action-cancel { background: var(--yellow); border-radius: 18px; font-weight: 800; color: var(--text-dark); border: var(--border); padding: 16px; font-size: 15px; cursor: pointer; text-align: center; box-shadow: var(--shadow); }
 
     /* Modals Box */
-    .edit-modal-box { background: white; border-radius: 20px; padding: 22px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-    .edit-modal-box h3 { font-size: 18px; font-weight: 700; text-align: center; color: var(--text-dark); }
+    .edit-modal-box { background: var(--card-bg); border: var(--border); border-radius: 22px; padding: 22px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+    .edit-modal-box h3 { font-size: 18px; font-weight: 900; text-align: center; color: var(--text-dark); }
     .edit-modal-actions { display: flex; gap: 10px; }
 
     /* Call Modal UI */
-    .call-screen { position: fixed; inset: 0; background: #1c1c1e; color: white; z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
-    .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: 0 0 30px rgba(0,122,255,0.4); }
-    .call-status { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
+    .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
+    .call-avatar { width: 100px; height: 100px; border-radius: 28px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .call-status { font-size: 15px; font-weight: 700; color: var(--text-gray); margin-top: 8px; }
     .call-actions { display: flex; gap: 24px; width: 100%; justify-content: center; }
-    .call-btn { width: 64px; height: 64px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .call-btn.accept { background: var(--success); color: white; }
+    .call-btn { width: 64px; height: 64px; border-radius: 20px; border: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); }
+    .call-btn.accept { background: var(--green); color: var(--text-dark); }
     .call-btn.decline { background: var(--danger); color: white; }
 
     /* Fullscreen Image Preview Modal */
-    #image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 110; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    #image-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+    #image-modal { position: fixed; inset: 0; background: rgba(24, 24, 27, 0.95); z-index: 110; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #image-modal img { max-width: 100%; max-height: 90vh; border-radius: 16px; border: var(--border); object-fit: contain; }
   </style>
 </head>
 <body>
@@ -184,11 +185,11 @@
     <div id="auth-screen" class="screen">
       <div class="bb-logo-badge">BBChatApp</div>
       <h1>BBChatApp</h1>
-      <p id="auth-desc">Sign in with your Mobile Phone & PIN.</p>
+      <p id="auth-desc">Sign in with Mobile Phone & PIN</p>
 
       <div class="auth-toggle">
         <button id="tab-login" class="auth-tab active">Log In</button>
-        <button id="tab-register" class="auth-tab">Create Account</button>
+        <button id="tab-register" class="auth-tab">Register</button>
       </div>
 
       <div class="input-group">
@@ -200,16 +201,16 @@
       <button id="auth-btn" class="btn btn-primary">Log In</button>
     </div>
 
-    <!-- Home Screen (Private 3D Friends Dashboard) -->
+    <!-- Home Screen (Private Retro Friends Dashboard) -->
     <div id="home-screen" class="hidden">
       <div class="home-header">
         <div class="home-title">BBChatApp</div>
-        <button id="home-logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 600; cursor:pointer;">Exit</button>
+        <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
       </div>
       
       <div class="home-actions-bar">
         <button id="open-add-friend-btn" class="add-friend-btn">
-          <span>+</span> Add Friend by Phone / Name
+          <span>+</span> Add Friend by Phone or Name
         </button>
       </div>
 
@@ -230,12 +231,12 @@
       </div>
       <div class="header-actions">
         <!-- Return to Friends List -->
-        <button id="back-to-home-btn" class="icon-btn" title="Friends List" style="font-size:13px; font-weight:600;">
+        <button id="back-to-home-btn" class="icon-btn" title="Friends List" style="font-size:12px;">
           Friends
         </button>
         <!-- Voice Call Icon -->
         <button id="start-call-btn" class="icon-btn" title="Voice Call">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </button>
       </div>
     </header>
@@ -245,18 +246,18 @@
     <footer>
       <!-- Camera Button -->
       <label for="file-input" class="file-btn" id="file-label">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
       </label>
       <input type="file" id="file-input" accept="image/*" />
 
       <!-- Mic / Voice Note Button -->
       <button id="mic-btn" class="mic-btn" title="Record Voice Note">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
       </button>
 
-      <input type="text" id="message-input" placeholder="Message" autocomplete="off" />
+      <input type="text" id="message-input" placeholder="Message..." autocomplete="off" />
       <button id="send-btn" class="send-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
     </footer>
   </div>
@@ -265,10 +266,10 @@
   <div id="add-friend-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Add Friend</h3>
-      <p style="font-size:13px; color:var(--text-gray); text-align:center; margin-bottom:4px;">Enter your friend's mobile phone number or exact display name.</p>
+      <p style="font-size:12px; color:var(--text-gray); text-align:center; margin-bottom:2px;">Enter friend's phone number or display name.</p>
       <input type="text" id="add-friend-input" placeholder="Phone number or Name" />
       <div class="edit-modal-actions">
-        <button id="add-friend-cancel-btn" class="btn" style="background: #e5e5ea; color: #000;">Cancel</button>
+        <button id="add-friend-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
         <button id="add-friend-search-btn" class="btn btn-primary">Add</button>
       </div>
     </div>
@@ -286,13 +287,13 @@
       <h3>Edit Message</h3>
       <input type="text" id="edit-message-input" placeholder="Edit message..." />
       <div class="edit-modal-actions">
-        <button id="edit-cancel-btn" class="btn" style="background: #e5e5ea; color: #000;">Cancel</button>
+        <button id="edit-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
         <button id="edit-save-btn" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 
-  <!-- Fullscreen Image Preview Modal -->
+  <!-- Fullscreen Image Viewer Modal -->
   <div id="image-modal" class="hidden">
     <img id="modal-img" src="" alt="Full view" />
   </div>
@@ -306,10 +307,10 @@
     </div>
     <div class="call-actions">
       <button id="accept-call-btn" class="call-btn accept hidden">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
       </button>
       <button id="hangup-call-btn" class="call-btn decline">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
     </div>
   </div>
@@ -403,7 +404,7 @@
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
       authName.classList.add("hidden");
-      authDesc.innerText = "Sign in with your Mobile Phone & PIN.";
+      authDesc.innerText = "Sign in with Mobile Phone & PIN";
       authBtn.innerText = "Log In";
     });
 
@@ -412,8 +413,8 @@
       tabRegister.classList.add("active");
       tabLogin.classList.remove("active");
       authName.classList.remove("hidden");
-      authDesc.innerText = "Set up your Phone, Display Name & PIN.";
-      authBtn.innerText = "Create Account";
+      authDesc.innerText = "Set up Phone, Name & PIN";
+      authBtn.innerText = "Register";
     });
 
     function cleanPhone(phone) { return phone.replace(/[^0-9]/g, ""); }
@@ -466,7 +467,7 @@
         setupOnlineStatus();
         listenForIncomingCalls();
       } else {
-        if (!dbSnap.exists()) { alert("Account not found. Switch to 'Create Account'."); return; }
+        if (!dbSnap.exists()) { alert("Account not found. Switch to 'Register'."); return; }
 
         const val = dbSnap.val();
         if (val && val.pin === pin) {
@@ -512,7 +513,6 @@
       if (usersSnap.exists()) {
         usersSnap.forEach((childSnap) => {
           const u = childSnap.val();
-          // Match by phone or display name
           if (u.phone === cleanQuery || (u.name && u.name.toLowerCase() === query.toLowerCase())) {
             foundUser = u;
           }
@@ -520,7 +520,7 @@
       }
 
       if (!foundUser) {
-        alert("User not found. Ensure they have registered with that phone number or name.");
+        alert("User not found. Check phone number or display name.");
         return;
       }
 
@@ -529,24 +529,22 @@
         return;
       }
 
-      // Add to my friends list
       await set(dbRef(db, `users/${currentUser.phone}/friends/${foundUser.phone}`), {
         phone: foundUser.phone,
         name: foundUser.name
       });
 
-      // Add to friend's friends list (Mutual contact)
       await set(dbRef(db, `users/${foundUser.phone}/friends/${currentUser.phone}`), {
         phone: currentUser.phone,
         name: currentUser.name
       });
 
-      alert(`Added ${foundUser.name} to your friends list!`);
+      alert(`Added ${foundUser.name}!`);
       addFriendModal.classList.add("hidden");
       showHomeScreen();
     });
 
-    // Render Friends-Only Dashboard
+    // Render Friends Dashboard
     async function showHomeScreen() {
       homeScreen.classList.remove("hidden");
       membersList.innerHTML = "";
@@ -581,7 +579,7 @@
       }
 
       if (membersList.children.length === 0) {
-        membersList.innerHTML = `<div style="text-align:center; color:#8e8e93; margin-top:40px; font-size:14px; line-height:1.5;">You haven't added any friends yet.<br>Tap <b>+ Add Friend</b> above to connect.</div>`;
+        membersList.innerHTML = `<div style="text-align:center; color:var(--text-gray); margin-top:40px; font-size:14px; font-weight:700;">No friends added yet.<br>Tap <b>+ Add Friend</b> to connect.</div>`;
       }
     }
 
@@ -620,42 +618,49 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // Send Image via ImgBB
-    fileInput.addEventListener("change", async (e) => {
+    // FIXED BASE64 IMGBB IMAGE UPLOAD (Prevents Binary Multipart Boundary Errors on Mobile)
+    fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
 
-      const formData = new FormData();
-      formData.append("image", file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64String = reader.result.split(',')[1];
+        
+        const formData = new FormData();
+        formData.append("image", base64String);
 
-      try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-          method: "POST",
-          body: formData
-        });
-        const result = await res.json();
-
-        if (result.success && result.data && result.data.url) {
-          push(dbRef(db, "messages"), {
-            uid: currentUser.uid,
-            sender: currentUser.name,
-            text: "",
-            image: result.data.url,
-            audio: null,
-            timestamp: Date.now(),
-            edited: false,
-            deletedForEveryone: false
+        try {
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
           });
-        } else {
-          alert("Image upload failed.");
+          const result = await res.json();
+
+          if (result.success && result.data && result.data.url) {
+            push(dbRef(db, "messages"), {
+              uid: currentUser.uid,
+              sender: currentUser.name,
+              text: "",
+              image: result.data.url,
+              audio: null,
+              timestamp: Date.now(),
+              edited: false,
+              deletedForEveryone: false
+            });
+          } else {
+            alert("Image upload failed. Try another photo.");
+          }
+        } catch (err) {
+          alert("Upload error: " + err.message);
         }
-      } catch (err) {
-        alert("Upload error: " + err.message);
-      }
+      };
+
       fileInput.value = "";
     });
 
-    // Voice Note Logic
+    // Voice Note Recording Logic
     micBtn.addEventListener("click", async () => {
       if (!isRecording) {
         try {
