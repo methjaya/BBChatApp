@@ -45,11 +45,9 @@
     .auth-tab.active { background: var(--purple); border: var(--border); box-shadow: var(--shadow-sm); }
 
     .input-group { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-    .otp-row { display: flex; gap: 8px; }
     input { width: 100%; padding: 14px 16px; border-radius: 16px; border: var(--border); font-size: 15px; font-weight: 700; outline: none; background: var(--card-bg); color: var(--text-dark); box-shadow: var(--shadow-sm); }
     input:focus { background: #FFFFFF; transform: translate(-1px, -1px); box-shadow: var(--shadow); }
 
-    .phone-hint { font-size: 12px; font-weight: 800; color: #2B8A3E; text-align: left; padding-left: 4px; }
     .status-badge { width: 100%; padding: 10px; border-radius: 12px; border: var(--border); font-size: 12px; font-weight: 800; display: none; margin-bottom: 12px; }
     .status-badge.error { background: #FFE3E3; color: #D6336C; }
     .status-badge.info { background: #D3F9D8; color: #2B8A3E; }
@@ -57,7 +55,6 @@
     .btn { width: 100%; padding: 16px; border-radius: 16px; border: var(--border); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: transform 0.1s; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
-    .btn-sm { padding: 12px 14px; font-size: 13px; width: auto; white-space: nowrap; background: var(--blue); border: var(--border); border-radius: 14px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); }
 
     .forgot-link { color: var(--text-dark); font-size: 13px; font-weight: 800; text-decoration: underline; cursor: pointer; margin-top: 10px; display: inline-block; }
 
@@ -66,8 +63,20 @@
     .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
     .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); }
     .home-header-btns { display: flex; gap: 6px; }
+
+    .retro-mascot-banner {
+      background: var(--yellow); border-bottom: var(--border); padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: inset 0 -2px 0 rgba(24,24,27,0.1);
+    }
+    .mascot-text { text-align: left; }
+    .mascot-title { font-size: 16px; font-weight: 900; color: var(--text-dark); }
+    .mascot-sub { font-size: 11px; font-weight: 800; color: #52525B; }
     
-    .home-actions-bar { padding: 16px 16px 4px 16px; }
+    .waving-arm { transform-origin: bottom center; animation: wave 1.2s infinite ease-in-out alternate; }
+    @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
+
+    .home-actions-bar { padding: 14px 16px 4px 16px; }
     .add-friend-btn {
       background: var(--pink); color: var(--text-dark); border: var(--border); border-radius: 18px;
       padding: 14px 16px; font-size: 14px; font-weight: 800; cursor: pointer;
@@ -84,7 +93,7 @@
     .member-card-info { display: flex; align-items: center; gap: 14px; }
     .member-avatar { width: 46px; height: 46px; border-radius: 14px; background: var(--blue); border: var(--border); color: var(--text-dark); font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
     .member-details .member-name { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 2px; }
-    .member-details .member-phone { font-size: 12px; font-weight: 700; color: var(--text-gray); }
+    .member-details .member-email { font-size: 11px; font-weight: 700; color: var(--text-gray); }
     
     .member-badges { display: flex; align-items: center; gap: 8px; }
     .unread-badge {
@@ -150,9 +159,6 @@
 </head>
 <body>
 
-  <!-- Recaptcha Container -->
-  <div id="recaptcha-container"></div>
-
   <div id="app">
     <!-- Auth Screen -->
     <div id="auth-screen" class="screen">
@@ -168,18 +174,13 @@
       </div>
 
       <div class="input-group">
-        <div class="otp-row">
-          <input type="tel" id="auth-phone" placeholder="0701581056" autocomplete="tel" />
-          <button id="send-otp-btn" class="btn-sm hidden">Send OTP</button>
-        </div>
-        <div id="phone-hint" class="phone-hint"></div>
+        <input type="email" id="auth-email" placeholder="Email Address" autocomplete="email" />
         <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" autocomplete="name" />
-        <input type="password" id="auth-pin" maxlength="6" pattern="\d*" placeholder="4-Digit PIN" />
-        <input type="text" id="auth-otp" class="hidden" maxlength="6" placeholder="6-Digit Verification Code" />
+        <input type="password" id="auth-password" placeholder="Password (min 6 chars)" />
       </div>
 
       <button id="auth-btn" class="btn btn-primary">Log In</button>
-      <span id="forgot-pin-btn" class="forgot-link">Forgot PIN?</span>
+      <span id="forgot-password-btn" class="forgot-link">Forgot Password?</span>
     </div>
 
     <!-- Home Screen -->
@@ -195,10 +196,36 @@
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
       </div>
+
+      <!-- Retro Dog & Cat Waving Mascot Banner -->
+      <div class="retro-mascot-banner">
+        <div class="mascot-text">
+          <div class="mascot-title">Welcome back!</div>
+          <div class="mascot-sub">Ready to chat with Bbu?</div>
+        </div>
+        <svg width="72" height="48" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="16" width="32" height="32" rx="10" fill="#A2D2FF" stroke="#18181B" stroke-width="2.5"/>
+          <circle cx="18" cy="28" r="3" fill="#18181B"/>
+          <circle cx="30" cy="28" r="3" fill="#18181B"/>
+          <ellipse cx="24" cy="35" rx="4" ry="3" fill="#18181B"/>
+          <g class="waving-arm">
+            <rect x="2" y="32" width="8" height="18" rx="4" fill="#A2D2FF" stroke="#18181B" stroke-width="2.5"/>
+          </g>
+          <rect x="58" y="16" width="32" height="32" rx="10" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <path d="M60 16L66 6L72 16Z" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <path d="M76 16L82 6L88 16Z" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <circle cx="68" cy="28" r="3" fill="#18181B"/>
+          <circle cx="80" cy="28" r="3" fill="#18181B"/>
+          <polygon points="74,33 71,37 77,37" fill="#18181B"/>
+          <g class="waving-arm">
+            <rect x="88" y="32" width="8" height="18" rx="4" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          </g>
+        </svg>
+      </div>
       
       <div class="home-actions-bar">
         <button id="open-add-friend-btn" class="add-friend-btn">
-          <span>+</span> Add Friend by Phone or Name
+          <span>+</span> Add Friend by Email or Name
         </button>
       </div>
 
@@ -249,7 +276,6 @@
     <div class="edit-modal-box">
       <h3>Edit Profile Details</h3>
       <input type="text" id="profile-new-name" placeholder="New Display Name" />
-      <input type="password" id="profile-new-pin" maxlength="6" pattern="\d*" placeholder="New 4-Digit PIN" />
       <div class="edit-modal-actions">
         <button id="profile-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
         <button id="profile-save-btn" class="btn btn-primary">Save Changes</button>
@@ -261,28 +287,11 @@
   <div id="add-friend-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Add Friend</h3>
-      <p style="font-size:12px; color:var(--text-gray); text-align:center; margin-bottom:2px;">Enter friend's phone number or display name.</p>
-      <input type="text" id="add-friend-input" placeholder="Phone number or Name" />
+      <p style="font-size:12px; color:var(--text-gray); text-align:center; margin-bottom:2px;">Enter friend's email address or display name.</p>
+      <input type="text" id="add-friend-input" placeholder="Email or Display Name" />
       <div class="edit-modal-actions">
         <button id="add-friend-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
         <button id="add-friend-search-btn" class="btn btn-primary">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Real OTP Forgot PIN Modal -->
-  <div id="forgot-pin-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
-    <div class="edit-modal-box">
-      <h3>Reset PIN</h3>
-      <div class="otp-row">
-        <input type="tel" id="reset-phone" placeholder="0701581056" />
-        <button id="reset-send-otp-btn" class="btn-sm">Send Code</button>
-      </div>
-      <input type="text" id="reset-otp-code" maxlength="6" placeholder="Enter 6-Digit Code" />
-      <input type="password" id="reset-new-pin" maxlength="6" pattern="\d*" placeholder="New 4-Digit PIN" />
-      <div class="edit-modal-actions">
-        <button id="reset-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
-        <button id="reset-submit-btn" class="btn btn-primary">Verify & Reset</button>
       </div>
     </div>
   </div>
@@ -329,7 +338,14 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      sendPasswordResetEmail, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref as dbRef, push, update, onChildAdded, onChildChanged, onChildRemoved, get, child, onValue, set, remove, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -343,17 +359,16 @@
       measurementId: "G-PNKYJQJT9V"
     };
 
-    const ADMIN_PHONE = "0701581056";
+    const ADMIN_EMAIL = "admin@gmail.com"; // Admin email for restricted reset
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let currentUser = null;
+    let currentUser = null; // { uid, email, name, emailKey }
     let selectedMember = null;
     let isRegisterMode = false;
     let activeSelectedMsg = null;
-    let confirmationResultObj = null;
 
     let mediaRecorder = null;
     let audioChunks = [];
@@ -371,33 +386,21 @@
     const homeScreen = document.getElementById("home-screen");
     const membersList = document.getElementById("members-list");
     const authStatusBox = document.getElementById("auth-status-box");
-    const phoneHint = document.getElementById("phone-hint");
 
-    const authPhone = document.getElementById("auth-phone");
+    const authEmail = document.getElementById("auth-email");
     const authName = document.getElementById("auth-name");
-    const authPin = document.getElementById("auth-pin");
-    const authOtp = document.getElementById("auth-otp");
-    const sendOtpBtn = document.getElementById("send-otp-btn");
+    const authPassword = document.getElementById("auth-password");
     const authBtn = document.getElementById("auth-btn");
     const authDesc = document.getElementById("auth-desc");
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
-    const forgotPinBtn = document.getElementById("forgot-pin-btn");
+    const forgotPasswordBtn = document.getElementById("forgot-password-btn");
 
     const profileModal = document.getElementById("profile-modal");
     const profileNewName = document.getElementById("profile-new-name");
-    const profileNewPin = document.getElementById("profile-new-pin");
     const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
-
-    const forgotPinModal = document.getElementById("forgot-pin-modal");
-    const resetPhone = document.getElementById("reset-phone");
-    const resetSendOtpBtn = document.getElementById("reset-send-otp-btn");
-    const resetOtpCode = document.getElementById("reset-otp-code");
-    const resetNewPin = document.getElementById("reset-new-pin");
-    const resetCancelBtn = document.getElementById("reset-cancel-btn");
-    const resetSubmitBtn = document.getElementById("reset-submit-btn");
 
     const resetSystemBtn = document.getElementById("reset-system-btn");
 
@@ -433,25 +436,15 @@
     const startCallBtn = document.getElementById("start-call-btn");
     const remoteAudio = document.getElementById("remote-audio");
 
-    // Chat Pair ID Calculation
-    function getChatId(phone1, phone2) {
-      return [phone1, phone2].sort().join("_");
+    // Helper: Sanitize email to be used as a Firebase DB Key
+    function sanitizeEmail(email) {
+      return email.toLowerCase().replace(/[\.\#\$\[\]]/g, "_");
     }
 
-    // SRI LANKAN PHONE NUMBER AUTO-FORMATTER
-    function formatSriLankanPhone(phone) {
-      let cleaned = phone.replace(/[^0-9+]/g, "");
-      if (cleaned.length === 10 && cleaned.startsWith("07")) {
-        return "+94" + cleaned.substring(1);
-      }
-      if (cleaned.length === 9 && cleaned.startsWith("7")) {
-        return "+94" + cleaned;
-      }
-      if (cleaned.startsWith("+")) return cleaned;
-      return "+" + cleaned;
+    function getChatId(key1, key2) {
+      return [key1, key2].sort().join("_");
     }
 
-    function cleanPhone(phone) { return phone.replace(/[^0-9]/g, ""); }
     function formatTime(timestamp) {
       if (!timestamp) return "";
       return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -463,62 +456,15 @@
       authStatusBox.style.display = "block";
     }
 
-    authPhone.addEventListener("input", () => {
-      const formatted = formatSriLankanPhone(authPhone.value.trim());
-      if (authPhone.value.trim().length >= 9) {
-        phoneHint.innerText = `Sending code to: ${formatted}`;
-      } else {
-        phoneHint.innerText = "";
-      }
-    });
-
-    function setupRecaptcha() {
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'invisible'
-        });
-      }
-    }
-
-    async function sendRealSMSOTP(rawPhoneNumber, buttonEl) {
-      const formattedNumber = formatSriLankanPhone(rawPhoneNumber);
-      setupRecaptcha();
-      buttonEl.innerText = "Sending...";
-      buttonEl.disabled = true;
-
-      try {
-        confirmationResultObj = await signInWithPhoneNumber(auth, formattedNumber, window.recaptchaVerifier);
-        displayAuthStatus(`SMS code sent to ${formattedNumber}`, false);
-        buttonEl.innerText = "Sent!";
-      } catch (error) {
-        console.error("SMS Error:", error);
-        displayAuthStatus("SMS Error: " + error.message, true);
-        buttonEl.innerText = "Send OTP";
-        buttonEl.disabled = false;
-        if (window.recaptchaVerifier) window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
-      }
-    }
-
-    sendOtpBtn.addEventListener("click", () => {
-      if (authPhone.value.trim().length < 7) { displayAuthStatus("Enter a valid phone number."); return; }
-      sendRealSMSOTP(authPhone.value.trim(), sendOtpBtn);
-    });
-
-    resetSendOtpBtn.addEventListener("click", () => {
-      if (resetPhone.value.trim().length < 7) { alert("Enter a valid registered phone number."); return; }
-      sendRealSMSOTP(resetPhone.value.trim(), resetSendOtpBtn);
-    });
-
+    // Toggle Auth Tabs
     tabLogin.addEventListener("click", () => {
       isRegisterMode = false;
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
       authName.classList.add("hidden");
-      authOtp.classList.add("hidden");
-      sendOtpBtn.classList.add("hidden");
-      authDesc.innerText = "Sign in with Mobile Phone & PIN";
+      authDesc.innerText = "Sign in with Email & Password";
       authBtn.innerText = "Log In";
-      forgotPinBtn.classList.remove("hidden");
+      forgotPasswordBtn.classList.remove("hidden");
       authStatusBox.style.display = "none";
     });
 
@@ -527,78 +473,89 @@
       tabRegister.classList.add("active");
       tabLogin.classList.remove("active");
       authName.classList.remove("hidden");
-      authOtp.classList.remove("hidden");
-      sendOtpBtn.classList.remove("hidden");
-      authDesc.innerText = "Set up Phone, Name, PIN & SMS Verification";
+      authDesc.innerText = "Create account with Email, Name & Password";
       authBtn.innerText = "Register";
-      forgotPinBtn.classList.add("hidden");
+      forgotPasswordBtn.classList.add("hidden");
       authStatusBox.style.display = "none";
     });
 
-    // Auto Login Session
-    const savedSession = localStorage.getItem("bbchat_user_session");
-    if (savedSession) {
-      try {
-        currentUser = JSON.parse(savedSession);
+    // Firebase Auth State Observer
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const emailKey = sanitizeEmail(user.email);
+        const userSnap = await get(dbRef(db, `users/${emailKey}`));
+        let name = user.displayName || "User";
+        
+        if (userSnap.exists() && userSnap.val().name) {
+          name = userSnap.val().name;
+        }
+
+        currentUser = {
+          uid: user.uid,
+          email: user.email,
+          emailKey: emailKey,
+          name: name
+        };
+
         authScreen.classList.add("hidden");
         showHomeScreen();
         setupOnlineStatus();
         listenForIncomingCalls();
-      } catch (e) {
-        localStorage.removeItem("bbchat_user_session");
+      } else {
+        currentUser = null;
+        authScreen.classList.remove("hidden");
+        homeScreen.classList.add("hidden");
       }
-    }
+    });
 
-    // Authenticate Action
+    // Authenticate Action (Email/Password Login & Register)
     authBtn.addEventListener("click", async () => {
-      const rawPhone = authPhone.value.trim();
-      const phoneKey = cleanPhone(rawPhone);
-      const pin = authPin.value.trim();
+      const email = authEmail.value.trim().toLowerCase();
+      const password = authPassword.value.trim();
 
-      if (!phoneKey || phoneKey.length < 7) { displayAuthStatus("Enter a valid mobile phone number."); return; }
-      if (!pin || pin.length < 4) { displayAuthStatus("Enter a valid PIN (minimum 4 digits)."); return; }
+      if (!email || !email.includes("@")) { displayAuthStatus("Enter a valid email address."); return; }
+      if (!password || password.length < 6) { displayAuthStatus("Password must be at least 6 characters."); return; }
 
-      const userRef = dbRef(db, `users/${phoneKey}`);
-      const dbSnap = await get(userRef);
+      const emailKey = sanitizeEmail(email);
 
       if (isRegisterMode) {
         const name = authName.value.trim();
-        const enteredOtp = authOtp.value.trim();
-
         if (!name) { displayAuthStatus("Enter your display name."); return; }
-        if (!enteredOtp || !confirmationResultObj) { displayAuthStatus("Please request and enter the SMS verification code."); return; }
-        if (dbSnap.exists()) { displayAuthStatus("Account exists. Tap 'Log In'."); return; }
 
         try {
-          await confirmationResultObj.confirm(enteredOtp);
-          
-          const userData = { phone: phoneKey, name: name, pin: pin };
-          await set(userRef, userData);
-          
-          currentUser = { uid: phoneKey, phone: phoneKey, name: name };
-          localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
-          
-          authScreen.classList.add("hidden");
-          showHomeScreen();
-          setupOnlineStatus();
-          listenForIncomingCalls();
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Save User record in Realtime Database
+          const userData = { email: email, emailKey: emailKey, name: name, uid: user.uid };
+          await set(dbRef(db, `users/${emailKey}`), userData);
+
+          displayAuthStatus("Account created successfully!", false);
         } catch (err) {
-          displayAuthStatus("Invalid verification code. Try again.");
+          displayAuthStatus("Registration Error: " + err.message);
         }
       } else {
-        if (!dbSnap.exists()) { displayAuthStatus("Account not found. Switch to 'Register'."); return; }
-
-        const val = dbSnap.val();
-        if (val && val.pin === pin) {
-          currentUser = { uid: phoneKey, phone: phoneKey, name: val.name };
-          localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
-          authScreen.classList.add("hidden");
-          showHomeScreen();
-          setupOnlineStatus();
-          listenForIncomingCalls();
-        } else {
-          displayAuthStatus("Incorrect PIN.");
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+        } catch (err) {
+          displayAuthStatus("Login Error: " + err.message);
         }
+      }
+    });
+
+    // Forgot Password Reset Handler
+    forgotPasswordBtn.addEventListener("click", async () => {
+      const email = authEmail.value.trim().toLowerCase();
+      if (!email || !email.includes("@")) {
+        displayAuthStatus("Enter your email address in the field above first.");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        displayAuthStatus(`Password reset email sent to ${email}! Check your inbox.`, false);
+      } catch (err) {
+        displayAuthStatus("Reset Error: " + err.message);
       }
     });
 
@@ -606,7 +563,6 @@
     editProfileOpenBtn.addEventListener("click", () => {
       if (!currentUser) return;
       profileNewName.value = currentUser.name || "";
-      profileNewPin.value = "";
       profileModal.classList.remove("hidden");
     });
 
@@ -615,68 +571,24 @@
     profileSaveBtn.addEventListener("click", async () => {
       if (!currentUser) return;
       const newName = profileNewName.value.trim();
-      const newPin = profileNewPin.value.trim();
-
-      const userRef = dbRef(db, `users/${currentUser.phone}`);
-      const updates = {};
 
       if (newName) {
-        updates.name = newName;
+        const userRef = dbRef(db, `users/${currentUser.emailKey}`);
+        await update(userRef, { name: newName });
         currentUser.name = newName;
-      }
-      if (newPin && newPin.length >= 4) {
-        updates.pin = newPin;
-      }
-
-      if (Object.keys(updates).length > 0) {
-        await update(userRef, updates);
-        localStorage.setItem("bbchat_user_session", JSON.stringify(currentUser));
         alert("Profile updated successfully!");
         showHomeScreen();
       }
       profileModal.classList.add("hidden");
     });
 
-    forgotPinBtn.addEventListener("click", () => {
-      resetPhone.value = "";
-      resetOtpCode.value = "";
-      resetNewPin.value = "";
-      forgotPinModal.classList.remove("hidden");
-    });
-
-    resetCancelBtn.addEventListener("click", () => forgotPinModal.classList.add("hidden"));
-
-    resetSubmitBtn.addEventListener("click", async () => {
-      const phoneKey = cleanPhone(resetPhone.value.trim());
-      const otpCode = resetOtpCode.value.trim();
-      const newPin = resetNewPin.value.trim();
-
-      if (!phoneKey || !otpCode || !newPin) { alert("Fill in all fields."); return; }
-      if (!confirmationResultObj) { alert("Please send SMS verification code first."); return; }
-
-      const userRef = dbRef(db, `users/${phoneKey}`);
-      const dbSnap = await get(userRef);
-
-      if (!dbSnap.exists()) { alert("Account not found."); return; }
-
-      try {
-        await confirmationResultObj.confirm(otpCode);
-        await update(userRef, { pin: newPin });
-        alert("PIN reset successful! Log in with your new PIN.");
-        forgotPinModal.classList.add("hidden");
-      } catch (err) {
-        alert("Invalid verification code.");
-      }
-    });
-
     // RESTRICTED Reset System Action
     resetSystemBtn.addEventListener("click", async () => {
-      if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
-        if (confirm("ADMIN OVERRIDE (0701581056): Purge all system data?")) {
+      if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        if (confirm(`ADMIN OVERRIDE (${ADMIN_EMAIL}): Purge all system data?`)) {
           await remove(dbRef(db, "chats"));
           await remove(dbRef(db, "users"));
           await remove(dbRef(db, "active_call"));
-          localStorage.clear();
           alert("System truncated completely.");
           location.reload();
         }
@@ -686,8 +598,7 @@
     });
 
     document.getElementById("home-logout-btn").addEventListener("click", () => {
-      localStorage.removeItem("bbchat_user_session");
-      location.reload();
+      signOut(auth);
     });
 
     document.getElementById("back-to-home-btn").addEventListener("click", () => showHomeScreen());
@@ -700,31 +611,30 @@
     addFriendCancelBtn.addEventListener("click", () => addFriendModal.classList.add("hidden"));
 
     addFriendSearchBtn.addEventListener("click", async () => {
-      const query = addFriendInput.value.trim();
+      const query = addFriendInput.value.trim().toLowerCase();
       if (!query) return;
 
-      const cleanQuery = cleanPhone(query);
       const usersSnap = await get(dbRef(db, "users"));
       let foundUser = null;
 
       if (usersSnap.exists()) {
         usersSnap.forEach((childSnap) => {
           const u = childSnap.val();
-          if (u.phone === cleanQuery || (u.name && u.name.toLowerCase() === query.toLowerCase())) {
+          if (u.email.toLowerCase() === query || (u.name && u.name.toLowerCase() === query)) {
             foundUser = u;
           }
         });
       }
 
-      if (!foundUser) { alert("User not found."); return; }
-      if (foundUser.phone === currentUser.phone) { alert("You cannot add yourself."); return; }
+      if (!foundUser) { alert("User not found by email or display name."); return; }
+      if (foundUser.emailKey === currentUser.emailKey) { alert("You cannot add yourself."); return; }
 
-      await set(dbRef(db, `users/${currentUser.phone}/friends/${foundUser.phone}`), {
-        phone: foundUser.phone, name: foundUser.name
+      await set(dbRef(db, `users/${currentUser.emailKey}/friends/${foundUser.emailKey}`), {
+        emailKey: foundUser.emailKey, email: foundUser.email, name: foundUser.name
       });
 
-      await set(dbRef(db, `users/${foundUser.phone}/friends/${currentUser.phone}`), {
-        phone: currentUser.phone, name: currentUser.name
+      await set(dbRef(db, `users/${foundUser.emailKey}/friends/${currentUser.emailKey}`), {
+        emailKey: currentUser.emailKey, email: currentUser.email, name: currentUser.name
       });
 
       alert(`Added ${foundUser.name}!`);
@@ -735,18 +645,17 @@
     // REAL-TIME UNREAD MESSAGE BADGE LISTENER
     function listenForUnreadCounts() {
       if (!currentUser) return;
-      const unreadRef = dbRef(db, `users/${currentUser.phone}/unread`);
+      const unreadRef = dbRef(db, `users/${currentUser.emailKey}/unread`);
       
       onValue(unreadRef, (snapshot) => {
         const unreadData = snapshot.exists() ? snapshot.val() : {};
         
-        // Update all friend card badges live
         const friendCards = document.querySelectorAll(".member-card");
         friendCards.forEach((card) => {
-          const phone = card.dataset.phone;
+          const emailKey = card.dataset.emailKey;
           const badgeContainer = card.querySelector(".badge-slot");
-          if (phone && badgeContainer) {
-            const count = unreadData[phone] || 0;
+          if (emailKey && badgeContainer) {
+            const count = unreadData[emailKey] || 0;
             if (count > 0) {
               badgeContainer.innerHTML = `<div class="unread-badge">${count}</div>`;
             } else {
@@ -762,30 +671,30 @@
       selectedMember = null;
       membersList.innerHTML = "";
 
-      if (currentUser && cleanPhone(currentUser.phone) === ADMIN_PHONE) {
+      if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
         resetSystemBtn.classList.remove("hidden");
       } else {
         resetSystemBtn.classList.add("hidden");
       }
 
-      const friendsSnap = await get(dbRef(db, `users/${currentUser.phone}/friends`));
-      const unreadSnap = await get(dbRef(db, `users/${currentUser.phone}/unread`));
+      const friendsSnap = await get(dbRef(db, `users/${currentUser.emailKey}/friends`));
+      const unreadSnap = await get(dbRef(db, `users/${currentUser.emailKey}/unread`));
       const unreadData = unreadSnap.exists() ? unreadSnap.val() : {};
 
       if (friendsSnap.exists()) {
         friendsSnap.forEach((childSnap) => {
           const f = childSnap.val();
-          const unreadCount = unreadData[f.phone] || 0;
+          const unreadCount = unreadData[f.emailKey] || 0;
 
           const card = document.createElement("div");
           card.className = "member-card";
-          card.dataset.phone = f.phone;
+          card.dataset.emailKey = f.emailKey;
           card.innerHTML = `
             <div class="member-card-info">
               <div class="member-avatar">${f.name ? f.name.charAt(0).toUpperCase() : "F"}</div>
               <div class="member-details">
                 <div class="member-name">${f.name || "Friend"}</div>
-                <div class="member-phone">+${f.phone}</div>
+                <div class="member-email">${f.email}</div>
               </div>
             </div>
             <div class="member-badges">
@@ -802,7 +711,7 @@
             homeScreen.classList.add("hidden");
             
             // Clear unread count for this selected friend
-            await remove(dbRef(db, `users/${currentUser.phone}/unread/${f.phone}`));
+            await remove(dbRef(db, `users/${currentUser.emailKey}/unread/${f.emailKey}`));
             listenForMessages();
           });
 
@@ -830,14 +739,13 @@
       });
     }
 
-    // Helper to send message to isolated chat thread
     async function pushMessageToFirebase(msgData) {
       if (!currentUser || !selectedMember) return;
-      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
       await push(dbRef(db, `chats/${chatId}/messages`), msgData);
 
       // Increment unread count for recipient
-      const recipientUnreadRef = dbRef(db, `users/${selectedMember.phone}/unread/${currentUser.phone}`);
+      const recipientUnreadRef = dbRef(db, `users/${selectedMember.emailKey}/unread/${currentUser.emailKey}`);
       const snap = await get(recipientUnreadRef);
       const currentCount = snap.exists() ? snap.val() : 0;
       await set(recipientUnreadRef, currentCount + 1);
@@ -990,7 +898,7 @@
       activeSelectedMsg = { id: msgId, ...data };
       actionSheetButtons.innerHTML = "";
 
-      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
       const isMe = currentUser && data.uid === currentUser.uid;
       const isWithinOneMin = (Date.now() - data.timestamp) <= 60000;
 
@@ -1037,7 +945,7 @@
 
     editSaveBtn.addEventListener("click", async () => {
       if (!activeSelectedMsg || !selectedMember) return;
-      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
       const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
       if (!isWithinOneMin) {
         alert("Time limit expired!");
@@ -1053,21 +961,18 @@
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
-    // Realtime Message Listener (per conversation thread)
     function listenForMessages() {
       if (!currentUser || !selectedMember) return;
-      const chatId = getChatId(currentUser.phone, selectedMember.phone);
+      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
       const messagesRef = dbRef(db, `chats/${chatId}/messages`);
       
       off(messagesRef);
       chatBox.innerHTML = "";
 
-      // Ensure unread for active chat is cleared continuously while open
-      remove(dbRef(db, `users/${currentUser.phone}/unread/${selectedMember.phone}`));
+      remove(dbRef(db, `users/${currentUser.emailKey}/unread/${selectedMember.emailKey}`));
 
       onChildAdded(messagesRef, (snapshot) => {
-        // Clear unread count when receiving messages in active chat
-        remove(dbRef(db, `users/${currentUser.phone}/unread/${selectedMember.phone}`));
+        remove(dbRef(db, `users/${currentUser.emailKey}/unread/${selectedMember.emailKey}`));
 
         const msgDiv = renderMessageHTML(snapshot.key, snapshot.val());
         if (msgDiv) { chatBox.appendChild(msgDiv); chatBox.scrollTop = chatBox.scrollHeight; }
