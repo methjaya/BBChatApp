@@ -48,6 +48,12 @@
     input { width: 100%; padding: 14px 16px; border-radius: 16px; border: var(--border); font-size: 15px; font-weight: 700; outline: none; background: var(--card-bg); color: var(--text-dark); box-shadow: var(--shadow-sm); }
     input:focus { background: #FFFFFF; transform: translate(-1px, -1px); box-shadow: var(--shadow); }
 
+    .formatted-preview { font-size: 12px; font-weight: 800; color: #2B8A3E; text-align: left; padding-left: 4px; }
+
+    .status-msg { width: 100%; padding: 10px; border-radius: 12px; border: var(--border); font-size: 13px; font-weight: 800; margin-bottom: 12px; display: none; }
+    .status-msg.error { background: #FFE3E3; color: #D6336C; }
+    .status-msg.success { background: #D3F9D8; color: #2B8A3E; }
+
     .btn { width: 100%; padding: 16px; border-radius: 16px; border: var(--border); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: transform 0.1s; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
@@ -134,7 +140,7 @@
 </head>
 <body>
 
-  <!-- Invisible Recaptcha Container for Firebase Phone Auth -->
+  <!-- Recaptcha Container -->
   <div id="recaptcha-container"></div>
 
   <div id="app">
@@ -143,6 +149,8 @@
       <div class="bb-logo-badge">BBChatApp</div>
       <h1>BBChatApp</h1>
       <p id="auth-desc">Sign in with Mobile Phone & PIN</p>
+
+      <div id="auth-status" class="status-msg"></div>
 
       <div class="auth-toggle">
         <button id="tab-login" class="auth-tab active">Log In</button>
@@ -154,9 +162,10 @@
           <input type="tel" id="auth-phone" placeholder="0701581056" autocomplete="tel" />
           <button id="send-otp-btn" class="btn-sm hidden">Send OTP</button>
         </div>
+        <div id="phone-preview" class="formatted-preview"></div>
         <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" autocomplete="name" />
         <input type="password" id="auth-pin" maxlength="6" pattern="\d*" placeholder="4-Digit PIN" />
-        <input type="text" id="auth-otp" class="hidden" maxlength="6" placeholder="Enter 6-Digit SMS Code" />
+        <input type="text" id="auth-otp" class="hidden" maxlength="6" placeholder="6-Digit Verification Code" />
       </div>
 
       <button id="auth-btn" class="btn btn-primary">Log In</button>
@@ -238,12 +247,12 @@
   <!-- Real OTP Forgot PIN Modal -->
   <div id="forgot-pin-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
-      <h3>Reset PIN via Real SMS</h3>
+      <h3>Reset PIN</h3>
       <div class="otp-row">
-        <input type="tel" id="reset-phone" placeholder="Registered Phone Number" />
-        <button id="reset-send-otp-btn" class="btn-sm">Send SMS</button>
+        <input type="tel" id="reset-phone" placeholder="0701581056" />
+        <button id="reset-send-otp-btn" class="btn-sm">Send Code</button>
       </div>
-      <input type="text" id="reset-otp-code" maxlength="6" placeholder="Enter 6-Digit SMS Code" />
+      <input type="text" id="reset-otp-code" maxlength="6" placeholder="Enter 6-Digit Code" />
       <input type="password" id="reset-new-pin" maxlength="6" pattern="\d*" placeholder="New 4-Digit PIN" />
       <div class="edit-modal-actions">
         <button id="reset-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
@@ -335,6 +344,8 @@
     const authScreen = document.getElementById("auth-screen");
     const homeScreen = document.getElementById("home-screen");
     const membersList = document.getElementById("members-list");
+    const authStatus = document.getElementById("auth-status");
+    const phonePreview = document.getElementById("phone-preview");
 
     const authPhone = document.getElementById("auth-phone");
     const authName = document.getElementById("auth-name");
@@ -389,15 +400,17 @@
     const startCallBtn = document.getElementById("start-call-btn");
     const remoteAudio = document.getElementById("remote-audio");
 
-    // Format phone number to international E.164
-    function formatE164(phone) {
+    // SRI LANKAN PHONE NUMBER AUTO-FORMATTER
+    function formatSriLankanPhone(phone) {
       let cleaned = phone.replace(/[^0-9+]/g, "");
-      if (cleaned.startsWith("0")) {
-        cleaned = "+94" + cleaned.substring(1); // Default to +94 Sri Lanka
-      } else if (!cleaned.startsWith("+")) {
-        cleaned = "+" + cleaned;
+      if (cleaned.length === 10 && cleaned.startsWith("07")) {
+        return "+94" + cleaned.substring(1); // Converts 0701581056 -> +94701581056
       }
-      return cleaned;
+      if (cleaned.length === 9 && cleaned.startsWith("7")) {
+        return "+94" + cleaned;
+      }
+      if (cleaned.startsWith("+")) return cleaned;
+      return "+" + cleaned;
     }
 
     function cleanPhone(phone) { return phone.replace(/[^0-9]/g, ""); }
@@ -406,7 +419,23 @@
       return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Initialize Firebase Recaptcha Verifier for Phone Auth
+    function showStatus(msg, isError = true) {
+      authStatus.innerText = msg;
+      authStatus.className = `status-msg ${isError ? 'error' : 'success'}`;
+      authStatus.style.display = "block";
+    }
+
+    // Auto-update phone number preview as user types
+    authPhone.addEventListener("input", () => {
+      const formatted = formatSriLankanPhone(authPhone.value.trim());
+      if (authPhone.value.trim().length >= 9) {
+        phonePreview.innerText = `Formatted: ${formatted}`;
+      } else {
+        phonePreview.innerText = "";
+      }
+    });
+
+    // Initialize Recaptcha Verifier
     function setupRecaptcha() {
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -417,26 +446,26 @@
 
     // Send Real Firebase SMS OTP
     async function sendRealSMSOTP(rawPhoneNumber, buttonEl) {
-      const formattedNumber = formatE164(rawPhoneNumber);
+      const formattedNumber = formatSriLankanPhone(rawPhoneNumber);
       setupRecaptcha();
       buttonEl.innerText = "Sending...";
       buttonEl.disabled = true;
 
       try {
         confirmationResultObj = await signInWithPhoneNumber(auth, formattedNumber, window.recaptchaVerifier);
-        alert(`Real SMS OTP sent to ${formattedNumber}! Check your mobile text messages.`);
+        showStatus(`Verification code sent to ${formattedNumber}`, false);
         buttonEl.innerText = "Sent!";
       } catch (error) {
         console.error("SMS Error:", error);
-        alert("Failed to send real SMS: " + error.message + "\n\nEnsure Phone Auth is enabled in Firebase Console.");
-        buttonEl.innerText = "Send SMS";
+        showStatus("SMS failed: " + error.message, true);
+        buttonEl.innerText = "Send OTP";
         buttonEl.disabled = false;
         if (window.recaptchaVerifier) window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
       }
     }
 
     sendOtpBtn.addEventListener("click", () => {
-      if (authPhone.value.trim().length < 7) { alert("Enter a valid phone number."); return; }
+      if (authPhone.value.trim().length < 7) { showStatus("Enter a valid phone number."); return; }
       sendRealSMSOTP(authPhone.value.trim(), sendOtpBtn);
     });
 
@@ -456,6 +485,7 @@
       authDesc.innerText = "Sign in with Mobile Phone & PIN";
       authBtn.innerText = "Log In";
       forgotPinBtn.classList.remove("hidden");
+      authStatus.style.display = "none";
     });
 
     tabRegister.addEventListener("click", () => {
@@ -465,9 +495,10 @@
       authName.classList.remove("hidden");
       authOtp.classList.remove("hidden");
       sendOtpBtn.classList.remove("hidden");
-      authDesc.innerText = "Set up Phone, Name, PIN & Real SMS OTP";
+      authDesc.innerText = "Set up Phone, Name, PIN & Verification Code";
       authBtn.innerText = "Register";
       forgotPinBtn.classList.add("hidden");
+      authStatus.style.display = "none";
     });
 
     // Auto Login Session
@@ -490,8 +521,8 @@
       const phoneKey = cleanPhone(rawPhone);
       const pin = authPin.value.trim();
 
-      if (!phoneKey || phoneKey.length < 7) { alert("Enter a valid mobile phone number."); return; }
-      if (!pin || pin.length < 4) { alert("Enter a valid PIN (minimum 4 digits)."); return; }
+      if (!phoneKey || phoneKey.length < 7) { showStatus("Enter a valid mobile phone number."); return; }
+      if (!pin || pin.length < 4) { showStatus("Enter a valid PIN (minimum 4 digits)."); return; }
 
       const userRef = dbRef(db, `users/${phoneKey}`);
       const dbSnap = await get(userRef);
@@ -500,9 +531,9 @@
         const name = authName.value.trim();
         const enteredOtp = authOtp.value.trim();
 
-        if (!name) { alert("Enter your display name."); return; }
-        if (!enteredOtp || !confirmationResultObj) { alert("Please request and enter the SMS OTP code."); return; }
-        if (dbSnap.exists()) { alert("Account exists. Tap 'Log In'."); return; }
+        if (!name) { showStatus("Enter your display name."); return; }
+        if (!enteredOtp || !confirmationResultObj) { showStatus("Please request and enter the SMS verification code."); return; }
+        if (dbSnap.exists()) { showStatus("Account exists. Tap 'Log In'."); return; }
 
         try {
           await confirmationResultObj.confirm(enteredOtp);
@@ -518,10 +549,10 @@
           setupOnlineStatus();
           listenForIncomingCalls();
         } catch (err) {
-          alert("Invalid SMS OTP Code. Please try again.");
+          showStatus("Invalid verification code. Please try again.");
         }
       } else {
-        if (!dbSnap.exists()) { alert("Account not found. Switch to 'Register'."); return; }
+        if (!dbSnap.exists()) { showStatus("Account not found. Switch to 'Register'."); return; }
 
         const val = dbSnap.val();
         if (val && val.pin === pin) {
@@ -532,7 +563,7 @@
           setupOnlineStatus();
           listenForIncomingCalls();
         } else {
-          alert("Incorrect PIN.");
+          showStatus("Incorrect PIN.");
         }
       }
     });
@@ -552,7 +583,7 @@
       const newPin = resetNewPin.value.trim();
 
       if (!phoneKey || !otpCode || !newPin) { alert("Fill in all fields."); return; }
-      if (!confirmationResultObj) { alert("Please send SMS OTP first."); return; }
+      if (!confirmationResultObj) { alert("Please send verification code first."); return; }
 
       const userRef = dbRef(db, `users/${phoneKey}`);
       const dbSnap = await get(userRef);
@@ -565,7 +596,7 @@
         alert("PIN reset successful! You can now log in with your new PIN.");
         forgotPinModal.classList.add("hidden");
       } catch (err) {
-        alert("Invalid SMS OTP Code.");
+        alert("Invalid verification code.");
       }
     });
 
@@ -703,7 +734,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // HIGH-RELIABILITY HTML5 CANVAS IMAGE COMPRESSION (Direct Firebase Realtime Storage)
+    // HTML5 CANVAS IMAGE COMPRESSION
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
@@ -733,7 +764,6 @@
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Compress to ~30-50KB JPEG
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
 
           push(dbRef(db, "messages"), {
@@ -898,10 +928,10 @@
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
-    // FIXED: Realtime Message Listener detaches previous listeners to prevent duplication
+    // Realtime Message Listener (off() prevents duplication)
     function listenForMessages() {
       const messagesRef = dbRef(db, "messages");
-      off(messagesRef); // PREVENTS DUPLICATE MESSAGES
+      off(messagesRef);
       chatBox.innerHTML = "";
 
       onChildAdded(messagesRef, (snapshot) => {
@@ -988,7 +1018,6 @@
 
             localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
             peerConnection = new RTCPeerConnection(rtcServers);
-            localStream.getTracks().forEach(track => track.stop());
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
             peerConnection.ontrack = (event) => { remoteAudio.srcObject = event.streams[0]; };
