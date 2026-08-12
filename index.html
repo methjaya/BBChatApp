@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>BBChatApp</title>
+  <title>BBChatApp+</title>
   
   <!-- SVG Favicon with Retro BBChatApp Logo -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>BBC</text></svg>">
@@ -32,7 +32,7 @@
     #app { width: 100%; max-width: 480px; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-color); position: relative; overflow: hidden; border: var(--border); box-shadow: var(--shadow); }
     
     /* Screens */
-    .screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+    .screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; overflow-y: auto; }
     .hidden { display: none !important; }
 
     /* Retro Badge Logo */
@@ -53,18 +53,22 @@
     .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-size: 14px; font-weight: 800; color: var(--text-dark); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
     .auth-tab.active { background: var(--purple); border: var(--border); box-shadow: var(--shadow-sm); }
 
-    .input-group { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .input-group { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
     input { width: 100%; padding: 14px 16px; border-radius: 16px; border: var(--border); font-size: 15px; font-weight: 700; outline: none; background: var(--card-bg); color: var(--text-dark); box-shadow: var(--shadow-sm); }
     input:focus { background: #FFFFFF; transform: translate(-1px, -1px); box-shadow: var(--shadow); }
 
     .btn { width: 100%; padding: 16px; border-radius: 16px; border: var(--border); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: transform 0.1s; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
+    .btn-danger { background: var(--danger); color: white; }
+
+    .forgot-link { color: var(--text-dark); font-size: 13px; font-weight: 800; text-decoration: underline; cursor: pointer; margin-top: 10px; display: inline-block; }
 
     /* Home Dashboard Screen */
     #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
-    .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-    .home-title { font-size: 20px; font-weight: 900; color: var(--text-dark); }
+    .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+    .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+    .home-header-btns { display: flex; gap: 8px; }
     
     .home-actions-bar { padding: 16px 16px 4px 16px; }
     .add-friend-btn {
@@ -160,9 +164,9 @@
     .action-cancel { background: var(--yellow); border-radius: 18px; font-weight: 800; color: var(--text-dark); border: var(--border); padding: 16px; font-size: 15px; cursor: pointer; text-align: center; box-shadow: var(--shadow); }
 
     /* Modals Box */
-    .edit-modal-box { background: var(--card-bg); border: var(--border); border-radius: 22px; padding: 22px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+    .edit-modal-box { background: var(--card-bg); border: var(--border); border-radius: 22px; padding: 22px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
     .edit-modal-box h3 { font-size: 18px; font-weight: 900; text-align: center; color: var(--text-dark); }
-    .edit-modal-actions { display: flex; gap: 10px; }
+    .edit-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
 
     /* Call Modal UI */
     .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
@@ -196,16 +200,21 @@
         <input type="tel" id="auth-phone" placeholder="Mobile Phone Number" autocomplete="tel" />
         <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" autocomplete="name" />
         <input type="password" id="auth-pin" maxlength="6" pattern="\d*" placeholder="4-Digit PIN" />
+        <input type="text" id="auth-recovery" class="hidden" placeholder="Recovery Secret Word (for resetting PIN)" />
       </div>
 
       <button id="auth-btn" class="btn btn-primary">Log In</button>
+      <span id="forgot-pin-btn" class="forgot-link">Forgot PIN?</span>
     </div>
 
     <!-- Home Screen (Private Retro Friends Dashboard) -->
     <div id="home-screen" class="hidden">
       <div class="home-header">
         <div class="home-title">BBChatApp</div>
-        <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
+        <div class="home-header-btns">
+          <button id="reset-system-btn" style="background:var(--danger); color:white; border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Reset System</button>
+          <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
+        </div>
       </div>
       
       <div class="home-actions-bar">
@@ -275,6 +284,20 @@
     </div>
   </div>
 
+  <!-- Forgot PIN Modal -->
+  <div id="forgot-pin-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
+    <div class="edit-modal-box">
+      <h3>Reset PIN</h3>
+      <input type="tel" id="reset-phone" placeholder="Registered Phone Number" />
+      <input type="text" id="reset-recovery-word" placeholder="Recovery Secret Word" />
+      <input type="password" id="reset-new-pin" maxlength="6" pattern="\d*" placeholder="New 4-Digit PIN" />
+      <div class="edit-modal-actions">
+        <button id="reset-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
+        <button id="reset-submit-btn" class="btn btn-primary">Update PIN</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Action Sheet Overlay for Message Options -->
   <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
     <div class="action-sheet" id="action-sheet-buttons"></div>
@@ -293,7 +316,7 @@
     </div>
   </div>
 
-  <!-- Fullscreen Image Viewer Modal -->
+  <!-- Fullscreen Image Preview Modal -->
   <div id="image-modal" class="hidden">
     <img id="modal-img" src="" alt="Full view" />
   </div>
@@ -361,10 +384,19 @@
     const authPhone = document.getElementById("auth-phone");
     const authName = document.getElementById("auth-name");
     const authPin = document.getElementById("auth-pin");
+    const authRecovery = document.getElementById("auth-recovery");
     const authBtn = document.getElementById("auth-btn");
     const authDesc = document.getElementById("auth-desc");
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
+    const forgotPinBtn = document.getElementById("forgot-pin-btn");
+
+    const forgotPinModal = document.getElementById("forgot-pin-modal");
+    const resetPhone = document.getElementById("reset-phone");
+    const resetRecoveryWord = document.getElementById("reset-recovery-word");
+    const resetNewPin = document.getElementById("reset-new-pin");
+    const resetCancelBtn = document.getElementById("reset-cancel-btn");
+    const resetSubmitBtn = document.getElementById("reset-submit-btn");
 
     const addFriendModal = document.getElementById("add-friend-modal");
     const addFriendInput = document.getElementById("add-friend-input");
@@ -404,8 +436,10 @@
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
       authName.classList.add("hidden");
+      authRecovery.classList.add("hidden");
       authDesc.innerText = "Sign in with Mobile Phone & PIN";
       authBtn.innerText = "Log In";
+      forgotPinBtn.classList.remove("hidden");
     });
 
     tabRegister.addEventListener("click", () => {
@@ -413,8 +447,10 @@
       tabRegister.classList.add("active");
       tabLogin.classList.remove("active");
       authName.classList.remove("hidden");
-      authDesc.innerText = "Set up Phone, Name & PIN";
+      authRecovery.classList.remove("hidden");
+      authDesc.innerText = "Set up Phone, Name, PIN & Recovery Word";
       authBtn.innerText = "Register";
+      forgotPinBtn.classList.add("hidden");
     });
 
     function cleanPhone(phone) { return phone.replace(/[^0-9]/g, ""); }
@@ -453,10 +489,13 @@
 
       if (isRegisterMode) {
         const name = authName.value.trim();
+        const recoveryWord = authRecovery.value.trim().toLowerCase();
+
         if (!name) { alert("Enter your display name."); return; }
+        if (!recoveryWord) { alert("Set a recovery secret word."); return; }
         if (dbSnap.exists()) { alert("Account exists. Tap 'Log In'."); return; }
 
-        const userData = { phone: phoneKey, name: name, pin: pin };
+        const userData = { phone: phoneKey, name: name, pin: pin, recoveryWord: recoveryWord };
         await set(userRef, userData);
         
         currentUser = { uid: phoneKey, phone: phoneKey, name: name };
@@ -480,6 +519,58 @@
         } else {
           alert("Incorrect PIN.");
         }
+      }
+    });
+
+    // Forgot PIN Modal & Reset Handler
+    forgotPinBtn.addEventListener("click", () => {
+      resetPhone.value = "";
+      resetRecoveryWord.value = "";
+      resetNewPin.value = "";
+      forgotPinModal.classList.remove("hidden");
+    });
+
+    resetCancelBtn.addEventListener("click", () => {
+      forgotPinModal.classList.add("hidden");
+    });
+
+    resetSubmitBtn.addEventListener("click", async () => {
+      const phoneKey = cleanPhone(resetPhone.value.trim());
+      const recoveryWord = resetRecoveryWord.value.trim().toLowerCase();
+      const newPin = resetNewPin.value.trim();
+
+      if (!phoneKey || !recoveryWord || !newPin) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const userRef = dbRef(db, `users/${phoneKey}`);
+      const dbSnap = await get(userRef);
+
+      if (!dbSnap.exists()) {
+        alert("Account not found.");
+        return;
+      }
+
+      const userData = dbSnap.val();
+      if (userData.recoveryWord && userData.recoveryWord === recoveryWord) {
+        await update(userRef, { pin: newPin });
+        alert("PIN updated successfully! Log in with your new PIN.");
+        forgotPinModal.classList.add("hidden");
+      } else {
+        alert("Incorrect recovery secret word.");
+      }
+    });
+
+    // Truncate / System Reset Action
+    document.getElementById("reset-system-btn").addEventListener("click", async () => {
+      if (confirm("WARNING: This will purge ALL database nodes (messages, calls, users, friends). Reset system now?")) {
+        await remove(dbRef(db, "messages"));
+        await remove(dbRef(db, "users"));
+        await remove(dbRef(db, "active_call"));
+        localStorage.clear();
+        alert("System database truncated and local storage cleared.");
+        location.reload();
       }
     });
 
@@ -618,7 +709,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // FIXED BASE64 IMGBB IMAGE UPLOAD (Prevents Binary Multipart Boundary Errors on Mobile)
+    // BASE64 IMGBB IMAGE UPLOAD
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
