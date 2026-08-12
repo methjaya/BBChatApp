@@ -76,11 +76,9 @@
     .waving-arm { transform-origin: bottom center; animation: wave 1.2s infinite ease-in-out alternate; }
     @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
 
-    /* Redesigned Realistic Flower Animation */
     .waving-flower { transform-origin: bottom center; animation: flowerSway 2.2s infinite ease-in-out alternate; }
     @keyframes flowerSway { 0% { transform: rotate(-5deg); } 100% { transform: rotate(5deg); } }
 
-    /* Centered Wide Status Widget */
     .widgets-row { display: flex; gap: 10px; margin: 12px 16px 14px 16px; }
     .widget-box { flex: 1; background: var(--card-bg); border: var(--border); border-radius: 16px; padding: 12px; text-align: center; box-shadow: var(--shadow-sm); }
     .widget-title { font-size: 10px; font-weight: 800; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -124,8 +122,8 @@
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #8E8E93; border: 1.5px solid #18181B; display: inline-block; }
     .status-dot.online { background: #51CF66; }
 
-    .header-actions { display: flex; align-items: center; gap: 8px; }
-    .icon-btn { background: var(--bg-color); border: var(--border); border-radius: 12px; color: var(--text-dark); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px 10px; font-weight: 800; box-shadow: var(--shadow-sm); }
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+    .icon-btn { background: var(--bg-color); border: var(--border); border-radius: 12px; color: var(--text-dark); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px 8px; font-weight: 800; box-shadow: var(--shadow-sm); }
 
     #chat-box { flex: 1; overflow-y: auto; padding: 80px 14px 76px 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-color); -webkit-overflow-scrolling: touch; }
     .msg { max-width: 82%; padding: 10px 14px; border-radius: 18px; font-size: 14px; font-weight: 600; line-height: 1.4; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; border: var(--border); box-shadow: var(--shadow-sm); }
@@ -155,11 +153,20 @@
     .edit-modal-box h3 { font-size: 18px; font-weight: 900; text-align: center; color: var(--text-dark); }
     .edit-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
 
-    .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
-    .call-avatar { width: 100px; height: 100px; border-radius: 28px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
-    .call-status { font-size: 15px; font-weight: 700; color: var(--text-gray); margin-top: 8px; }
-    .call-actions { display: flex; gap: 24px; width: 100%; justify-content: center; }
-    .call-btn { width: 64px; height: 64px; border-radius: 20px; border: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); }
+    /* Call Screen Styles & Video Feeds */
+    .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px; text-align: center; }
+    .call-avatar { width: 90px; height: 90px; border-radius: 26px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden; }
+    .call-status { font-size: 14px; font-weight: 700; color: var(--text-gray); margin-top: 4px; }
+    
+    .video-container { position: absolute; inset: 0; background: #18181B; z-index: 125; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #remote-video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    #local-video { width: 100px; height: 140px; object-fit: cover; position: absolute; top: 24px; right: 20px; border: var(--border); border-radius: 14px; background: #000; z-index: 130; box-shadow: var(--shadow); }
+
+    .call-controls-bar { position: absolute; bottom: 30px; left: 20px; right: 20px; z-index: 135; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .call-ctrl-btn { background: var(--card-bg); border: var(--border); border-radius: 14px; padding: 10px 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 6px; color: var(--text-dark); }
+    .call-ctrl-btn.active { background: var(--green); }
+    .call-actions { display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px; }
+    .call-btn { width: 60px; height: 60px; border-radius: 18px; border: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); }
     .call-btn.accept { background: var(--green); color: var(--text-dark); }
     .call-btn.decline { background: var(--danger); color: white; }
 
@@ -181,7 +188,6 @@
           <div class="mascot-title">Hello Sahansa & Chuti!</div>
           <div class="mascot-sub">Welcome to B&M Chat</div>
         </div>
-        <!-- Waving Flower & Dog Header -->
         <div style="display: flex; align-items: center; gap: 8px;">
           <svg class="waving-flower" width="28" height="38" viewBox="0 0 50 70" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M25 70L25 35" stroke="#2B8A3E" stroke-width="4" stroke-linecap="round"/>
@@ -230,7 +236,6 @@
         </div>
       </div>
 
-      <!-- Mascot Banner + Waving Flower Widget -->
       <div class="retro-mascot-banner home-banner-spaced">
         <div class="mascot-text">
           <div class="mascot-title">Welcome back!</div>
@@ -245,7 +250,6 @@
         </svg>
       </div>
 
-      <!-- Single Wide Status Widget with In Love & Infinity Symbol -->
       <div class="widgets-row">
         <div class="widget-box">
           <div class="widget-title">Status</div>
@@ -269,9 +273,12 @@
         </div>
       </div>
       <div class="header-actions">
-        <button id="back-to-home-btn" class="icon-btn" title="Friends List" style="font-size:12px;">Friends</button>
+        <button id="back-to-home-btn" class="icon-btn" title="Friends List" style="font-size:11px;">Friends</button>
         <button id="start-call-btn" class="icon-btn" title="Voice Call">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
+        <button id="start-video-btn" class="icon-btn" title="Video Call">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
         </button>
       </div>
     </header>
@@ -295,7 +302,7 @@
     </footer>
   </div>
 
-  <!-- Edit Profile & Password Modal with Back Button -->
+  <!-- Profile Modal with Back Button -->
   <div id="profile-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Profile Changer</h3>
@@ -309,13 +316,11 @@
     </div>
   </div>
 
-  <!-- Action Sheet Overlay for Message Options -->
   <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
     <div class="action-sheet" id="action-sheet-buttons"></div>
     <button class="action-cancel" id="action-sheet-cancel">Cancel</button>
   </div>
 
-  <!-- Edit Message Modal with Back Button -->
   <div id="edit-modal-overlay" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Edit Message</h3>
@@ -331,17 +336,31 @@
     <img id="modal-img" src="" alt="Full view" />
   </div>
 
+  <!-- Fully Featured Call & Video Screen -->
   <div id="call-screen" class="call-screen hidden">
-    <div>
+    <div id="video-wrapper" class="hidden">
+      <video id="remote-video" autoplay playsinline></video>
+      <video id="local-video" autoplay playsinline muted></video>
+    </div>
+
+    <div id="audio-call-info" style="z-index: 130;">
       <div class="call-avatar" id="call-avatar-icon"></div>
       <h2 id="call-user-title">Voice Call</h2>
       <div id="call-status-label" class="call-status">Connecting...</div>
     </div>
-    <div class="call-actions">
-      <button id="accept-call-btn" class="call-btn accept hidden">
+
+    <!-- In-Call Controls Bar (Mute, Speakerphone, Device Selection) -->
+    <div class="call-controls-bar">
+      <button id="mute-btn" class="call-ctrl-btn">Mute</button>
+      <button id="speaker-btn" class="call-ctrl-btn">Speaker</button>
+      <select id="audio-device-select" class="call-ctrl-btn" style="background:var(--card-bg); outline:none; max-width:140px;"></select>
+    </div>
+
+    <div class="call-actions" style="z-index: 135;">
+      <button id="accept-call-btn" class="call-btn accept hidden" title="Answer Call">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
       </button>
-      <button id="hangup-call-btn" class="call-btn decline">
+      <button id="hangup-call-btn" class="call-btn decline" title="Decline / End Call">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
     </div>
@@ -385,6 +404,7 @@
 
     let peerConnection = null;
     let localStream = null;
+    let ringtoneInterval = null;
 
     const rtcServers = {
       iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }]
@@ -442,7 +462,16 @@
     const acceptCallBtn = document.getElementById("accept-call-btn");
     const hangupCallBtn = document.getElementById("hangup-call-btn");
     const startCallBtn = document.getElementById("start-call-btn");
+    const startVideoBtn = document.getElementById("start-video-btn");
     const remoteAudio = document.getElementById("remote-audio");
+    const videoWrapper = document.getElementById("video-wrapper");
+    const remoteVideo = document.getElementById("remote-video");
+    const localVideo = document.getElementById("local-video");
+    const audioCallInfo = document.getElementById("audio-call-info");
+
+    const muteBtn = document.getElementById("mute-btn");
+    const speakerBtn = document.getElementById("speaker-btn");
+    const audioDeviceSelect = document.getElementById("audio-device-select");
 
     function getChatId(key1, key2) {
       return [key1, key2].sort().join("_");
@@ -482,6 +511,36 @@
         osc.stop(audioCtx.currentTime + 0.35);
       } catch (e) {
         console.error("Audio unlock needed", e);
+      }
+    }
+
+    // Play Incoming Call Ringtone Melody
+    function startRingtone() {
+      stopRingtone();
+      ringtoneInterval = setInterval(() => {
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = audioCtx.currentTime;
+          [0, 0.25].forEach(delay => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(440, now + delay);
+            osc.frequency.setValueAtTime(554.37, now + delay + 0.1);
+            gain.gain.setValueAtTime(0.15, now + delay);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + delay);
+            osc.stop(now + delay + 0.2);
+          });
+        } catch(e) {}
+      }, 2000);
+    }
+
+    function stopRingtone() {
+      if (ringtoneInterval) {
+        clearInterval(ringtoneInterval);
+        ringtoneInterval = null;
       }
     }
 
@@ -1012,14 +1071,76 @@
       });
     }
 
-    startCallBtn.addEventListener("click", async () => {
-      if (!currentUser) return;
+    // AUDIO DEVICE SELECTION & MUTE / SPEAKER CONTROLS
+    async function populateAudioDevices() {
       try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(d => d.kind === 'audioinput');
+        audioDeviceSelect.innerHTML = "";
+        audioInputs.forEach((device, index) => {
+          const option = document.createElement("option");
+          option.value = device.deviceId;
+          option.text = device.label || `Microphone ${index + 1}`;
+          audioDeviceSelect.appendChild(option);
+        });
+      } catch(e) {}
+    }
+
+    audioDeviceSelect.addEventListener("change", async () => {
+      const deviceId = audioDeviceSelect.value;
+      if (!localStream) return;
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: deviceId } }, video: localStream.getVideoTracks().length > 0 });
+        const audioTrack = newStream.getAudioTracks()[0];
+        const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'audio');
+        if (sender) sender.replaceTrack(audioTrack);
+        localStream = newStream;
+      } catch(e) {}
+    });
+
+    let isMuted = false;
+    muteBtn.addEventListener("click", () => {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks()[0].enabled = !isMuted;
+      muteBtn.innerText = isMuted ? "Unmute" : "Mute";
+      muteBtn.classList.toggle("active", isMuted);
+    });
+
+    let isSpeakerOn = true;
+    speakerBtn.addEventListener("click", () => {
+      isSpeakerOn = !isSpeakerOn;
+      remoteAudio.volume = isSpeakerOn ? 1.0 : 0.2;
+      remoteVideo.volume = isSpeakerOn ? 1.0 : 0.2;
+      speakerBtn.innerText = isSpeakerOn ? "Speaker" : "Earpiece";
+      speakerBtn.classList.toggle("active", isSpeakerOn);
+    });
+
+    // INITIATE CALL (Voice or Video)
+    async function initiateCall(isVideo) {
+      if (!currentUser || !selectedMember) return;
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: isVideo });
+        
+        if (isVideo) {
+          localVideo.srcObject = localStream;
+          videoWrapper.classList.remove("hidden");
+          audioCallInfo.classList.add("hidden");
+        } else {
+          videoWrapper.classList.add("hidden");
+          audioCallInfo.classList.remove("hidden");
+        }
+
         peerConnection = new RTCPeerConnection(rtcServers);
         localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-        peerConnection.ontrack = (event) => { remoteAudio.srcObject = event.streams[0]; };
+        peerConnection.ontrack = (event) => {
+          if (isVideo) {
+            remoteVideo.srcObject = event.streams[0];
+          } else {
+            remoteAudio.srcObject = event.streams[0];
+          }
+        };
 
         const callRoomRef = dbRef(db, "active_call");
         peerConnection.onicecandidate = (event) => {
@@ -1031,13 +1152,14 @@
 
         await set(callRoomRef, {
           offer: { type: offerDescription.type, sdp: offerDescription.sdp },
-          callerName: currentUser.username, callerUid: currentUser.key, status: "calling"
+          callerName: currentUser.username, callerUid: currentUser.key, isVideo: isVideo, status: "calling"
         });
 
-        callUserTitle.innerText = "Calling...";
+        callUserTitle.innerText = isVideo ? "Video Calling..." : "Voice Calling...";
         callStatusLabel.innerText = "Ringing...";
         acceptCallBtn.classList.add("hidden");
         callScreen.classList.remove("hidden");
+        populateAudioDevices();
 
         onValue(child(callRoomRef, "answer"), (snapshot) => {
           const answer = snapshot.val();
@@ -1054,8 +1176,11 @@
         onValue(child(callRoomRef, "status"), (snapshot) => {
           if (snapshot.val() === "ended") endCall(false);
         });
-      } catch (err) { alert("Microphone access failed."); }
-    });
+      } catch (err) { alert("Media device access failed."); }
+    }
+
+    startCallBtn.addEventListener("click", () => initiateCall(false));
+    startVideoBtn.addEventListener("click", () => initiateCall(true));
 
     function listenForIncomingCalls() {
       const callRoomRef = dbRef(db, "active_call");
@@ -1063,39 +1188,66 @@
         const data = snapshot.val();
         if (data && data.status === "calling" && data.callerUid !== currentUser.key) {
           playNotificationSound();
+          startRingtone();
+
+          const isVideoCall = data.isVideo || false;
+          if (isVideoCall) {
+            videoWrapper.classList.remove("hidden");
+            audioCallInfo.classList.add("hidden");
+          } else {
+            videoWrapper.classList.add("hidden");
+            audioCallInfo.classList.remove("hidden");
+          }
+
           callUserTitle.innerText = data.callerName;
-          callStatusLabel.innerText = "Incoming Voice Call";
-          acceptCallBtn.classList.add("hidden");
+          callStatusLabel.innerText = isVideoCall ? "Incoming Video Call" : "Incoming Voice Call";
+          acceptCallBtn.classList.remove("hidden");
           callScreen.classList.remove("hidden");
 
           acceptCallBtn.onclick = async () => {
+            stopRingtone();
             acceptCallBtn.classList.add("hidden");
             callStatusLabel.innerText = "Connecting...";
 
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            peerConnection = new RTCPeerConnection(rtcServers);
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            try {
+              localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: isVideoCall });
+              if (isVideoCall) {
+                localVideo.srcObject = localStream;
+              }
 
-            peerConnection.ontrack = (event) => { remoteAudio.srcObject = event.streams[0]; };
+              peerConnection = new RTCPeerConnection(rtcServers);
+              localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-            peerConnection.onicecandidate = (event) => {
-              if (event.candidate) push(child(callRoomRef, "calleeCandidates"), event.candidate.toJSON());
-            };
+              peerConnection.ontrack = (event) => {
+                if (isVideoCall) {
+                  remoteVideo.srcObject = event.streams[0];
+                } else {
+                  remoteAudio.srcObject = event.streams[0];
+                }
+              };
 
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const ans = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(ans);
+              peerConnection.onicecandidate = (event) => {
+                if (event.candidate) push(child(callRoomRef, "calleeCandidates"), event.candidate.toJSON());
+              };
 
-            await update(callRoomRef, {
-              answer: { type: ans.type, sdp: ans.sdp },
-              status: "connected"
-            });
+              await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+              const ans = await peerConnection.createAnswer();
+              await peerConnection.setLocalDescription(ans);
 
-            onChildAdded(child(callRoomRef, "calleeCandidates"), (snapshot) => {
-              if (peerConnection) peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
-            });
+              await update(callRoomRef, {
+                answer: { type: ans.type, sdp: ans.sdp },
+                status: "connected"
+              });
 
-            callStatusLabel.innerText = "Connected";
+              onChildAdded(child(callRoomRef, "callerCandidates"), (snapshot) => {
+                if (peerConnection) peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
+              });
+
+              callStatusLabel.innerText = "Connected";
+              populateAudioDevices();
+            } catch(err) {
+              alert("Could not access camera/microphone.");
+            }
           };
         } else if (!data || data.status === "ended") { endCall(false); }
       });
@@ -1104,6 +1256,7 @@
     hangupCallBtn.addEventListener("click", () => endCall(true));
 
     async function endCall(notifyPeer = true) {
+      stopRingtone();
       if (notifyPeer) {
         await update(dbRef(db, "active_call"), { status: "ended" });
         setTimeout(() => remove(dbRef(db, "active_call")), 1000);
@@ -1114,6 +1267,7 @@
         localStream = null;
       }
       callScreen.classList.add("hidden");
+      videoWrapper.classList.add("hidden");
     }
   </script>
 </body>
