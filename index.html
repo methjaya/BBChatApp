@@ -76,7 +76,7 @@
     .home-title { font-size: 15px; font-weight: 900; color: var(--text-dark); line-height: 1.1; }
     .home-subtitle { font-size: 9px; font-weight: 800; color: var(--text-gray); margin-bottom: 2px; }
     .home-datetime { font-size: 9px; font-weight: 800; color: var(--purple); background: var(--text-dark); padding: 2px 5px; border-radius: 4px; display: inline-block; }
-    .home-header-btns { display: flex; align-items: center; gap: 6px; }
+    .home-header-btns { display: flex; align-items: center; gap: 5px; }
     .user-header-avatar { width: 34px; height: 34px; border-radius: 10px; background: var(--blue); border: var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
@@ -214,10 +214,11 @@
           <div id="home-datetime" class="home-datetime">Today</div>
         </div>
         <div class="home-header-btns">
+          <button id="enable-notif-btn" style="background:var(--green); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">🔔 Alerts</button>
           <div id="user-header-avatar" class="user-header-avatar"></div>
-          <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:8px; font-size:10px; font-weight:800; padding:5px 8px; cursor:pointer; box-shadow:var(--shadow-sm);">Username</button>
-          <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:8px; font-size:10px; font-weight:800; padding:5px 8px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
-          <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:13px; font-weight: 800; cursor:pointer;">Exit</button>
+          <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Name</button>
+          <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
+          <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:12px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
       </div>
 
@@ -401,6 +402,7 @@
     const chutibatichchiChangeUserBtn = document.getElementById("chuti-change-user-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
+    const enableNotifBtn = document.getElementById("enable-notif-btn");
 
     const userHeaderAvatar = document.getElementById("user-header-avatar");
     const chatHeaderAvatar = document.getElementById("chat-header-avatar");
@@ -454,23 +456,52 @@
       authStatusBox.style.display = "block";
     }
 
+    // Request Browser & Audio Notification Permissions
+    enableNotifBtn.addEventListener("click", () => {
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notifications.");
+        return;
+      }
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          alert("Notifications enabled successfully!");
+          playNotificationSound(); // Unlock audio context
+        } else {
+          alert("Notification permission denied.");
+        }
+      });
+    });
+
     // In-App Notification Audio Chime (Web Audio API)
     function playNotificationSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.35);
       } catch (e) {
-        // Audio context blocked until user interaction
+        console.error("Audio unlock needed", e);
+      }
+    }
+
+    // Trigger Browser Push Notification
+    function showBrowserNotification(senderName, text) {
+      if (document.hidden && "Notification" in window && Notification.permission === "granted") {
+        new Notification(`New message from ${senderName}`, {
+          body: text || "Sent an attachment/audio note",
+          icon: "https://api.iconify.design/twemoji:bird.svg"
+        });
       }
     }
 
@@ -531,6 +562,7 @@
         };
         localStorage.setItem("bmchat_user_session", JSON.stringify(currentUser));
         
+        playNotificationSound(); // User gesture unlock
         authScreen.classList.add("hidden");
         showHomeScreen();
         setupPresenceStatus();
@@ -599,7 +631,6 @@
     });
 
     document.getElementById("home-logout-btn").addEventListener("click", () => {
-      // Set presence offline before exiting
       if (currentUser) {
         set(dbRef(db, `presence/${currentUser.key}`), { activeChat: null });
       }
@@ -693,7 +724,6 @@
 
         homeScreen.classList.add("hidden");
         
-        // Set presence: active inside this chat
         set(dbRef(db, `presence/${currentUser.key}`), { activeChat: partnerKey });
 
         await remove(dbRef(db, `users/${currentUser.key}/unread/${partnerKey}`));
@@ -705,14 +735,12 @@
       listenForUnreadCounts();
     }
 
-    // STRICT ACTIVE-IN-CHAT ONLINE STATUS LISTENER
     function listenForPartnerPresence() {
       if (!currentUser || !selectedMember) return;
       const partnerPresenceRef = dbRef(db, `presence/${selectedMember.key}/activeChat`);
       
       onValue(partnerPresenceRef, (snapshot) => {
         const activeChatWith = snapshot.exists() ? snapshot.val() : null;
-        // Partner is considered online ONLY if they are currently inside chat with current user
         if (activeChatWith === currentUser.key) {
           statusDot.classList.add("online");
           statusText.innerText = "Online";
@@ -966,9 +994,9 @@
         remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
 
         const msgData = snapshot.val();
-        // Play notification sound if message is incoming and not initial load
         if (!isInitialLoad && msgData.uid !== currentUser.key) {
           playNotificationSound();
+          showBrowserNotification(msgData.sender, msgData.text);
         }
 
         const msgDiv = renderMessageHTML(snapshot.key, msgData);
@@ -1043,9 +1071,10 @@
       onValue(callRoomRef, async (snapshot) => {
         const data = snapshot.val();
         if (data && data.status === "calling" && data.callerUid !== currentUser.key) {
+          playNotificationSound();
           callUserTitle.innerText = data.callerName;
           callStatusLabel.innerText = "Incoming Voice Call";
-          acceptCallBtn.classList.add("hidden");
+          acceptCallBtn.classList.remove("hidden");
           callScreen.classList.remove("hidden");
 
           acceptCallBtn.onclick = async () => {
