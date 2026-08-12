@@ -55,7 +55,6 @@
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
 
-    /* Retro Dog & Cat Waving Mascot Banner */
     .retro-mascot-banner {
       background: var(--yellow); border: var(--border); border-radius: 18px; padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between; width: 100%;
@@ -73,8 +72,6 @@
     .home-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
     .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); }
     .home-header-btns { display: flex; gap: 6px; }
-
-    .home-actions-bar { padding: 14px 16px 4px 16px; }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
@@ -192,7 +189,6 @@
       </div>
 
       <div class="input-group">
-        <!-- Input placeholder updated to strictly 'Username' -->
         <input type="text" id="auth-username" placeholder="Username" autocomplete="username" />
         <input type="password" id="auth-password" placeholder="Password" />
       </div>
@@ -213,7 +209,6 @@
           <div class="home-subtitle">Bbu & Me Chat App</div>
         </div>
         <div class="home-header-btns">
-          <!-- Button to change username specifically for Malshi's account or profile -->
           <button id="malshi-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Change Username</button>
           <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
@@ -288,11 +283,12 @@
     </footer>
   </div>
 
-  <!-- Edit Profile Modal (Name & Password Changer) -->
+  <!-- Edit Profile & Password Modal -->
   <div id="profile-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Profile Changer</h3>
       <input type="text" id="profile-new-name" placeholder="New Display Name / Username" />
+      <input type="password" id="profile-current-pass" placeholder="Existing Password" />
       <input type="password" id="profile-new-pass" placeholder="New Password (optional)" />
       <div class="edit-modal-actions">
         <button id="profile-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
@@ -395,6 +391,7 @@
 
     const profileModal = document.getElementById("profile-modal");
     const profileNewName = document.getElementById("profile-new-name");
+    const profileCurrentPass = document.getElementById("profile-current-pass");
     const profileNewPass = document.getElementById("profile-new-pass");
     const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
     const malshiChangeUserBtn = document.getElementById("malshi-change-user-btn");
@@ -489,7 +486,6 @@
 
       const accInfo = ACCOUNTS[inputUser];
 
-      // Check for custom username & password in Firebase DB
       const nameSnap = await get(dbRef(db, `accounts/${accInfo.key}/username`));
       const passSnap = await get(dbRef(db, `accounts/${accInfo.key}/password`));
       
@@ -512,10 +508,11 @@
       }
     });
 
-    // PROFILE MODAL (CHANGING DISPLAY NAME & PASSWORD)
+    // PROFILE MODAL (REQUIRE EXISTING PASSWORD TO CHANGE NAME/PASSWORD)
     function openProfileModal() {
       if (!currentUser) return;
       profileNewName.value = currentUser.username || "";
+      profileCurrentPass.value = "";
       profileNewPass.value = "";
       profileModal.classList.remove("hidden");
     }
@@ -528,18 +525,40 @@
     profileSaveBtn.addEventListener("click", async () => {
       if (!currentUser) return;
       const newName = profileNewName.value.trim();
-      const newPass = profileNewPass.value.trim();
+      const currentPassInput = profileCurrentPass.value.trim();
+      const newPassInput = profileNewPass.value.trim();
 
-      if (newName) {
+      // Check current password against Firebase DB or default
+      const accInfo = ACCOUNTS[currentUser.key];
+      const passSnap = await get(dbRef(db, `accounts/${currentUser.key}/password`));
+      const validCurrentPass = passSnap.exists() ? passSnap.val() : accInfo.defaultPass;
+
+      if (newName !== currentUser.username || newPassInput) {
+        if (!currentPassInput) {
+          alert("Please enter your existing password to authorize changes.");
+          return;
+        }
+
+        if (currentPassInput !== validCurrentPass) {
+          alert("Incorrect Existing Password!");
+          return;
+        }
+      }
+
+      if (newName && newName !== currentUser.username) {
         await set(dbRef(db, `accounts/${currentUser.key}/username`), newName);
         currentUser.username = newName;
       }
 
-      if (newPass && newPass.length >= 3) {
-        await set(dbRef(db, `accounts/${currentUser.key}/password`), newPass);
+      if (newPassInput) {
+        if (newPassInput.length < 3) {
+          alert("New password must be at least 3 characters.");
+          return;
+        }
+        await set(dbRef(db, `accounts/${currentUser.key}/password`), newPassInput);
       }
 
-      if (newName || newPass) {
+      if (newName || newPassInput) {
         localStorage.setItem("bmchat_user_session", JSON.stringify(currentUser));
         alert("Profile updated successfully!");
         profileModal.classList.add("hidden");
@@ -584,14 +603,12 @@
       selectedMember = null;
       membersList.innerHTML = "";
 
-      // Show Malshi's dedicated "Change Username" button if logged in as Malshi
       if (currentUser && currentUser.key === "malshi") {
         malshiChangeUserBtn.classList.remove("hidden");
       } else {
         malshiChangeUserBtn.classList.add("hidden");
       }
 
-      // Fetch dynamic username for partner if updated
       const partnerKey = currentUser.key === "sahansa" ? "malshi" : "sahansa";
       const partnerDefaultInfo = ACCOUNTS[partnerKey];
       const partnerNameSnap = await get(dbRef(db, `accounts/${partnerKey}/username`));
