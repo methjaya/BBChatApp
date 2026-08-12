@@ -214,7 +214,7 @@
     <div id="home-screen" class="hidden">
       <div class="home-header">
         <div>
-          <div class="home-title">B&M Chat app+</div>
+          <div class="home-title">B&M Chat app</div>
           <div class="home-subtitle">Bbu & Me Chat App</div>
           <div id="home-datetime" class="home-datetime">Today</div>
         </div>
@@ -222,6 +222,8 @@
           <div id="user-header-avatar" class="user-header-avatar"></div>
           <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Name</button>
           <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
+          <!-- Sahansa Reset Chat Button -->
+          <button id="sahansa-reset-chat-btn" class="hidden" style="background:var(--danger); color:white; border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Reset Chat</button>
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:12px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
       </div>
@@ -404,6 +406,7 @@
     const profileNewPass = document.getElementById("profile-new-pass");
     const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
     const chutibatichchiChangeUserBtn = document.getElementById("chuti-change-user-btn");
+    const sahansaResetChatBtn = document.getElementById("sahansa-reset-chat-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
 
@@ -459,18 +462,15 @@
       authStatusBox.style.display = "block";
     }
 
-    // In-App Notification Audio Chime (Web Audio API)
     function playNotificationSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
         gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
         osc.connect(gain);
@@ -607,6 +607,20 @@
       }
     });
 
+    // SAHANSA RESET CHAT ACTION
+    sahansaResetChatBtn.addEventListener("click", async () => {
+      if (currentUser && currentUser.key === "sahansa") {
+        if (confirm("Are you sure you want to clear and reset the chat history?")) {
+          const chatId = getChatId("sahansa", "chutibatichchi");
+          await remove(dbRef(db, `chats/${chatId}/messages`));
+          alert("Chat history reset successfully.");
+          if (selectedMember) {
+            chatBox.innerHTML = "";
+          }
+        }
+      }
+    });
+
     document.getElementById("home-logout-btn").addEventListener("click", () => {
       if (currentUser) {
         set(dbRef(db, `presence/${currentUser.key}`), { activeChat: null });
@@ -660,6 +674,13 @@
         chutibatichchiChangeUserBtn.classList.remove("hidden");
       } else {
         chutibatichchiChangeUserBtn.classList.add("hidden");
+      }
+
+      // Show Sahansa Reset Chat Button exclusively for Sahansa
+      if (currentUser && currentUser.key === "sahansa") {
+        sahansaResetChatBtn.classList.remove("hidden");
+      } else {
+        sahansaResetChatBtn.classList.add("hidden");
       }
 
       const partnerKey = currentUser.key === "sahansa" ? "chutibatichchi" : "sahansa";
@@ -886,6 +907,7 @@
       return msgDiv;
     }
 
+    // ANY-TIME EDIT & DELETE FOR EVERYONE (TIME RESTRICTION REMOVED)
     function openActionSheet(msgId, data) {
       if (data.deletedForEveryone || !selectedMember) return;
       activeSelectedMsg = { id: msgId, ...data };
@@ -893,9 +915,8 @@
 
       const chatId = getChatId(currentUser.key, selectedMember.key);
       const isMe = currentUser && data.uid === currentUser.key;
-      const isWithinOneMin = (Date.now() - data.timestamp) <= 60000;
 
-      if (isMe && isWithinOneMin && data.text && !data.image && !data.audio) {
+      if (isMe && data.text && !data.image && !data.audio) {
         const editBtn = document.createElement("button");
         editBtn.className = "action-btn";
         editBtn.innerText = "Edit Message";
@@ -907,7 +928,7 @@
         actionSheetButtons.appendChild(editBtn);
       }
 
-      if (isMe && isWithinOneMin) {
+      if (isMe) {
         const delEveryoneBtn = document.createElement("button");
         delEveryoneBtn.className = "action-btn danger";
         delEveryoneBtn.innerText = "Delete for Everyone";
@@ -939,12 +960,6 @@
     editSaveBtn.addEventListener("click", async () => {
       if (!activeSelectedMsg || !selectedMember) return;
       const chatId = getChatId(currentUser.key, selectedMember.key);
-      const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
-      if (!isWithinOneMin) {
-        alert("Time limit expired!");
-        editModalOverlay.classList.add("hidden");
-        return;
-      }
       const newText = editMessageInput.value.trim();
       if (newText && newText !== activeSelectedMsg.text) {
         await update(dbRef(db, `chats/${chatId}/messages/${activeSelectedMsg.id}`), { text: newText, edited: true });
