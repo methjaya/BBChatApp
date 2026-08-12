@@ -134,6 +134,8 @@
     .msg audio { max-width: 220px; height: 38px; margin-top: 6px; border-radius: 18px; outline: none; }
     .msg-author { font-size: 11px; opacity: 0.8; margin-bottom: 2px; font-weight: 800; text-transform: uppercase; }
     .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 4px; font-size: 10px; font-weight: 700; opacity: 0.75; }
+    .msg-ticks { font-size: 11px; font-weight: 900; margin-left: 3px; display: inline-block; color: #52525B; }
+    .msg-ticks.seen { color: #2563EB; }
 
     footer { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: var(--border); padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; z-index: 10; }
     .file-btn { color: var(--text-dark); cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; background: var(--yellow); border: var(--border); border-radius: 12px; box-shadow: var(--shadow-sm); }
@@ -153,19 +155,24 @@
     .edit-modal-box h3 { font-size: 18px; font-weight: 900; text-align: center; color: var(--text-dark); }
     .edit-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
 
-    /* Call Screen Styles & Video Feeds */
-    .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px; text-align: center; }
-    .call-avatar { width: 90px; height: 90px; border-radius: 26px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden; }
-    .call-status { font-size: 14px; font-weight: 700; color: var(--text-gray); margin-top: 4px; }
+    /* Non-overlapping, clean vertical Call Screen Layout */
+    .call-screen { position: fixed; inset: 0; background: var(--bg-color); color: var(--text-dark); z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 36px 20px; text-align: center; }
+    .call-top-zone { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 130; }
+    .call-avatar { width: 90px; height: 90px; border-radius: 26px; background: var(--blue); border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; box-shadow: var(--shadow); overflow: hidden; }
+    .call-status { font-size: 14px; font-weight: 700; color: var(--text-gray); }
+    .call-timer { font-size: 16px; font-weight: 900; color: var(--text-dark); background: var(--yellow); padding: 4px 12px; border-radius: 10px; border: var(--border); box-shadow: var(--shadow-sm); display: inline-block; margin-top: 4px; }
     
     .video-container { position: absolute; inset: 0; background: #18181B; z-index: 125; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     #remote-video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-    #local-video { width: 100px; height: 140px; object-fit: cover; position: absolute; top: 24px; right: 20px; border: var(--border); border-radius: 14px; background: #000; z-index: 130; box-shadow: var(--shadow); }
+    #local-video { width: 90px; height: 130px; object-fit: cover; position: absolute; top: 24px; right: 20px; border: var(--border); border-radius: 12px; background: #000; z-index: 130; box-shadow: var(--shadow); }
 
-    .call-controls-bar { position: absolute; bottom: 30px; left: 20px; right: 20px; z-index: 135; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
-    .call-ctrl-btn { background: var(--card-bg); border: var(--border); border-radius: 14px; padding: 10px 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 6px; color: var(--text-dark); }
+    .call-controls-zone { z-index: 135; display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; align-items: center; }
+    .call-controls-row { display: flex; gap: 8px; justify-content: center; width: 100%; }
+    .call-ctrl-btn { background: var(--card-bg); border: var(--border); border-radius: 14px; padding: 10px 12px; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--text-dark); flex: 1; }
     .call-ctrl-btn.active { background: var(--green); }
-    .call-actions { display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px; }
+    .device-select { background: var(--card-bg); border: var(--border); border-radius: 14px; padding: 10px; font-size: 11px; font-weight: 800; color: var(--text-dark); outline: none; width: 100%; box-shadow: var(--shadow-sm); }
+
+    .call-actions { display: flex; gap: 20px; width: 100%; justify-content: center; z-index: 135; }
     .call-btn { width: 60px; height: 60px; border-radius: 18px; border: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); }
     .call-btn.accept { background: var(--green); color: var(--text-dark); }
     .call-btn.decline { background: var(--danger); color: white; }
@@ -316,11 +323,13 @@
     </div>
   </div>
 
+  <!-- Action Sheet Overlay for Message Options -->
   <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
     <div class="action-sheet" id="action-sheet-buttons"></div>
     <button class="action-cancel" id="action-sheet-cancel">Cancel</button>
   </div>
 
+  <!-- Edit Message Modal with Back Button -->
   <div id="edit-modal-overlay" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Edit Message</h3>
@@ -336,27 +345,33 @@
     <img id="modal-img" src="" alt="Full view" />
   </div>
 
-  <!-- Fully Featured Call & Video Screen -->
+  <!-- Non-overlapping, structured Call Screen -->
   <div id="call-screen" class="call-screen hidden">
     <div id="video-wrapper" class="hidden">
       <video id="remote-video" autoplay playsinline></video>
       <video id="local-video" autoplay playsinline muted></video>
     </div>
 
-    <div id="audio-call-info" style="z-index: 130;">
+    <!-- Top Zone: Avatar & Status & Call Timer -->
+    <div class="call-top-zone">
       <div class="call-avatar" id="call-avatar-icon"></div>
       <h2 id="call-user-title">Voice Call</h2>
       <div id="call-status-label" class="call-status">Connecting...</div>
+      <div id="call-timer" class="call-timer hidden">00:00</div>
     </div>
 
-    <!-- In-Call Controls Bar (Mute, Speakerphone, Device Selection) -->
-    <div class="call-controls-bar">
-      <button id="mute-btn" class="call-ctrl-btn">Mute</button>
-      <button id="speaker-btn" class="call-ctrl-btn">Speaker</button>
-      <select id="audio-device-select" class="call-ctrl-btn" style="background:var(--card-bg); outline:none; max-width:140px;"></select>
+    <!-- Controls Zone: Mute, Speaker, Bluetooth / Mic Inputs -->
+    <div class="call-controls-zone">
+      <div class="call-controls-row">
+        <button id="mute-btn" class="call-ctrl-btn">Mute</button>
+        <button id="speaker-btn" class="call-ctrl-btn">Speaker</button>
+      </div>
+      <select id="audio-input-select" class="device-select" title="Microphone / Bluetooth Mic"></select>
+      <select id="audio-output-select" class="device-select" title="Speaker / Bluetooth Headset"></select>
     </div>
 
-    <div class="call-actions" style="z-index: 135;">
+    <!-- Bottom Actions Zone -->
+    <div class="call-actions">
       <button id="accept-call-btn" class="call-btn accept hidden" title="Answer Call">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
       </button>
@@ -405,6 +420,8 @@
     let peerConnection = null;
     let localStream = null;
     let ringtoneInterval = null;
+    let callTimerInterval = null;
+    let callSeconds = 0;
 
     const rtcServers = {
       iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }]
@@ -459,6 +476,7 @@
     const callScreen = document.getElementById("call-screen");
     const callUserTitle = document.getElementById("call-user-title");
     const callStatusLabel = document.getElementById("call-status-label");
+    const callTimer = document.getElementById("call-timer");
     const acceptCallBtn = document.getElementById("accept-call-btn");
     const hangupCallBtn = document.getElementById("hangup-call-btn");
     const startCallBtn = document.getElementById("start-call-btn");
@@ -467,11 +485,11 @@
     const videoWrapper = document.getElementById("video-wrapper");
     const remoteVideo = document.getElementById("remote-video");
     const localVideo = document.getElementById("local-video");
-    const audioCallInfo = document.getElementById("audio-call-info");
 
     const muteBtn = document.getElementById("mute-btn");
     const speakerBtn = document.getElementById("speaker-btn");
-    const audioDeviceSelect = document.getElementById("audio-device-select");
+    const audioInputSelect = document.getElementById("audio-input-select");
+    const audioOutputSelect = document.getElementById("audio-output-select");
 
     function getChatId(key1, key2) {
       return [key1, key2].sort().join("_");
@@ -509,12 +527,9 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.35);
-      } catch (e) {
-        console.error("Audio unlock needed", e);
-      }
+      } catch (e) {}
     }
 
-    // Play Incoming Call Ringtone Melody
     function startRingtone() {
       stopRingtone();
       ringtoneInterval = setInterval(() => {
@@ -542,6 +557,27 @@
         clearInterval(ringtoneInterval);
         ringtoneInterval = null;
       }
+    }
+
+    function startCallTimer() {
+      stopCallTimer();
+      callSeconds = 0;
+      callTimer.classList.remove("hidden");
+      callTimer.innerText = "00:00";
+      callTimerInterval = setInterval(() => {
+        callSeconds++;
+        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+        const secs = (callSeconds % 60).toString().padStart(2, '0');
+        callTimer.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopCallTimer() {
+      if (callTimerInterval) {
+        clearInterval(callTimerInterval);
+        callTimerInterval = null;
+      }
+      callTimer.classList.add("hidden");
     }
 
     tabLogin.addEventListener("click", () => {
@@ -587,7 +623,6 @@
       }
 
       const accInfo = ACCOUNTS[inputUser];
-
       const nameSnap = await get(dbRef(db, `accounts/${accInfo.key}/username`));
       const passSnap = await get(dbRef(db, `accounts/${accInfo.key}/password`));
       
@@ -621,7 +656,6 @@
 
     editProfileOpenBtn.addEventListener("click", openProfileModal);
     chutibatichchiChangeUserBtn.addEventListener("click", openProfileModal);
-
     profileCancelBtn.addEventListener("click", () => profileModal.classList.add("hidden"));
 
     profileSaveBtn.addEventListener("click", async () => {
@@ -639,7 +673,6 @@
           alert("Please enter your existing password to authorize changes.");
           return;
         }
-
         if (currentPassInput !== validCurrentPass) {
           alert("Incorrect Existing Password!");
           return;
@@ -675,9 +708,7 @@
           const chatId = getChatId("sahansa", "chutibatichchi");
           await remove(dbRef(db, `chats/${chatId}/messages`));
           alert("Chat history reset successfully.");
-          if (selectedMember) {
-            chatBox.innerHTML = "";
-          }
+          if (selectedMember) { chatBox.innerHTML = ""; }
         }
       }
     });
@@ -703,7 +734,6 @@
       
       onValue(unreadRef, (snapshot) => {
         const unreadData = snapshot.exists() ? snapshot.val() : {};
-        
         const friendCards = document.querySelectorAll(".member-card");
         friendCards.forEach((card) => {
           const key = card.dataset.key;
@@ -781,16 +811,31 @@
         callAvatarIcon.innerHTML = partnerInfo.avatar;
 
         homeScreen.classList.add("hidden");
-        
         set(dbRef(db, `presence/${currentUser.key}`), { activeChat: partnerKey });
 
         await remove(dbRef(db, `users/${currentUser.key}/unread/${partnerKey}`));
+        markMessagesAsSeen();
         listenForMessages();
         listenForPartnerPresence();
       });
 
       membersList.appendChild(card);
       listenForUnreadCounts();
+    }
+
+    async function markMessagesAsSeen() {
+      if (!currentUser || !selectedMember) return;
+      const chatId = getChatId(currentUser.key, selectedMember.key);
+      const messagesRef = dbRef(db, `chats/${chatId}/messages`);
+      const snap = await get(messagesRef);
+      if (snap.exists()) {
+        snap.forEach((childSnap) => {
+          const m = childSnap.val();
+          if (m.uid !== currentUser.key && !m.seen) {
+            update(dbRef(db, `chats/${chatId}/messages/${childSnap.key}`), { seen: true });
+          }
+        });
+      }
     }
 
     function listenForPartnerPresence() {
@@ -831,7 +876,7 @@
       if (text !== "" && currentUser && selectedMember) {
         pushMessageToFirebase({ 
           uid: currentUser.key, sender: currentUser.username, text: text, image: null, audio: null,
-          timestamp: Date.now(), edited: false, deletedForEveryone: false
+          timestamp: Date.now(), edited: false, deletedForEveryone: false, seen: false
         });
         messageInput.value = "";
       }
@@ -879,7 +924,8 @@
             audio: null,
             timestamp: Date.now(),
             edited: false,
-            deletedForEveryone: false
+            deletedForEveryone: false,
+            seen: false
           });
         };
         img.src = event.target.result;
@@ -913,7 +959,7 @@
               pushMessageToFirebase({
                 uid: currentUser.key, sender: currentUser.username, text: "",
                 image: null, audio: base64Audio, timestamp: Date.now(),
-                edited: false, deletedForEveryone: false
+                edited: false, deletedForEveryone: false, seen: false
               });
             };
             stream.getTracks().forEach(track => track.stop());
@@ -951,7 +997,14 @@
       if (data.image) content += `<img src="${data.image}" alt="photo" class="chat-img" />`;
       if (data.audio) content += `<audio controls playsinline src="${data.audio}"></audio>`;
       
-      content += `<div class="msg-footer">${data.edited ? '<span class="edited-tag">edited</span> • ' : ''}<span>${formatTime(data.timestamp)}</span></div>`;
+      // Delivered & Seen Checkmarks for Sent Messages
+      let ticksHTML = "";
+      if (isMe) {
+        const seenClass = data.seen ? "seen" : "";
+        ticksHTML = `<span class="msg-ticks ${seenClass}" title="${data.seen ? 'Seen' : 'Delivered'}">✓✓</span>`;
+      }
+
+      content += `<div class="msg-footer">${data.edited ? '<span class="edited-tag">edited</span> • ' : ''}<span>${formatTime(data.timestamp)}</span>${ticksHTML}</div>`;
       msgDiv.innerHTML = content;
 
       const imgEl = msgDiv.querySelector(".chat-img");
@@ -1037,12 +1090,14 @@
       chatBox.innerHTML = "";
 
       remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
+      markMessagesAsSeen();
 
       let isInitialLoad = true;
       setTimeout(() => { isInitialLoad = false; }, 1000);
 
       onChildAdded(messagesRef, (snapshot) => {
         remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
+        markMessagesAsSeen();
 
         const msgData = snapshot.val();
         if (!isInitialLoad && msgData.uid !== currentUser.key) {
@@ -1071,23 +1126,31 @@
       });
     }
 
-    // AUDIO DEVICE SELECTION & MUTE / SPEAKER CONTROLS
-    async function populateAudioDevices() {
+    // POPULATE BLUETOOTH / AUDIO INPUT & OUTPUT DEVICES
+    async function populateMediaDevices() {
       try {
+        await navigator.mediaDevices.getUserMedia({ audio: true }); // trigger permission prompt
         const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioInputs = devices.filter(d => d.kind === 'audioinput');
-        audioDeviceSelect.innerHTML = "";
-        audioInputs.forEach((device, index) => {
+        
+        audioInputSelect.innerHTML = "";
+        audioOutputSelect.innerHTML = "";
+
+        devices.forEach((device) => {
           const option = document.createElement("option");
           option.value = device.deviceId;
-          option.text = device.label || `Microphone ${index + 1}`;
-          audioDeviceSelect.appendChild(option);
+          option.text = device.label || `${device.kind} (${device.deviceId.slice(0, 5)})`;
+          
+          if (device.kind === 'audioinput') {
+            audioInputSelect.appendChild(option);
+          } else if (device.kind === 'audiooutput') {
+            audioOutputSelect.appendChild(option);
+          }
         });
       } catch(e) {}
     }
 
-    audioDeviceSelect.addEventListener("change", async () => {
-      const deviceId = audioDeviceSelect.value;
+    audioInputSelect.addEventListener("change", async () => {
+      const deviceId = audioInputSelect.value;
       if (!localStream) return;
       try {
         const newStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: deviceId } }, video: localStream.getVideoTracks().length > 0 });
@@ -1095,6 +1158,16 @@
         const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'audio');
         if (sender) sender.replaceTrack(audioTrack);
         localStream = newStream;
+      } catch(e) {}
+    });
+
+    audioOutputSelect.addEventListener("change", async () => {
+      const deviceId = audioOutputSelect.value;
+      try {
+        if (typeof remoteAudio.setSinkId === 'function') {
+          await remoteAudio.setSinkId(deviceId);
+          await remoteVideo.setSinkId(deviceId);
+        }
       } catch(e) {}
     });
 
@@ -1116,7 +1189,7 @@
       speakerBtn.classList.toggle("active", isSpeakerOn);
     });
 
-    // INITIATE CALL (Voice or Video)
+    // INITIATE CALL
     async function initiateCall(isVideo) {
       if (!currentUser || !selectedMember) return;
       try {
@@ -1159,13 +1232,14 @@
         callStatusLabel.innerText = "Ringing...";
         acceptCallBtn.classList.add("hidden");
         callScreen.classList.remove("hidden");
-        populateAudioDevices();
+        populateMediaDevices();
 
         onValue(child(callRoomRef, "answer"), (snapshot) => {
           const answer = snapshot.val();
           if (answer && peerConnection && !peerConnection.currentRemoteDescription) {
             peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
             callStatusLabel.innerText = "Connected";
+            startCallTimer();
           }
         });
 
@@ -1211,9 +1285,7 @@
 
             try {
               localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: isVideoCall });
-              if (isVideoCall) {
-                localVideo.srcObject = localStream;
-              }
+              if (isVideoCall) { localVideo.srcObject = localStream; }
 
               peerConnection = new RTCPeerConnection(rtcServers);
               localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -1244,7 +1316,8 @@
               });
 
               callStatusLabel.innerText = "Connected";
-              populateAudioDevices();
+              startCallTimer();
+              populateMediaDevices();
             } catch(err) {
               alert("Could not access camera/microphone.");
             }
@@ -1257,6 +1330,7 @@
 
     async function endCall(notifyPeer = true) {
       stopRingtone();
+      stopCallTimer();
       if (notifyPeer) {
         await update(dbRef(db, "active_call"), { status: "ended" });
         setTimeout(() => remove(dbRef(db, "active_call")), 1000);
@@ -1268,6 +1342,7 @@
       }
       callScreen.classList.add("hidden");
       videoWrapper.classList.add("hidden");
+      audioCallInfo.classList.remove("hidden");
     }
   </script>
 </body>
