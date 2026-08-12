@@ -48,11 +48,10 @@
     input { width: 100%; padding: 14px 16px; border-radius: 16px; border: var(--border); font-size: 15px; font-weight: 700; outline: none; background: var(--card-bg); color: var(--text-dark); box-shadow: var(--shadow-sm); }
     input:focus { background: #FFFFFF; transform: translate(-1px, -1px); box-shadow: var(--shadow); }
 
-    .formatted-preview { font-size: 12px; font-weight: 800; color: #2B8A3E; text-align: left; padding-left: 4px; }
-
-    .status-msg { width: 100%; padding: 10px; border-radius: 12px; border: var(--border); font-size: 13px; font-weight: 800; margin-bottom: 12px; display: none; }
-    .status-msg.error { background: #FFE3E3; color: #D6336C; }
-    .status-msg.success { background: #D3F9D8; color: #2B8A3E; }
+    .phone-hint { font-size: 12px; font-weight: 800; color: #2B8A3E; text-align: left; padding-left: 4px; }
+    .status-badge { width: 100%; padding: 10px; border-radius: 12px; border: var(--border); font-size: 12px; font-weight: 800; display: none; margin-bottom: 12px; }
+    .status-badge.error { background: #FFE3E3; color: #D6336C; }
+    .status-badge.info { background: #D3F9D8; color: #2B8A3E; }
 
     .btn { width: 100%; padding: 16px; border-radius: 16px; border: var(--border); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: transform 0.1s; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
@@ -140,7 +139,7 @@
 </head>
 <body>
 
-  <!-- Recaptcha Container -->
+  <!-- Invisible Recaptcha Element -->
   <div id="recaptcha-container"></div>
 
   <div id="app">
@@ -150,7 +149,7 @@
       <h1>BBChatApp</h1>
       <p id="auth-desc">Sign in with Mobile Phone & PIN</p>
 
-      <div id="auth-status" class="status-msg"></div>
+      <div id="auth-status-box" class="status-badge"></div>
 
       <div class="auth-toggle">
         <button id="tab-login" class="auth-tab active">Log In</button>
@@ -162,7 +161,7 @@
           <input type="tel" id="auth-phone" placeholder="0701581056" autocomplete="tel" />
           <button id="send-otp-btn" class="btn-sm hidden">Send OTP</button>
         </div>
-        <div id="phone-preview" class="formatted-preview"></div>
+        <div id="phone-hint" class="phone-hint"></div>
         <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" autocomplete="name" />
         <input type="password" id="auth-pin" maxlength="6" pattern="\d*" placeholder="4-Digit PIN" />
         <input type="text" id="auth-otp" class="hidden" maxlength="6" placeholder="6-Digit Verification Code" />
@@ -344,8 +343,8 @@
     const authScreen = document.getElementById("auth-screen");
     const homeScreen = document.getElementById("home-screen");
     const membersList = document.getElementById("members-list");
-    const authStatus = document.getElementById("auth-status");
-    const phonePreview = document.getElementById("phone-preview");
+    const authStatusBox = document.getElementById("auth-status-box");
+    const phoneHint = document.getElementById("phone-hint");
 
     const authPhone = document.getElementById("auth-phone");
     const authName = document.getElementById("auth-name");
@@ -419,19 +418,18 @@
       return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    function showStatus(msg, isError = true) {
-      authStatus.innerText = msg;
-      authStatus.className = `status-msg ${isError ? 'error' : 'success'}`;
-      authStatus.style.display = "block";
+    function displayAuthStatus(msg, isError = true) {
+      authStatusBox.innerText = msg;
+      authStatusBox.className = `status-badge ${isError ? 'error' : 'info'}`;
+      authStatusBox.style.display = "block";
     }
 
-    // Auto-update phone number preview as user types
     authPhone.addEventListener("input", () => {
       const formatted = formatSriLankanPhone(authPhone.value.trim());
       if (authPhone.value.trim().length >= 9) {
-        phonePreview.innerText = `Formatted: ${formatted}`;
+        phoneHint.innerText = `Sending code to: ${formatted}`;
       } else {
-        phonePreview.innerText = "";
+        phoneHint.innerText = "";
       }
     });
 
@@ -453,11 +451,11 @@
 
       try {
         confirmationResultObj = await signInWithPhoneNumber(auth, formattedNumber, window.recaptchaVerifier);
-        showStatus(`Verification code sent to ${formattedNumber}`, false);
+        displayAuthStatus(`SMS code sent to ${formattedNumber}`, false);
         buttonEl.innerText = "Sent!";
       } catch (error) {
         console.error("SMS Error:", error);
-        showStatus("SMS failed: " + error.message, true);
+        displayAuthStatus("SMS Error: " + error.message, true);
         buttonEl.innerText = "Send OTP";
         buttonEl.disabled = false;
         if (window.recaptchaVerifier) window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
@@ -465,7 +463,7 @@
     }
 
     sendOtpBtn.addEventListener("click", () => {
-      if (authPhone.value.trim().length < 7) { showStatus("Enter a valid phone number."); return; }
+      if (authPhone.value.trim().length < 7) { displayAuthStatus("Enter a valid phone number."); return; }
       sendRealSMSOTP(authPhone.value.trim(), sendOtpBtn);
     });
 
@@ -485,7 +483,7 @@
       authDesc.innerText = "Sign in with Mobile Phone & PIN";
       authBtn.innerText = "Log In";
       forgotPinBtn.classList.remove("hidden");
-      authStatus.style.display = "none";
+      authStatusBox.style.display = "none";
     });
 
     tabRegister.addEventListener("click", () => {
@@ -495,10 +493,10 @@
       authName.classList.remove("hidden");
       authOtp.classList.remove("hidden");
       sendOtpBtn.classList.remove("hidden");
-      authDesc.innerText = "Set up Phone, Name, PIN & Verification Code";
+      authDesc.innerText = "Set up Phone, Name, PIN & SMS Verification";
       authBtn.innerText = "Register";
       forgotPinBtn.classList.add("hidden");
-      authStatus.style.display = "none";
+      authStatusBox.style.display = "none";
     });
 
     // Auto Login Session
@@ -521,8 +519,8 @@
       const phoneKey = cleanPhone(rawPhone);
       const pin = authPin.value.trim();
 
-      if (!phoneKey || phoneKey.length < 7) { showStatus("Enter a valid mobile phone number."); return; }
-      if (!pin || pin.length < 4) { showStatus("Enter a valid PIN (minimum 4 digits)."); return; }
+      if (!phoneKey || phoneKey.length < 7) { displayAuthStatus("Enter a valid mobile phone number."); return; }
+      if (!pin || pin.length < 4) { displayAuthStatus("Enter a valid PIN (minimum 4 digits)."); return; }
 
       const userRef = dbRef(db, `users/${phoneKey}`);
       const dbSnap = await get(userRef);
@@ -531,9 +529,9 @@
         const name = authName.value.trim();
         const enteredOtp = authOtp.value.trim();
 
-        if (!name) { showStatus("Enter your display name."); return; }
-        if (!enteredOtp || !confirmationResultObj) { showStatus("Please request and enter the SMS verification code."); return; }
-        if (dbSnap.exists()) { showStatus("Account exists. Tap 'Log In'."); return; }
+        if (!name) { displayAuthStatus("Enter your display name."); return; }
+        if (!enteredOtp || !confirmationResultObj) { displayAuthStatus("Please request and enter the SMS verification code."); return; }
+        if (dbSnap.exists()) { displayAuthStatus("Account exists. Tap 'Log In'."); return; }
 
         try {
           await confirmationResultObj.confirm(enteredOtp);
@@ -549,10 +547,10 @@
           setupOnlineStatus();
           listenForIncomingCalls();
         } catch (err) {
-          showStatus("Invalid verification code. Please try again.");
+          displayAuthStatus("Invalid verification code. Try again.");
         }
       } else {
-        if (!dbSnap.exists()) { showStatus("Account not found. Switch to 'Register'."); return; }
+        if (!dbSnap.exists()) { displayAuthStatus("Account not found. Switch to 'Register'."); return; }
 
         const val = dbSnap.val();
         if (val && val.pin === pin) {
@@ -563,7 +561,7 @@
           setupOnlineStatus();
           listenForIncomingCalls();
         } else {
-          showStatus("Incorrect PIN.");
+          displayAuthStatus("Incorrect PIN.");
         }
       }
     });
@@ -583,7 +581,7 @@
       const newPin = resetNewPin.value.trim();
 
       if (!phoneKey || !otpCode || !newPin) { alert("Fill in all fields."); return; }
-      if (!confirmationResultObj) { alert("Please send verification code first."); return; }
+      if (!confirmationResultObj) { alert("Please send SMS verification code first."); return; }
 
       const userRef = dbRef(db, `users/${phoneKey}`);
       const dbSnap = await get(userRef);
@@ -593,7 +591,7 @@
       try {
         await confirmationResultObj.confirm(otpCode);
         await update(userRef, { pin: newPin });
-        alert("PIN reset successful! You can now log in with your new PIN.");
+        alert("PIN reset successful! Log in with your new PIN.");
         forgotPinModal.classList.add("hidden");
       } catch (err) {
         alert("Invalid verification code.");
@@ -734,7 +732,7 @@
     document.getElementById("send-btn").addEventListener("click", sendMessage);
     messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 
-    // HTML5 CANVAS IMAGE COMPRESSION
+    // HTML5 CANVAS CLIENT COMPRESSION (Prevents upload failures)
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
@@ -928,7 +926,7 @@
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
-    // Realtime Message Listener (off() prevents duplication)
+    // Detaches previous listeners (Prevents duplicate messages)
     function listenForMessages() {
       const messagesRef = dbRef(db, "messages");
       off(messagesRef);
