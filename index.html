@@ -161,7 +161,6 @@
       <h1>B&M Chat app</h1>
       <div class="slogan">Bbu & Me Chat App</div>
 
-      <!-- Mascot Waving Banner in Login Screen -->
       <div class="retro-mascot-banner">
         <div class="mascot-text">
           <div class="mascot-title">Hello Sahansa & Chuti!</div>
@@ -199,7 +198,6 @@
         <input type="password" id="auth-password" placeholder="Password" />
       </div>
 
-      <!-- Registration Coming Soon Box -->
       <div id="register-coming-soon" class="hidden" style="margin-bottom:16px; font-weight:800; color:var(--text-gray); font-size:13px; background:#E5E0D8; padding:12px; border-radius:14px; border:var(--border);">
         Registration is disabled. Coming Soon!
       </div>
@@ -223,7 +221,6 @@
         </div>
       </div>
 
-      <!-- Retro Dog & Cat Waving Mascot Banner (Spaced below header) -->
       <div class="retro-mascot-banner home-banner-spaced">
         <div class="mascot-text">
           <div class="mascot-title">Welcome back!</div>
@@ -260,7 +257,7 @@
           <div id="header-name" class="name">Chat Room</div>
           <div class="status">
             <span id="status-dot" class="status-dot"></span>
-            <span id="status-text">Connecting...</span>
+            <span id="status-text">Offline</span>
           </div>
         </div>
       </div>
@@ -291,7 +288,6 @@
     </footer>
   </div>
 
-  <!-- Edit Profile & Password Modal -->
   <div id="profile-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Profile Changer</h3>
@@ -305,13 +301,11 @@
     </div>
   </div>
 
-  <!-- Action Sheet Overlay for Message Options -->
   <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
     <div class="action-sheet" id="action-sheet-buttons"></div>
     <button class="action-cancel" id="action-sheet-cancel">Cancel</button>
   </div>
 
-  <!-- Edit Message Modal -->
   <div id="edit-modal-overlay" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
       <h3>Edit Message</h3>
@@ -363,11 +357,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // CUTE CHIBI BIRD SVG FOR CHUTIBATICHCHI & PANDA SVG FOR SAHANSA
     const BIRD_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#FFD2DD"/><circle cx="18" cy="19" r="11" fill="#FFE9A0" stroke="#18181B" stroke-width="2.5"/><circle cx="15" cy="17" r="2" fill="#18181B"/><circle cx="21" cy="17" r="2" fill="#18181B"/><circle cx="15.6" cy="16.4" r="0.7" fill="#FFFFFF"/><circle cx="21.6" cy="16.4" r="0.7" fill="#FFFFFF"/><ellipse cx="12.5" cy="21" rx="2" ry="1.2" fill="#FF8787"/><ellipse cx="23.5" cy="21" rx="2" ry="1.2" fill="#FF8787"/><polygon points="18,19 21,21 18,23" fill="#FF922B" stroke="#18181B" stroke-width="1.5"/><path d="M15 9C15 7.5 17 6 18 6C19 6 21 7.5 21 9" stroke="#18181B" stroke-width="2" stroke-linecap="round"/></svg>`;
     const PANDA_SVG = `<svg width="34" height="34" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#A2D2FF"/><circle cx="10" cy="10" r="5" fill="#18181B"/><circle cx="26" cy="10" r="5" fill="#18181B"/><circle cx="18" cy="20" r="12" fill="#FFFFFF" stroke="#18181B" stroke-width="2.5"/><ellipse cx="13.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><ellipse cx="22.5" cy="18.5" rx="3" ry="4" fill="#18181B"/><circle cx="14" cy="18" r="1" fill="#FFFFFF"/><circle cx="22" cy="18" r="1" fill="#FFFFFF"/><ellipse cx="18" cy="23" rx="2.5" ry="1.5" fill="#18181B"/></svg>`;
 
-    // Default Accounts Configuration
     const ACCOUNTS = {
       sahansa: { username: "Sahansa", key: "sahansa", defaultPass: "2001", avatar: PANDA_SVG },
       chutibatichchi: { username: "Chutibatichchi", key: "chutibatichchi", defaultPass: "2003", avatar: BIRD_SVG }
@@ -462,6 +454,26 @@
       authStatusBox.style.display = "block";
     }
 
+    // In-App Notification Audio Chime (Web Audio API)
+    function playNotificationSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } catch (e) {
+        // Audio context blocked until user interaction
+      }
+    }
+
     tabLogin.addEventListener("click", () => {
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
@@ -488,7 +500,7 @@
         currentUser = JSON.parse(savedSession);
         authScreen.classList.add("hidden");
         showHomeScreen();
-        setupOnlineStatus();
+        setupPresenceStatus();
         listenForIncomingCalls();
       } catch (e) {
         localStorage.removeItem("bmchat_user_session");
@@ -521,7 +533,7 @@
         
         authScreen.classList.add("hidden");
         showHomeScreen();
-        setupOnlineStatus();
+        setupPresenceStatus();
         listenForIncomingCalls();
       } else {
         displayAuthStatus("Incorrect Password.");
@@ -587,11 +599,20 @@
     });
 
     document.getElementById("home-logout-btn").addEventListener("click", () => {
+      // Set presence offline before exiting
+      if (currentUser) {
+        set(dbRef(db, `presence/${currentUser.key}`), { activeChat: null });
+      }
       localStorage.removeItem("bmchat_user_session");
       location.reload();
     });
 
-    document.getElementById("back-to-home-btn").addEventListener("click", () => showHomeScreen());
+    document.getElementById("back-to-home-btn").addEventListener("click", () => {
+      if (currentUser) {
+        set(dbRef(db, `presence/${currentUser.key}`), { activeChat: null });
+      }
+      showHomeScreen();
+    });
 
     function listenForUnreadCounts() {
       if (!currentUser) return;
@@ -672,18 +693,27 @@
 
         homeScreen.classList.add("hidden");
         
+        // Set presence: active inside this chat
+        set(dbRef(db, `presence/${currentUser.key}`), { activeChat: partnerKey });
+
         await remove(dbRef(db, `users/${currentUser.key}/unread/${partnerKey}`));
         listenForMessages();
+        listenForPartnerPresence();
       });
 
       membersList.appendChild(card);
       listenForUnreadCounts();
     }
 
-    function setupOnlineStatus() {
-      const connectedRef = dbRef(db, ".info/connected");
-      onValue(connectedRef, (snap) => {
-        if (snap.val() === true) {
+    // STRICT ACTIVE-IN-CHAT ONLINE STATUS LISTENER
+    function listenForPartnerPresence() {
+      if (!currentUser || !selectedMember) return;
+      const partnerPresenceRef = dbRef(db, `presence/${selectedMember.key}/activeChat`);
+      
+      onValue(partnerPresenceRef, (snapshot) => {
+        const activeChatWith = snapshot.exists() ? snapshot.val() : null;
+        // Partner is considered online ONLY if they are currently inside chat with current user
+        if (activeChatWith === currentUser.key) {
           statusDot.classList.add("online");
           statusText.innerText = "Online";
         } else {
@@ -691,6 +721,12 @@
           statusText.innerText = "Offline";
         }
       });
+    }
+
+    function setupPresenceStatus() {
+      if (!currentUser) return;
+      const myPresenceRef = dbRef(db, `presence/${currentUser.key}`);
+      set(myPresenceRef, { activeChat: null });
     }
 
     async function pushMessageToFirebase(msgData) {
@@ -923,10 +959,19 @@
 
       remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
 
+      let isInitialLoad = true;
+      setTimeout(() => { isInitialLoad = false; }, 1000);
+
       onChildAdded(messagesRef, (snapshot) => {
         remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
 
-        const msgDiv = renderMessageHTML(snapshot.key, snapshot.val());
+        const msgData = snapshot.val();
+        // Play notification sound if message is incoming and not initial load
+        if (!isInitialLoad && msgData.uid !== currentUser.key) {
+          playNotificationSound();
+        }
+
+        const msgDiv = renderMessageHTML(snapshot.key, msgData);
         if (msgDiv) { chatBox.appendChild(msgDiv); chatBox.scrollTop = chatBox.scrollHeight; }
       });
 
