@@ -19,6 +19,7 @@
       --text-gray: #8e8e93;
       --border-color: #d1d1d6;
       --danger: #ff3b30;
+      --success: #34c759;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -33,18 +34,9 @@
 
     /* BB Logo Badge */
     .bb-logo-badge {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #007aff, #0051a8);
-      border-radius: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 36px;
-      font-weight: 900;
-      letter-spacing: -2px;
-      margin-bottom: 20px;
+      width: 80px; height: 80px; background: linear-gradient(135deg, #007aff, #0051a8);
+      border-radius: 22px; display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 36px; font-weight: 900; letter-spacing: -2px; margin-bottom: 20px;
       box-shadow: 0 10px 20px rgba(0, 122, 255, 0.25);
     }
 
@@ -71,12 +63,15 @@
     .user-details .name { font-size: 16px; font-weight: 600; color: var(--text-dark); line-height: 1.2; }
     .user-details .status { font-size: 12px; color: var(--text-gray); font-weight: 500; display: flex; align-items: center; gap: 4px; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #8e8e93; display: inline-block; }
-    .status-dot.online { background: #34c759; }
+    .status-dot.online { background: var(--success); }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .icon-btn { background: none; border: none; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
 
     /* Chat Area */
     #chat-box { flex: 1; overflow-y: auto; padding: 72px 14px 72px 14px; display: flex; flex-direction: column; gap: 8px; background: #ffffff; -webkit-overflow-scrolling: touch; }
     
-    .msg { max-width: 78%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; }
+    .msg { max-width: 82%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-break: break-word; position: relative; animation: fadeIn 0.15s ease-out; cursor: pointer; user-select: none; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     .sent { align-self: flex-end; background: var(--sent-bg); color: white; border-bottom-right-radius: 4px; }
@@ -87,6 +82,7 @@
     .received.msg-deleted { background: #e5e5ea; color: #8e8e93; }
 
     .msg img { max-width: 100%; max-height: 240px; border-radius: 12px; margin-top: 4px; display: block; object-fit: cover; }
+    .msg audio { max-width: 220px; height: 36px; margin-top: 4px; border-radius: 18px; outline: none; }
     .msg-author { font-size: 11px; opacity: 0.7; margin-bottom: 2px; font-weight: 600; }
     .msg-footer { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 3px; font-size: 10px; opacity: 0.65; }
     .edited-tag { font-style: italic; }
@@ -97,6 +93,10 @@
     #file-input { display: none; }
     #message-input { flex: 1; height: 38px; border-radius: 19px; border: 1px solid var(--border-color); padding: 0 14px; font-size: 15px; outline: none; background: #f2f2f7; color: var(--text-dark); margin-bottom: 0; }
     .send-btn { background: var(--primary); color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    
+    .mic-btn { background: none; border: none; color: var(--primary); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+    .mic-btn.recording { color: var(--danger); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.18); } }
 
     /* Action Sheet / Options Modal */
     .action-sheet-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; animation: fadeIn 0.2s ease-out; }
@@ -110,6 +110,15 @@
     .edit-modal-box { background: white; border-radius: 18px; padding: 20px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     .edit-modal-box h3 { font-size: 18px; font-weight: 600; text-align: center; }
     .edit-modal-actions { display: flex; gap: 10px; }
+
+    /* Call Modal UI */
+    .call-screen { position: fixed; inset: 0; background: #1c1c1e; color: white; z-index: 120; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 24px; text-align: center; }
+    .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 900; margin-bottom: 16px; box-shadow: 0 0 30px rgba(0,122,255,0.4); }
+    .call-status { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
+    .call-actions { display: flex; gap: 24px; width: 100%; justify-content: center; }
+    .call-btn { width: 64px; height: 64px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .call-btn.accept { background: var(--success); color: white; }
+    .call-btn.decline { background: var(--danger); color: white; }
 
     /* Fullscreen Image Preview Modal */
     #image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 110; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -151,16 +160,29 @@
           </div>
         </div>
       </div>
-      <button id="logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 500; cursor:pointer;">Exit</button>
+      <div class="header-actions">
+        <!-- Voice Call Icon -->
+        <button id="start-call-btn" class="icon-btn" title="Voice Call">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
+        <button id="logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 500; cursor:pointer;">Exit</button>
+      </div>
     </header>
 
     <div id="chat-box"></div>
 
     <footer>
+      <!-- Camera Button -->
       <label for="file-input" class="file-btn" id="file-label">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
       </label>
       <input type="file" id="file-input" accept="image/*" />
+
+      <!-- Mic / Voice Note Button -->
+      <button id="mic-btn" class="mic-btn" title="Record Voice Note">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+
       <input type="text" id="message-input" placeholder="Message" autocomplete="off" />
       <button id="send-btn" class="send-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
@@ -191,9 +213,29 @@
     <img id="modal-img" src="" alt="Full view" />
   </div>
 
+  <!-- Voice Call UI Screen -->
+  <div id="call-screen" class="call-screen hidden">
+    <div>
+      <div class="call-avatar" id="call-avatar-icon">BB</div>
+      <h2 id="call-user-title">Voice Call</h2>
+      <div id="call-status-label" class="call-status">Connecting...</div>
+    </div>
+    <div class="call-actions">
+      <button id="accept-call-btn" class="call-btn accept hidden">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <button id="hangup-call-btn" class="call-btn decline">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Audio Element for WebRTC Remote Stream -->
+  <audio id="remote-audio" autoplay></audio>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref as dbRef, push, update, onChildAdded, onChildChanged, onChildRemoved, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref as dbRef, push, update, onChildAdded, onChildChanged, onChildRemoved, get, child, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCumpuLgLQim1FAiibLIQKHGyzNcGyLTcs",
@@ -215,6 +257,19 @@
     let isRegisterMode = false;
     let activeSelectedMsg = null;
 
+    // WebRTC & Audio Recording Variables
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    let peerConnection = null;
+    let localStream = null;
+    let currentCallRef = null;
+
+    const rtcServers = {
+      iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }]
+    };
+
     // DOM Elements
     const authScreen = document.getElementById("auth-screen");
     const authPhone = document.getElementById("auth-phone");
@@ -227,6 +282,7 @@
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
     const fileInput = document.getElementById("file-input");
+    const micBtn = document.getElementById("mic-btn");
     const imageModal = document.getElementById("image-modal");
     const modalImg = document.getElementById("modal-img");
     const statusDot = document.getElementById("status-dot");
@@ -240,6 +296,14 @@
     const editMessageInput = document.getElementById("edit-message-input");
     const editCancelBtn = document.getElementById("edit-cancel-btn");
     const editSaveBtn = document.getElementById("edit-save-btn");
+
+    const callScreen = document.getElementById("call-screen");
+    const callUserTitle = document.getElementById("call-user-title");
+    const callStatusLabel = document.getElementById("call-status-label");
+    const acceptCallBtn = document.getElementById("accept-call-btn");
+    const hangupCallBtn = document.getElementById("hangup-call-btn");
+    const startCallBtn = document.getElementById("start-call-btn");
+    const remoteAudio = document.getElementById("remote-audio");
 
     // Toggle Tabs
     tabLogin.addEventListener("click", () => {
@@ -277,6 +341,7 @@
         document.getElementById("header-name").innerText = currentUser.name;
         listenForMessages();
         setupOnlineStatus();
+        listenForIncomingCalls();
       } catch (e) {
         localStorage.removeItem("bbchat_user_session");
       }
@@ -309,6 +374,7 @@
         document.getElementById("header-name").innerText = currentUser.name;
         listenForMessages();
         setupOnlineStatus();
+        listenForIncomingCalls();
       } else {
         if (!dbSnap.exists()) { alert("Account not found. Switch to 'Create Account'."); return; }
 
@@ -325,6 +391,7 @@
           document.getElementById("header-name").innerText = currentUser.name;
           listenForMessages();
           setupOnlineStatus();
+          listenForIncomingCalls();
         } else {
           alert("Incorrect PIN.");
         }
@@ -350,7 +417,7 @@
       });
     }
 
-    // Send Message
+    // Send Text Message
     function sendMessage() {
       const text = messageInput.value.trim();
       if (text !== "" && currentUser) {
@@ -359,6 +426,7 @@
           sender: currentUser.name, 
           text: text, 
           image: null,
+          audio: null,
           timestamp: Date.now(),
           edited: false,
           deletedForEveryone: false
@@ -391,6 +459,7 @@
             sender: currentUser.name,
             text: "",
             image: result.data.url,
+            audio: null,
             timestamp: Date.now(),
             edited: false,
             deletedForEveryone: false
@@ -404,13 +473,57 @@
       fileInput.value = "";
     });
 
+    // Voice Note Recording Logic
+    micBtn.addEventListener("click", async () => {
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+              const base64Audio = reader.result;
+              push(dbRef(db, "messages"), {
+                uid: currentUser.uid,
+                sender: currentUser.name,
+                text: "",
+                image: null,
+                audio: base64Audio,
+                timestamp: Date.now(),
+                edited: false,
+                deletedForEveryone: false
+              });
+            };
+            stream.getTracks().forEach(track => track.stop());
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          micBtn.classList.add("recording");
+        } catch (err) {
+          alert("Microphone permission required for voice notes: " + err.message);
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove("recording");
+      }
+    });
+
     imageModal.addEventListener("click", () => imageModal.classList.add("hidden"));
 
-    // Render / Create Message Element
+    // Render Message Element
     function renderMessageHTML(msgId, data) {
       const isMe = currentUser && data.uid === currentUser.uid;
       
-      // Check if deleted for me
       if (data.deletedFor && data.deletedFor[currentUser.uid]) {
         return null;
       }
@@ -434,6 +547,7 @@
       let content = `<div class="msg-author">${data.sender}</div>`;
       if (data.text) content += `<div>${data.text}</div>`;
       if (data.image) content += `<img src="${data.image}" alt="photo" class="chat-img" />`;
+      if (data.audio) content += `<audio controls src="${data.audio}"></audio>`;
       
       content += `
         <div class="msg-footer">
@@ -444,7 +558,6 @@
       
       msgDiv.innerHTML = content;
 
-      // Image Click Handler
       const imgEl = msgDiv.querySelector(".chat-img");
       if (imgEl) {
         imgEl.addEventListener("click", (e) => {
@@ -454,13 +567,12 @@
         });
       }
 
-      // Tap Handler for Message Options Sheet
       msgDiv.addEventListener("click", () => openActionSheet(msgId, data));
 
       return msgDiv;
     }
 
-    // Action Sheet Option Handler
+    // Action Sheet Options
     function openActionSheet(msgId, data) {
       if (data.deletedForEveryone) return;
 
@@ -468,10 +580,9 @@
       actionSheetButtons.innerHTML = "";
 
       const isMe = currentUser && data.uid === currentUser.uid;
-      const isWithinOneMin = (Date.now() - data.timestamp) <= 60000; // 60 seconds validation
+      const isWithinOneMin = (Date.now() - data.timestamp) <= 60000;
 
-      // Option 1: Edit Message (Only if Sender AND Within 1 Minute AND Text Message)
-      if (isMe && isWithinOneMin && data.text && !data.image) {
+      if (isMe && isWithinOneMin && data.text && !data.image && !data.audio) {
         const editBtn = document.createElement("button");
         editBtn.className = "action-btn";
         editBtn.innerText = "Edit Message";
@@ -483,7 +594,6 @@
         actionSheetButtons.appendChild(editBtn);
       }
 
-      // Option 2: Delete for Everyone (Only if Sender AND Within 1 Minute)
       if (isMe && isWithinOneMin) {
         const delEveryoneBtn = document.createElement("button");
         delEveryoneBtn.className = "action-btn danger";
@@ -492,14 +602,12 @@
           closeActionSheet();
           await update(dbRef(db, `messages/${msgId}`), {
             deletedForEveryone: true,
-            text: "",
-            image: null
+            text: "", image: null, audio: null
           });
         });
         actionSheetButtons.appendChild(delEveryoneBtn);
       }
 
-      // Option 3: Delete for Me (Always Available for Any Message)
       const delMeBtn = document.createElement("button");
       delMeBtn.className = "action-btn danger";
       delMeBtn.innerText = "Delete for Me";
@@ -508,7 +616,6 @@
         await update(dbRef(db, `messages/${msgId}/deletedFor`), {
           [currentUser.uid]: true
         });
-        // Remove locally immediately
         const el = document.getElementById(`msg-${msgId}`);
         if (el) el.remove();
       });
@@ -517,19 +624,15 @@
       actionSheetOverlay.classList.remove("hidden");
     }
 
-    function closeActionSheet() {
-      actionSheetOverlay.classList.add("hidden");
-    }
+    function closeActionSheet() { actionSheetOverlay.classList.add("hidden"); }
 
     actionSheetCancel.addEventListener("click", closeActionSheet);
     actionSheetOverlay.addEventListener("click", (e) => {
       if (e.target === actionSheetOverlay) closeActionSheet();
     });
 
-    // Save Edit Action
     editSaveBtn.addEventListener("click", async () => {
       if (!activeSelectedMsg) return;
-      
       const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
       if (!isWithinOneMin) {
         alert("Time limit expired! You can only edit messages within 1 minute.");
@@ -549,11 +652,10 @@
 
     editCancelBtn.addEventListener("click", () => editModalOverlay.classList.add("hidden"));
 
-    // Realtime Message Sync
+    // Realtime Message Listener
     function listenForMessages() {
       chatBox.innerHTML = "";
       
-      // On Added
       onChildAdded(dbRef(db, "messages"), (snapshot) => {
         const msgId = snapshot.key;
         const data = snapshot.val();
@@ -565,31 +667,153 @@
         }
       });
 
-      // On Changed (Edits, Delete for Everyone, Delete for Me)
       onChildChanged(dbRef(db, "messages"), (snapshot) => {
         const msgId = snapshot.key;
         const data = snapshot.val();
         const existingDiv = document.getElementById(`msg-${msgId}`);
-        
         const updatedDiv = renderMessageHTML(msgId, data);
         
         if (existingDiv) {
-          if (updatedDiv) {
-            existingDiv.replaceWith(updatedDiv);
-          } else {
-            existingDiv.remove(); // Deleted for me
-          }
+          if (updatedDiv) existingDiv.replaceWith(updatedDiv);
+          else existingDiv.remove();
         } else if (updatedDiv) {
           chatBox.appendChild(updatedDiv);
           chatBox.scrollTop = chatBox.scrollHeight;
         }
       });
 
-      // On Removed
       onChildRemoved(dbRef(db, "messages"), (snapshot) => {
         const msgDiv = document.getElementById(`msg-${snapshot.key}`);
         if (msgDiv) msgDiv.remove();
       });
+    }
+
+    // --- WebRTC Realtime Voice Calling Logic ---
+    startCallBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+      
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        peerConnection = new RTCPeerConnection(rtcServers);
+
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+        peerConnection.ontrack = (event) => {
+          remoteAudio.srcObject = event.streams[0];
+        };
+
+        const callRoomRef = dbRef(db, "active_call");
+        currentCallRef = callRoomRef;
+
+        const offerCandidatesRef = child(callRoomRef, "callerCandidates");
+        peerConnection.onicecandidate = (event) => {
+          if (event.candidate) push(offerCandidatesRef, event.candidate.toJSON());
+        };
+
+        const offerDescription = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offerDescription);
+
+        await set(callRoomRef, {
+          offer: { type: offerDescription.type, sdp: offerDescription.sdp },
+          callerName: currentUser.name,
+          callerUid: currentUser.uid,
+          status: "calling"
+        });
+
+        callUserTitle.innerText = "Calling...";
+        callStatusLabel.innerText = "Ringing...";
+        acceptCallBtn.classList.add("hidden");
+        callScreen.classList.remove("hidden");
+
+        onValue(child(callRoomRef, "answer"), (snapshot) => {
+          const answer = snapshot.val();
+          if (answer && peerConnection && !peerConnection.currentRemoteDescription) {
+            peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+            callStatusLabel.innerText = "Connected";
+          }
+        });
+
+        onChildAdded(child(callRoomRef, "calleeCandidates"), (snapshot) => {
+          const candidate = new RTCIceCandidate(snapshot.val());
+          if (peerConnection) peerConnection.addIceCandidate(candidate);
+        });
+
+        onValue(child(callRoomRef, "status"), (snapshot) => {
+          if (snapshot.val() === "ended") endCall(false);
+        });
+
+      } catch (err) {
+        alert("Microphone access failed: " + err.message);
+      }
+    });
+
+    function listenForIncomingCalls() {
+      const callRoomRef = dbRef(db, "active_call");
+      onValue(callRoomRef, async (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.status === "calling" && data.callerUid !== currentUser.uid) {
+          callUserTitle.innerText = data.callerName;
+          callStatusLabel.innerText = "Incoming Voice Call";
+          acceptCallBtn.classList.remove("hidden");
+          callScreen.classList.remove("hidden");
+
+          acceptCallBtn.onclick = async () => {
+            acceptCallBtn.classList.add("hidden");
+            callStatusLabel.innerText = "Connecting...";
+
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            peerConnection = new RTCPeerConnection(rtcServers);
+
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            peerConnection.ontrack = (event) => {
+              remoteAudio.srcObject = event.streams[0];
+            };
+
+            const calleeCandidatesRef = child(callRoomRef, "calleeCandidates");
+            peerConnection.onicecandidate = (event) => {
+              if (event.candidate) push(calleeCandidatesRef, event.candidate.toJSON());
+            };
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+            const answerDescription = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answerDescription);
+
+            await update(callRoomRef, {
+              answer: { type: answerDescription.type, sdp: answerDescription.sdp },
+              status: "connected"
+            });
+
+            onChildAdded(child(callRoomRef, "callerCandidates"), (snapshot) => {
+              const candidate = new RTCIceCandidate(snapshot.val());
+              if (peerConnection) peerConnection.addIceCandidate(candidate);
+            });
+
+            callStatusLabel.innerText = "Connected";
+          };
+        } else if (!data || data.status === "ended") {
+          endCall(false);
+        }
+      });
+    }
+
+    hangupCallBtn.addEventListener("click", () => endCall(true));
+
+    async function endCall(notifyPeer = true) {
+      if (notifyPeer) {
+        await update(dbRef(db, "active_call"), { status: "ended" });
+        setTimeout(() => remove(dbRef(db, "active_call")), 1000);
+      }
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      callScreen.classList.add("hidden");
     }
   </script>
 </body>
