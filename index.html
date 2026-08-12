@@ -60,7 +60,16 @@
     #home-screen { position: absolute; inset: 0; background: #f2f2f7; z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
     .home-header { height: 64px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
     .home-title { font-size: 20px; font-weight: 800; color: var(--text-dark); }
-    .members-list { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; }
+    
+    .home-actions-bar { padding: 12px 16px 0 16px; display: flex; gap: 10px; }
+    .add-friend-btn {
+      background: var(--primary); color: white; border: none; border-radius: 14px;
+      padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+    }
+
+    .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
     /* 3D Elegant Drop-Shadowed Cards */
     .member-card {
@@ -149,9 +158,9 @@
     .action-btn.danger { color: var(--danger); font-weight: 600; }
     .action-cancel { background: white; border-radius: 16px; font-weight: 600; color: var(--primary); border: none; padding: 16px; font-size: 16px; cursor: pointer; text-align: center; }
 
-    /* Edit Input Box Modal */
-    .edit-modal-box { background: white; border-radius: 18px; padding: 20px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    .edit-modal-box h3 { font-size: 18px; font-weight: 600; text-align: center; }
+    /* Modals Box */
+    .edit-modal-box { background: white; border-radius: 20px; padding: 22px; width: 90%; max-width: 360px; margin: auto; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+    .edit-modal-box h3 { font-size: 18px; font-weight: 700; text-align: center; color: var(--text-dark); }
     .edit-modal-actions { display: flex; gap: 10px; }
 
     /* Call Modal UI */
@@ -191,12 +200,19 @@
       <button id="auth-btn" class="btn btn-primary">Log In</button>
     </div>
 
-    <!-- Home Screen (3D Member Dashboard) -->
+    <!-- Home Screen (Private 3D Friends Dashboard) -->
     <div id="home-screen" class="hidden">
       <div class="home-header">
-        <div class="home-title">BBChatApp Members</div>
+        <div class="home-title">BBChatApp</div>
         <button id="home-logout-btn" style="background:none; border:none; color:var(--primary); font-size:15px; font-weight: 600; cursor:pointer;">Exit</button>
       </div>
+      
+      <div class="home-actions-bar">
+        <button id="open-add-friend-btn" class="add-friend-btn">
+          <span>+</span> Add Friend by Phone / Name
+        </button>
+      </div>
+
       <div id="members-list" class="members-list"></div>
     </div>
 
@@ -213,9 +229,9 @@
         </div>
       </div>
       <div class="header-actions">
-        <!-- Return to Members Button -->
-        <button id="back-to-home-btn" class="icon-btn" title="Members List" style="font-size:13px; font-weight:600;">
-          Members
+        <!-- Return to Friends List -->
+        <button id="back-to-home-btn" class="icon-btn" title="Friends List" style="font-size:13px; font-weight:600;">
+          Friends
         </button>
         <!-- Voice Call Icon -->
         <button id="start-call-btn" class="icon-btn" title="Voice Call">
@@ -245,6 +261,19 @@
     </footer>
   </div>
 
+  <!-- Add Friend Modal -->
+  <div id="add-friend-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
+    <div class="edit-modal-box">
+      <h3>Add Friend</h3>
+      <p style="font-size:13px; color:var(--text-gray); text-align:center; margin-bottom:4px;">Enter your friend's mobile phone number or exact display name.</p>
+      <input type="text" id="add-friend-input" placeholder="Phone number or Name" />
+      <div class="edit-modal-actions">
+        <button id="add-friend-cancel-btn" class="btn" style="background: #e5e5ea; color: #000;">Cancel</button>
+        <button id="add-friend-search-btn" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Action Sheet Overlay for Message Options -->
   <div id="action-sheet-overlay" class="action-sheet-overlay hidden">
     <div class="action-sheet" id="action-sheet-buttons"></div>
@@ -263,7 +292,7 @@
     </div>
   </div>
 
-  <!-- Fullscreen Image Viewer Modal -->
+  <!-- Fullscreen Image Preview Modal -->
   <div id="image-modal" class="hidden">
     <img id="modal-img" src="" alt="Full view" />
   </div>
@@ -336,6 +365,12 @@
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
 
+    const addFriendModal = document.getElementById("add-friend-modal");
+    const addFriendInput = document.getElementById("add-friend-input");
+    const openAddFriendBtn = document.getElementById("open-add-friend-btn");
+    const addFriendCancelBtn = document.getElementById("add-friend-cancel-btn");
+    const addFriendSearchBtn = document.getElementById("add-friend-search-btn");
+
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
     const fileInput = document.getElementById("file-input");
@@ -362,7 +397,7 @@
     const startCallBtn = document.getElementById("start-call-btn");
     const remoteAudio = document.getElementById("remote-audio");
 
-    // Toggle Tabs
+    // Toggle Auth Tabs
     tabLogin.addEventListener("click", () => {
       isRegisterMode = false;
       tabLogin.classList.add("active");
@@ -456,33 +491,87 @@
       showHomeScreen();
     });
 
-    // 3D Members Dashboard Generator
+    // Add Friend Modal Handlers
+    openAddFriendBtn.addEventListener("click", () => {
+      addFriendInput.value = "";
+      addFriendModal.classList.remove("hidden");
+    });
+
+    addFriendCancelBtn.addEventListener("click", () => {
+      addFriendModal.classList.add("hidden");
+    });
+
+    addFriendSearchBtn.addEventListener("click", async () => {
+      const query = addFriendInput.value.trim();
+      if (!query) return;
+
+      const cleanQuery = cleanPhone(query);
+      const usersSnap = await get(dbRef(db, "users"));
+      let foundUser = null;
+
+      if (usersSnap.exists()) {
+        usersSnap.forEach((childSnap) => {
+          const u = childSnap.val();
+          // Match by phone or display name
+          if (u.phone === cleanQuery || (u.name && u.name.toLowerCase() === query.toLowerCase())) {
+            foundUser = u;
+          }
+        });
+      }
+
+      if (!foundUser) {
+        alert("User not found. Ensure they have registered with that phone number or name.");
+        return;
+      }
+
+      if (foundUser.phone === currentUser.phone) {
+        alert("You cannot add yourself.");
+        return;
+      }
+
+      // Add to my friends list
+      await set(dbRef(db, `users/${currentUser.phone}/friends/${foundUser.phone}`), {
+        phone: foundUser.phone,
+        name: foundUser.name
+      });
+
+      // Add to friend's friends list (Mutual contact)
+      await set(dbRef(db, `users/${foundUser.phone}/friends/${currentUser.phone}`), {
+        phone: currentUser.phone,
+        name: currentUser.name
+      });
+
+      alert(`Added ${foundUser.name} to your friends list!`);
+      addFriendModal.classList.add("hidden");
+      showHomeScreen();
+    });
+
+    // Render Friends-Only Dashboard
     async function showHomeScreen() {
       homeScreen.classList.remove("hidden");
       membersList.innerHTML = "";
 
-      const usersSnap = await get(dbRef(db, "users"));
-      if (usersSnap.exists()) {
-        usersSnap.forEach((childSnap) => {
-          const u = childSnap.val();
-          if (u.phone === currentUser.phone) return; // Skip self
+      const friendsSnap = await get(dbRef(db, `users/${currentUser.phone}/friends`));
+      if (friendsSnap.exists()) {
+        friendsSnap.forEach((childSnap) => {
+          const f = childSnap.val();
 
           const card = document.createElement("div");
           card.className = "member-card";
           card.innerHTML = `
             <div class="member-card-info">
-              <div class="member-avatar">${u.name ? u.name.charAt(0).toUpperCase() : "M"}</div>
+              <div class="member-avatar">${f.name ? f.name.charAt(0).toUpperCase() : "F"}</div>
               <div class="member-details">
-                <div class="member-name">${u.name || "Member"}</div>
-                <div class="member-phone">+${u.phone}</div>
+                <div class="member-name">${f.name || "Friend"}</div>
+                <div class="member-phone">+${f.phone}</div>
               </div>
             </div>
             <div class="chat-now-badge">Chat</div>
           `;
 
           card.addEventListener("click", () => {
-            selectedMember = u;
-            document.getElementById("header-name").innerText = u.name;
+            selectedMember = f;
+            document.getElementById("header-name").innerText = f.name;
             homeScreen.classList.add("hidden");
             listenForMessages();
           });
@@ -492,7 +581,7 @@
       }
 
       if (membersList.children.length === 0) {
-        membersList.innerHTML = `<div style="text-align:center; color:#8e8e93; margin-top:40px;">No other members registered yet.<br>Share your link with her!</div>`;
+        membersList.innerHTML = `<div style="text-align:center; color:#8e8e93; margin-top:40px; font-size:14px; line-height:1.5;">You haven't added any friends yet.<br>Tap <b>+ Add Friend</b> above to connect.</div>`;
       }
     }
 
@@ -566,13 +655,12 @@
       fileInput.value = "";
     });
 
-    // FIXED Voice Note Logic (iOS Safari Compatible)
+    // Voice Note Logic
     micBtn.addEventListener("click", async () => {
       if (!isRecording) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           
-          // Select supported MIME type for iOS / Safari
           let options = {};
           if (MediaRecorder.isTypeSupported('audio/mp4')) {
             options = { mimeType: 'audio/mp4' };
