@@ -28,19 +28,18 @@
     html, body { height: 100%; width: 100%; overflow: hidden; background-color: #18181B; display: flex; justify-content: center; align-items: center; }
     #app { width: 100%; max-width: 480px; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-color); position: relative; overflow: hidden; border: var(--border); box-shadow: var(--shadow); }
     
-    .screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; overflow-y: auto; }
+    .screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; overflow-y: auto; }
     .hidden { display: none !important; }
 
     .bb-logo-badge {
-      padding: 14px 28px; background: var(--yellow); border: var(--border); border-radius: 20px;
-      display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; box-shadow: var(--shadow);
+      padding: 10px 24px; background: var(--yellow); border: var(--border); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 22px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; box-shadow: var(--shadow);
     }
 
-    h1 { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--text-dark); letter-spacing: -0.5px; }
-    .slogan { font-size: 13px; font-weight: 800; color: #52525B; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-    p { font-size: 14px; color: var(--text-dark); font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
+    h1 { font-size: 24px; font-weight: 900; margin-bottom: 2px; color: var(--text-dark); letter-spacing: -0.5px; }
+    .slogan { font-size: 12px; font-weight: 800; color: #52525B; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .auth-toggle { display: flex; background: #E5E0D8; border: var(--border); border-radius: 16px; padding: 4px; width: 100%; margin-bottom: 20px; }
+    .auth-toggle { display: flex; background: #E5E0D8; border: var(--border); border-radius: 16px; padding: 4px; width: 100%; margin-bottom: 16px; }
     .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-size: 14px; font-weight: 800; color: var(--text-dark); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
     .auth-tab.active { background: var(--purple); border: var(--border); box-shadow: var(--shadow-sm); }
 
@@ -56,7 +55,18 @@
     .btn:active { transform: translate(2px, 2px); box-shadow: 1.5px 1.5px 0px #18181B; }
     .btn-primary { background: var(--purple); color: var(--text-dark); }
 
-    .forgot-link { color: var(--text-dark); font-size: 13px; font-weight: 800; text-decoration: underline; cursor: pointer; margin-top: 10px; display: inline-block; }
+    /* Retro Dog & Cat Waving Mascot Banner */
+    .retro-mascot-banner {
+      background: var(--yellow); border: var(--border); border-radius: 18px; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between; width: 100%;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm);
+    }
+    .mascot-text { text-align: left; }
+    .mascot-title { font-size: 15px; font-weight: 900; color: var(--text-dark); }
+    .mascot-sub { font-size: 11px; font-weight: 800; color: #52525B; }
+    
+    .waving-arm { transform-origin: bottom center; animation: wave 1.2s infinite ease-in-out alternate; }
+    @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
 
     #home-screen { position: absolute; inset: 0; background: var(--bg-color); z-index: 15; display: flex; flex-direction: column; overflow: hidden; }
     .home-header { height: 64px; background: var(--card-bg); border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
@@ -64,25 +74,7 @@
     .home-subtitle { font-size: 10px; font-weight: 800; color: var(--text-gray); }
     .home-header-btns { display: flex; gap: 6px; }
 
-    .retro-mascot-banner {
-      background: var(--yellow); border-bottom: var(--border); padding: 16px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      box-shadow: inset 0 -2px 0 rgba(24,24,27,0.1);
-    }
-    .mascot-text { text-align: left; }
-    .mascot-title { font-size: 16px; font-weight: 900; color: var(--text-dark); }
-    .mascot-sub { font-size: 11px; font-weight: 800; color: #52525B; }
-    
-    .waving-arm { transform-origin: bottom center; animation: wave 1.2s infinite ease-in-out alternate; }
-    @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(24deg); } }
-
     .home-actions-bar { padding: 14px 16px 4px 16px; }
-    .add-friend-btn {
-      background: var(--pink); color: var(--text-dark); border: var(--border); border-radius: 18px;
-      padding: 14px 16px; font-size: 14px; font-weight: 800; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
-      box-shadow: var(--shadow); transition: transform 0.1s;
-    }
 
     .members-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
@@ -166,6 +158,32 @@
       <h1>B&M Chat app</h1>
       <div class="slogan">Bbu & Me Chat App</div>
 
+      <!-- Mascot Waving Banner in Login Screen -->
+      <div class="retro-mascot-banner">
+        <div class="mascot-text">
+          <div class="mascot-title">Hello Sahansa & Malshi!</div>
+          <div class="mascot-sub">Welcome to B&M Chat</div>
+        </div>
+        <svg width="72" height="48" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="16" width="32" height="32" rx="10" fill="#A2D2FF" stroke="#18181B" stroke-width="2.5"/>
+          <circle cx="18" cy="28" r="3" fill="#18181B"/>
+          <circle cx="30" cy="28" r="3" fill="#18181B"/>
+          <ellipse cx="24" cy="35" rx="4" ry="3" fill="#18181B"/>
+          <g class="waving-arm">
+            <rect x="2" y="32" width="8" height="18" rx="4" fill="#A2D2FF" stroke="#18181B" stroke-width="2.5"/>
+          </g>
+          <rect x="58" y="16" width="32" height="32" rx="10" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <path d="M60 16L66 6L72 16Z" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <path d="M76 16L82 6L88 16Z" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          <circle cx="68" cy="28" r="3" fill="#18181B"/>
+          <circle cx="80" cy="28" r="3" fill="#18181B"/>
+          <polygon points="74,33 71,37 77,37" fill="#18181B"/>
+          <g class="waving-arm">
+            <rect x="88" y="32" width="8" height="18" rx="4" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
+          </g>
+        </svg>
+      </div>
+
       <div id="auth-status-box" class="status-badge"></div>
 
       <div class="auth-toggle">
@@ -174,13 +192,16 @@
       </div>
 
       <div class="input-group">
-        <input type="email" id="auth-email" placeholder="Email Address" autocomplete="email" />
-        <input type="text" id="auth-name" class="hidden" placeholder="Your Display Name" autocomplete="name" />
-        <input type="password" id="auth-password" placeholder="Password (min 6 chars)" />
+        <input type="text" id="auth-username" placeholder="Username (Sahansa / Malshi)" autocomplete="username" />
+        <input type="password" id="auth-password" placeholder="Password" />
+      </div>
+
+      <!-- Registration Coming Soon Box -->
+      <div id="register-coming-soon" class="hidden" style="margin-bottom:16px; font-weight:800; color:var(--text-gray); font-size:13px; background:#E5E0D8; padding:12px; border-radius:14px; border:var(--border);">
+        Registration is disabled. Coming Soon!
       </div>
 
       <button id="auth-btn" class="btn btn-primary">Log In</button>
-      <span id="forgot-password-btn" class="forgot-link">Forgot Password?</span>
     </div>
 
     <!-- Home Screen -->
@@ -192,12 +213,11 @@
         </div>
         <div class="home-header-btns">
           <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
-          <button id="reset-system-btn" class="hidden" style="background:var(--danger); color:white; border:var(--border); border-radius:10px; font-size:11px; font-weight:800; padding:6px 10px; cursor:pointer; box-shadow:var(--shadow-sm);">Reset System</button>
           <button id="home-logout-btn" style="background:none; border:none; color:var(--text-dark); font-size:14px; font-weight: 800; cursor:pointer;">Exit</button>
         </div>
       </div>
 
-      <!-- Retro Dog & Cat Waving Mascot Banner -->
+      <!-- Mascot Banner Home Screen -->
       <div class="retro-mascot-banner">
         <div class="mascot-text">
           <div class="mascot-title">Welcome back!</div>
@@ -221,12 +241,6 @@
             <rect x="88" y="32" width="8" height="18" rx="4" fill="#FFD2DD" stroke="#18181B" stroke-width="2.5"/>
           </g>
         </svg>
-      </div>
-      
-      <div class="home-actions-bar">
-        <button id="open-add-friend-btn" class="add-friend-btn">
-          <span>+</span> Add Friend by Email or Name
-        </button>
       </div>
 
       <div id="members-list" class="members-list"></div>
@@ -271,27 +285,14 @@
     </footer>
   </div>
 
-  <!-- Edit Profile Modal -->
+  <!-- Edit Profile & Password Modal -->
   <div id="profile-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
     <div class="edit-modal-box">
-      <h3>Edit Profile Details</h3>
-      <input type="text" id="profile-new-name" placeholder="New Display Name" />
+      <h3>Profile & Change Password</h3>
+      <input type="password" id="profile-new-pass" placeholder="New Password" />
       <div class="edit-modal-actions">
         <button id="profile-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
-        <button id="profile-save-btn" class="btn btn-primary">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Friend Modal -->
-  <div id="add-friend-modal" class="action-sheet-overlay hidden" style="justify-content: center;">
-    <div class="edit-modal-box">
-      <h3>Add Friend</h3>
-      <p style="font-size:12px; color:var(--text-gray); text-align:center; margin-bottom:2px;">Enter friend's email address or display name.</p>
-      <input type="text" id="add-friend-input" placeholder="Email or Display Name" />
-      <div class="edit-modal-actions">
-        <button id="add-friend-cancel-btn" class="btn" style="background: #E5E0D8; color: var(--text-dark);">Cancel</button>
-        <button id="add-friend-search-btn" class="btn btn-primary">Add</button>
+        <button id="profile-save-btn" class="btn btn-primary">Save Password</button>
       </div>
     </div>
   </div>
@@ -338,14 +339,6 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      sendPasswordResetEmail, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref as dbRef, push, update, onChildAdded, onChildChanged, onChildRemoved, get, child, onValue, set, remove, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -359,15 +352,17 @@
       measurementId: "G-PNKYJQJT9V"
     };
 
-    const ADMIN_EMAIL = "admin@gmail.com"; // Admin email for restricted reset
-
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let currentUser = null; // { uid, email, name, emailKey }
+    // Hardcoded User Credentials
+    const ACCOUNTS = {
+      sahansa: { username: "Sahansa", key: "sahansa", defaultPass: "2001" },
+      malshi: { username: "Malshi", key: "malshi", defaultPass: "2003" }
+    };
+
+    let currentUser = null; // { key, username }
     let selectedMember = null;
-    let isRegisterMode = false;
     let activeSelectedMsg = null;
 
     let mediaRecorder = null;
@@ -387,28 +382,18 @@
     const membersList = document.getElementById("members-list");
     const authStatusBox = document.getElementById("auth-status-box");
 
-    const authEmail = document.getElementById("auth-email");
-    const authName = document.getElementById("auth-name");
+    const authUsername = document.getElementById("auth-username");
     const authPassword = document.getElementById("auth-password");
     const authBtn = document.getElementById("auth-btn");
-    const authDesc = document.getElementById("auth-desc");
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
-    const forgotPasswordBtn = document.getElementById("forgot-password-btn");
+    const registerComingSoon = document.getElementById("register-coming-soon");
 
     const profileModal = document.getElementById("profile-modal");
-    const profileNewName = document.getElementById("profile-new-name");
+    const profileNewPass = document.getElementById("profile-new-pass");
     const editProfileOpenBtn = document.getElementById("edit-profile-open-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
-
-    const resetSystemBtn = document.getElementById("reset-system-btn");
-
-    const addFriendModal = document.getElementById("add-friend-modal");
-    const addFriendInput = document.getElementById("add-friend-input");
-    const openAddFriendBtn = document.getElementById("open-add-friend-btn");
-    const addFriendCancelBtn = document.getElementById("add-friend-cancel-btn");
-    const addFriendSearchBtn = document.getElementById("add-friend-search-btn");
 
     const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message-input");
@@ -436,11 +421,6 @@
     const startCallBtn = document.getElementById("start-call-btn");
     const remoteAudio = document.getElementById("remote-audio");
 
-    // Helper: Sanitize email to be used as a Firebase DB Key
-    function sanitizeEmail(email) {
-      return email.toLowerCase().replace(/[\.\#\$\[\]]/g, "_");
-    }
-
     function getChatId(key1, key2) {
       return [key1, key2].sort().join("_");
     }
@@ -458,111 +438,75 @@
 
     // Toggle Auth Tabs
     tabLogin.addEventListener("click", () => {
-      isRegisterMode = false;
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
-      authName.classList.add("hidden");
-      authDesc.innerText = "Sign in with Email & Password";
-      authBtn.innerText = "Log In";
-      forgotPasswordBtn.classList.remove("hidden");
+      registerComingSoon.classList.add("hidden");
+      authUsername.classList.remove("hidden");
+      authPassword.classList.remove("hidden");
+      authBtn.classList.remove("hidden");
       authStatusBox.style.display = "none";
     });
 
     tabRegister.addEventListener("click", () => {
-      isRegisterMode = true;
       tabRegister.classList.add("active");
       tabLogin.classList.remove("active");
-      authName.classList.remove("hidden");
-      authDesc.innerText = "Create account with Email, Name & Password";
-      authBtn.innerText = "Register";
-      forgotPasswordBtn.classList.add("hidden");
+      registerComingSoon.classList.remove("hidden");
+      authUsername.classList.add("hidden");
+      authPassword.classList.add("hidden");
+      authBtn.classList.add("hidden");
       authStatusBox.style.display = "none";
     });
 
-    // Firebase Auth State Observer
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const emailKey = sanitizeEmail(user.email);
-        const userSnap = await get(dbRef(db, `users/${emailKey}`));
-        let name = user.displayName || "User";
-        
-        if (userSnap.exists() && userSnap.val().name) {
-          name = userSnap.val().name;
-        }
+    // Auto Login Session
+    const savedSession = localStorage.getItem("bmchat_user_session");
+    if (savedSession) {
+      try {
+        currentUser = JSON.parse(savedSession);
+        authScreen.classList.add("hidden");
+        showHomeScreen();
+        setupOnlineStatus();
+        listenForIncomingCalls();
+      } catch (e) {
+        localStorage.removeItem("bmchat_user_session");
+      }
+    }
 
+    // Authenticate Action
+    authBtn.addEventListener("click", async () => {
+      const inputUser = authUsername.value.trim().toLowerCase();
+      const inputPass = authPassword.value.trim();
+
+      if (!inputUser || !ACCOUNTS[inputUser]) {
+        displayAuthStatus("Invalid Username. Use 'Sahansa' or 'Malshi'.");
+        return;
+      }
+
+      const accInfo = ACCOUNTS[inputUser];
+
+      // Check for password in Firebase DB or fallback to default
+      const passSnap = await get(dbRef(db, `accounts/${accInfo.key}/password`));
+      const validPass = passSnap.exists() ? passSnap.val() : accInfo.defaultPass;
+
+      if (inputPass === validPass) {
         currentUser = {
-          uid: user.uid,
-          email: user.email,
-          emailKey: emailKey,
-          name: name
+          key: accInfo.key,
+          username: accInfo.username
         };
-
+        localStorage.setItem("bmchat_user_session", JSON.stringify(currentUser));
+        
         authScreen.classList.add("hidden");
         showHomeScreen();
         setupOnlineStatus();
         listenForIncomingCalls();
       } else {
-        currentUser = null;
-        authScreen.classList.remove("hidden");
-        homeScreen.classList.add("hidden");
+        displayAuthStatus("Incorrect Password.");
       }
     });
 
-    // Authenticate Action (Email/Password Login & Register)
-    authBtn.addEventListener("click", async () => {
-      const email = authEmail.value.trim().toLowerCase();
-      const password = authPassword.value.trim();
-
-      if (!email || !email.includes("@")) { displayAuthStatus("Enter a valid email address."); return; }
-      if (!password || password.length < 6) { displayAuthStatus("Password must be at least 6 characters."); return; }
-
-      const emailKey = sanitizeEmail(email);
-
-      if (isRegisterMode) {
-        const name = authName.value.trim();
-        if (!name) { displayAuthStatus("Enter your display name."); return; }
-
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-
-          // Save User record in Realtime Database
-          const userData = { email: email, emailKey: emailKey, name: name, uid: user.uid };
-          await set(dbRef(db, `users/${emailKey}`), userData);
-
-          displayAuthStatus("Account created successfully!", false);
-        } catch (err) {
-          displayAuthStatus("Registration Error: " + err.message);
-        }
-      } else {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-        } catch (err) {
-          displayAuthStatus("Login Error: " + err.message);
-        }
-      }
-    });
-
-    // Forgot Password Reset Handler
-    forgotPasswordBtn.addEventListener("click", async () => {
-      const email = authEmail.value.trim().toLowerCase();
-      if (!email || !email.includes("@")) {
-        displayAuthStatus("Enter your email address in the field above first.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        displayAuthStatus(`Password reset email sent to ${email}! Check your inbox.`, false);
-      } catch (err) {
-        displayAuthStatus("Reset Error: " + err.message);
-      }
-    });
-
-    // EDIT PROFILE LOGIC
+    // CHANGE PASSWORD LOGIC
     editProfileOpenBtn.addEventListener("click", () => {
       if (!currentUser) return;
-      profileNewName.value = currentUser.name || "";
+      profileNewPass.value = "";
       profileModal.classList.remove("hidden");
     });
 
@@ -570,92 +514,37 @@
 
     profileSaveBtn.addEventListener("click", async () => {
       if (!currentUser) return;
-      const newName = profileNewName.value.trim();
+      const newPass = profileNewPass.value.trim();
 
-      if (newName) {
-        const userRef = dbRef(db, `users/${currentUser.emailKey}`);
-        await update(userRef, { name: newName });
-        currentUser.name = newName;
-        alert("Profile updated successfully!");
-        showHomeScreen();
-      }
-      profileModal.classList.add("hidden");
-    });
-
-    // RESTRICTED Reset System Action
-    resetSystemBtn.addEventListener("click", async () => {
-      if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        if (confirm(`ADMIN OVERRIDE (${ADMIN_EMAIL}): Purge all system data?`)) {
-          await remove(dbRef(db, "chats"));
-          await remove(dbRef(db, "users"));
-          await remove(dbRef(db, "active_call"));
-          alert("System truncated completely.");
-          location.reload();
-        }
+      if (newPass && newPass.length >= 3) {
+        await set(dbRef(db, `accounts/${currentUser.key}/password`), newPass);
+        alert("Password updated successfully!");
+        profileModal.classList.add("hidden");
       } else {
-        alert("Unauthorized. System reset is strictly restricted.");
+        alert("Password must be at least 3 characters.");
       }
     });
 
     document.getElementById("home-logout-btn").addEventListener("click", () => {
-      signOut(auth);
+      localStorage.removeItem("bmchat_user_session");
+      location.reload();
     });
 
     document.getElementById("back-to-home-btn").addEventListener("click", () => showHomeScreen());
 
-    openAddFriendBtn.addEventListener("click", () => {
-      addFriendInput.value = "";
-      addFriendModal.classList.remove("hidden");
-    });
-
-    addFriendCancelBtn.addEventListener("click", () => addFriendModal.classList.add("hidden"));
-
-    addFriendSearchBtn.addEventListener("click", async () => {
-      const query = addFriendInput.value.trim().toLowerCase();
-      if (!query) return;
-
-      const usersSnap = await get(dbRef(db, "users"));
-      let foundUser = null;
-
-      if (usersSnap.exists()) {
-        usersSnap.forEach((childSnap) => {
-          const u = childSnap.val();
-          if (u.email.toLowerCase() === query || (u.name && u.name.toLowerCase() === query)) {
-            foundUser = u;
-          }
-        });
-      }
-
-      if (!foundUser) { alert("User not found by email or display name."); return; }
-      if (foundUser.emailKey === currentUser.emailKey) { alert("You cannot add yourself."); return; }
-
-      await set(dbRef(db, `users/${currentUser.emailKey}/friends/${foundUser.emailKey}`), {
-        emailKey: foundUser.emailKey, email: foundUser.email, name: foundUser.name
-      });
-
-      await set(dbRef(db, `users/${foundUser.emailKey}/friends/${currentUser.emailKey}`), {
-        emailKey: currentUser.emailKey, email: currentUser.email, name: currentUser.name
-      });
-
-      alert(`Added ${foundUser.name}!`);
-      addFriendModal.classList.add("hidden");
-      showHomeScreen();
-    });
-
-    // REAL-TIME UNREAD MESSAGE BADGE LISTENER
     function listenForUnreadCounts() {
       if (!currentUser) return;
-      const unreadRef = dbRef(db, `users/${currentUser.emailKey}/unread`);
+      const unreadRef = dbRef(db, `users/${currentUser.key}/unread`);
       
       onValue(unreadRef, (snapshot) => {
         const unreadData = snapshot.exists() ? snapshot.val() : {};
         
         const friendCards = document.querySelectorAll(".member-card");
         friendCards.forEach((card) => {
-          const emailKey = card.dataset.emailKey;
+          const key = card.dataset.key;
           const badgeContainer = card.querySelector(".badge-slot");
-          if (emailKey && badgeContainer) {
-            const count = unreadData[emailKey] || 0;
+          if (key && badgeContainer) {
+            const count = unreadData[key] || 0;
             if (count > 0) {
               badgeContainer.innerHTML = `<div class="unread-badge">${count}</div>`;
             } else {
@@ -671,58 +560,43 @@
       selectedMember = null;
       membersList.innerHTML = "";
 
-      if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        resetSystemBtn.classList.remove("hidden");
-      } else {
-        resetSystemBtn.classList.add("hidden");
-      }
+      // Determine Partner Account
+      const partnerKey = currentUser.key === "sahansa" ? "malshi" : "sahansa";
+      const partnerInfo = ACCOUNTS[partnerKey];
 
-      const friendsSnap = await get(dbRef(db, `users/${currentUser.emailKey}/friends`));
-      const unreadSnap = await get(dbRef(db, `users/${currentUser.emailKey}/unread`));
+      const unreadSnap = await get(dbRef(db, `users/${currentUser.key}/unread`));
       const unreadData = unreadSnap.exists() ? unreadSnap.val() : {};
+      const unreadCount = unreadData[partnerKey] || 0;
 
-      if (friendsSnap.exists()) {
-        friendsSnap.forEach((childSnap) => {
-          const f = childSnap.val();
-          const unreadCount = unreadData[f.emailKey] || 0;
+      const card = document.createElement("div");
+      card.className = "member-card";
+      card.dataset.key = partnerKey;
+      card.innerHTML = `
+        <div class="member-card-info">
+          <div class="member-avatar">${partnerInfo.username.charAt(0)}</div>
+          <div class="member-details">
+            <div class="member-name">${partnerInfo.username}</div>
+            <div class="member-email">Direct Chat Partner</div>
+          </div>
+        </div>
+        <div class="member-badges">
+          <span class="badge-slot">
+            ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+          </span>
+          <div class="chat-now-badge">Chat</div>
+        </div>
+      `;
 
-          const card = document.createElement("div");
-          card.className = "member-card";
-          card.dataset.emailKey = f.emailKey;
-          card.innerHTML = `
-            <div class="member-card-info">
-              <div class="member-avatar">${f.name ? f.name.charAt(0).toUpperCase() : "F"}</div>
-              <div class="member-details">
-                <div class="member-name">${f.name || "Friend"}</div>
-                <div class="member-email">${f.email}</div>
-              </div>
-            </div>
-            <div class="member-badges">
-              <span class="badge-slot">
-                ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
-              </span>
-              <div class="chat-now-badge">Chat</div>
-            </div>
-          `;
+      card.addEventListener("click", async () => {
+        selectedMember = partnerInfo;
+        document.getElementById("header-name").innerText = partnerInfo.username;
+        homeScreen.classList.add("hidden");
+        
+        await remove(dbRef(db, `users/${currentUser.key}/unread/${partnerKey}`));
+        listenForMessages();
+      });
 
-          card.addEventListener("click", async () => {
-            selectedMember = f;
-            document.getElementById("header-name").innerText = f.name;
-            homeScreen.classList.add("hidden");
-            
-            // Clear unread count for this selected friend
-            await remove(dbRef(db, `users/${currentUser.emailKey}/unread/${f.emailKey}`));
-            listenForMessages();
-          });
-
-          membersList.appendChild(card);
-        });
-      }
-
-      if (membersList.children.length === 0) {
-        membersList.innerHTML = `<div style="text-align:center; color:var(--text-gray); margin-top:40px; font-size:14px; font-weight:700;">No friends added yet.<br>Tap <b>+ Add Friend</b> to connect.</div>`;
-      }
-
+      membersList.appendChild(card);
       listenForUnreadCounts();
     }
 
@@ -741,11 +615,10 @@
 
     async function pushMessageToFirebase(msgData) {
       if (!currentUser || !selectedMember) return;
-      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
+      const chatId = getChatId(currentUser.key, selectedMember.key);
       await push(dbRef(db, `chats/${chatId}/messages`), msgData);
 
-      // Increment unread count for recipient
-      const recipientUnreadRef = dbRef(db, `users/${selectedMember.emailKey}/unread/${currentUser.emailKey}`);
+      const recipientUnreadRef = dbRef(db, `users/${selectedMember.key}/unread/${currentUser.key}`);
       const snap = await get(recipientUnreadRef);
       const currentCount = snap.exists() ? snap.val() : 0;
       await set(recipientUnreadRef, currentCount + 1);
@@ -755,7 +628,7 @@
       const text = messageInput.value.trim();
       if (text !== "" && currentUser && selectedMember) {
         pushMessageToFirebase({ 
-          uid: currentUser.uid, sender: currentUser.name, text: text, image: null, audio: null,
+          uid: currentUser.key, sender: currentUser.username, text: text, image: null, audio: null,
           timestamp: Date.now(), edited: false, deletedForEveryone: false
         });
         messageInput.value = "";
@@ -798,8 +671,8 @@
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
 
           pushMessageToFirebase({
-            uid: currentUser.uid,
-            sender: currentUser.name,
+            uid: currentUser.key,
+            sender: currentUser.username,
             text: "",
             image: compressedBase64,
             audio: null,
@@ -837,7 +710,7 @@
             reader.onloadend = () => {
               const base64Audio = reader.result;
               pushMessageToFirebase({
-                uid: currentUser.uid, sender: currentUser.name, text: "",
+                uid: currentUser.key, sender: currentUser.username, text: "",
                 image: null, audio: base64Audio, timestamp: Date.now(),
                 edited: false, deletedForEveryone: false
               });
@@ -859,8 +732,8 @@
     imageModal.addEventListener("click", () => imageModal.classList.add("hidden"));
 
     function renderMessageHTML(msgId, data) {
-      const isMe = currentUser && data.uid === currentUser.uid;
-      if (data.deletedFor && data.deletedFor[currentUser.uid]) return null;
+      const isMe = currentUser && data.uid === currentUser.key;
+      if (data.deletedFor && data.deletedFor[currentUser.key]) return null;
 
       const msgDiv = document.createElement("div");
       if (data.deletedForEveryone) {
@@ -898,8 +771,8 @@
       activeSelectedMsg = { id: msgId, ...data };
       actionSheetButtons.innerHTML = "";
 
-      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
-      const isMe = currentUser && data.uid === currentUser.uid;
+      const chatId = getChatId(currentUser.key, selectedMember.key);
+      const isMe = currentUser && data.uid === currentUser.key;
       const isWithinOneMin = (Date.now() - data.timestamp) <= 60000;
 
       if (isMe && isWithinOneMin && data.text && !data.image && !data.audio) {
@@ -930,7 +803,7 @@
       delMeBtn.innerText = "Delete for Me";
       delMeBtn.addEventListener("click", async () => {
         closeActionSheet();
-        await update(dbRef(db, `chats/${chatId}/messages/${msgId}/deletedFor`), { [currentUser.uid]: true });
+        await update(dbRef(db, `chats/${chatId}/messages/${msgId}/deletedFor`), { [currentUser.key]: true });
         const el = document.getElementById(`msg-${msgId}`);
         if (el) el.remove();
       });
@@ -945,7 +818,7 @@
 
     editSaveBtn.addEventListener("click", async () => {
       if (!activeSelectedMsg || !selectedMember) return;
-      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
+      const chatId = getChatId(currentUser.key, selectedMember.key);
       const isWithinOneMin = (Date.now() - activeSelectedMsg.timestamp) <= 60000;
       if (!isWithinOneMin) {
         alert("Time limit expired!");
@@ -963,16 +836,16 @@
 
     function listenForMessages() {
       if (!currentUser || !selectedMember) return;
-      const chatId = getChatId(currentUser.emailKey, selectedMember.emailKey);
+      const chatId = getChatId(currentUser.key, selectedMember.key);
       const messagesRef = dbRef(db, `chats/${chatId}/messages`);
       
       off(messagesRef);
       chatBox.innerHTML = "";
 
-      remove(dbRef(db, `users/${currentUser.emailKey}/unread/${selectedMember.emailKey}`));
+      remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
 
       onChildAdded(messagesRef, (snapshot) => {
-        remove(dbRef(db, `users/${currentUser.emailKey}/unread/${selectedMember.emailKey}`));
+        remove(dbRef(db, `users/${currentUser.key}/unread/${selectedMember.key}`));
 
         const msgDiv = renderMessageHTML(snapshot.key, snapshot.val());
         if (msgDiv) { chatBox.appendChild(msgDiv); chatBox.scrollTop = chatBox.scrollHeight; }
@@ -1015,7 +888,7 @@
 
         await set(callRoomRef, {
           offer: { type: offerDescription.type, sdp: offerDescription.sdp },
-          callerName: currentUser.name, callerUid: currentUser.uid, status: "calling"
+          callerName: currentUser.username, callerUid: currentUser.key, status: "calling"
         });
 
         callUserTitle.innerText = "Calling...";
@@ -1045,7 +918,7 @@
       const callRoomRef = dbRef(db, "active_call");
       onValue(callRoomRef, async (snapshot) => {
         const data = snapshot.val();
-        if (data && data.status === "calling" && data.callerUid !== currentUser.uid) {
+        if (data && data.status === "calling" && data.callerUid !== currentUser.key) {
           callUserTitle.innerText = data.callerName;
           callStatusLabel.innerText = "Incoming Voice Call";
           acceptCallBtn.classList.remove("hidden");
