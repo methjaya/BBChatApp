@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>B&M Chat app</title>
   
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="B&M Chat">
+  
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>B%26M</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFE9A0' stroke='%2318181B' stroke-width='8'/><text x='50' y='62' font-family='sans-serif' font-size='32' font-weight='900' fill='%2318181B' text-anchor='middle'>B%26M</text></svg>">
 
   <style>
     :root {
@@ -209,12 +214,11 @@
     <div id="home-screen" class="hidden">
       <div class="home-header">
         <div>
-          <div class="home-title">B&M Chat app</div>
+          <div class="home-title">B&M Chat app+</div>
           <div class="home-subtitle">Bbu & Me Chat App</div>
           <div id="home-datetime" class="home-datetime">Today</div>
         </div>
         <div class="home-header-btns">
-          <button id="enable-notif-btn" style="background:var(--green); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">🔔 Alerts</button>
           <div id="user-header-avatar" class="user-header-avatar"></div>
           <button id="chuti-change-user-btn" class="hidden" style="background:var(--pink); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Name</button>
           <button id="edit-profile-open-btn" style="background:var(--blue); border:var(--border); border-radius:8px; font-size:9px; font-weight:800; padding:5px 6px; cursor:pointer; box-shadow:var(--shadow-sm);">Profile</button>
@@ -402,7 +406,6 @@
     const chutibatichchiChangeUserBtn = document.getElementById("chuti-change-user-btn");
     const profileCancelBtn = document.getElementById("profile-cancel-btn");
     const profileSaveBtn = document.getElementById("profile-save-btn");
-    const enableNotifBtn = document.getElementById("enable-notif-btn");
 
     const userHeaderAvatar = document.getElementById("user-header-avatar");
     const chatHeaderAvatar = document.getElementById("chat-header-avatar");
@@ -456,22 +459,6 @@
       authStatusBox.style.display = "block";
     }
 
-    // Request Browser & Audio Notification Permissions
-    enableNotifBtn.addEventListener("click", () => {
-      if (!("Notification" in window)) {
-        alert("This browser does not support desktop notifications.");
-        return;
-      }
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          alert("Notifications enabled successfully!");
-          playNotificationSound(); // Unlock audio context
-        } else {
-          alert("Notification permission denied.");
-        }
-      });
-    });
-
     // In-App Notification Audio Chime (Web Audio API)
     function playNotificationSound() {
       try {
@@ -492,16 +479,6 @@
         osc.stop(audioCtx.currentTime + 0.35);
       } catch (e) {
         console.error("Audio unlock needed", e);
-      }
-    }
-
-    // Trigger Browser Push Notification
-    function showBrowserNotification(senderName, text) {
-      if (document.hidden && "Notification" in window && Notification.permission === "granted") {
-        new Notification(`New message from ${senderName}`, {
-          body: text || "Sent an attachment/audio note",
-          icon: "https://api.iconify.design/twemoji:bird.svg"
-        });
       }
     }
 
@@ -562,7 +539,7 @@
         };
         localStorage.setItem("bmchat_user_session", JSON.stringify(currentUser));
         
-        playNotificationSound(); // User gesture unlock
+        playNotificationSound();
         authScreen.classList.add("hidden");
         showHomeScreen();
         setupPresenceStatus();
@@ -996,7 +973,6 @@
         const msgData = snapshot.val();
         if (!isInitialLoad && msgData.uid !== currentUser.key) {
           playNotificationSound();
-          showBrowserNotification(msgData.sender, msgData.text);
         }
 
         const msgDiv = renderMessageHTML(snapshot.key, msgData);
@@ -1092,15 +1068,15 @@
             };
 
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answerDescription = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answerDescription);
+            const ans = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(ans);
 
             await update(callRoomRef, {
-              answer: { type: answerDescription.type, sdp: answerDescription.sdp },
+              answer: { type: ans.type, sdp: ans.sdp },
               status: "connected"
             });
 
-            onChildAdded(child(callRoomRef, "callerCandidates"), (snapshot) => {
+            onChildAdded(child(callRoomRef, "calleeCandidates"), (snapshot) => {
               if (peerConnection) peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
             });
 
